@@ -52,7 +52,7 @@ export class BootScene extends Phaser.Scene {
 
     graphics.generateTexture('tile-grass', 128, 84);
 
-    // 2. Isometric Shoreline Sand Tile with 3D Sand Wall (Bright Daytime HD 128x76)
+    // 2. Isometric Shoreline Sand Tile with 3D Sand Wall & Rich Sand Texture (Bright Daytime HD 128x76)
     graphics.clear();
     graphics.fillStyle(0xb39868, 1);
     graphics.beginPath();
@@ -78,6 +78,64 @@ export class BootScene extends Phaser.Scene {
     graphics.fillStyle(0xf5e6c8, 1);
     graphics.fillTriangle(64, 2, 124, 32, 64, 62);
     graphics.fillTriangle(64, 2, 4, 32, 64, 62);
+
+    // --- BEACH SAND TEXTURE, RIPPLES & DETAILS ---
+
+    // 1. Soft Dune Ripple Lines (Ondulaciones de arena de playa)
+    graphics.lineStyle(1.5, 0xdfc494, 0.65);
+    graphics.beginPath();
+    graphics.moveTo(30, 20);
+    graphics.lineTo(50, 25);
+    graphics.lineTo(75, 22);
+    graphics.strokePath();
+
+    graphics.lineStyle(1.5, 0xcfa970, 0.5);
+    graphics.beginPath();
+    graphics.moveTo(48, 34);
+    graphics.lineTo(70, 40);
+    graphics.lineTo(95, 36);
+    graphics.strokePath();
+
+    graphics.lineStyle(1, 0xfff4d6, 0.7);
+    graphics.beginPath();
+    graphics.moveTo(25, 32);
+    graphics.lineTo(45, 36);
+    graphics.lineTo(65, 34);
+    graphics.strokePath();
+
+    // 2. Sand Grains (Grano y texturizado de arena disperso)
+    const sandGrains = [
+      { x: 42, y: 15, color: 0xcfa970, size: 2 },
+      { x: 78, y: 18, color: 0xfff4d6, size: 2.5 },
+      { x: 34, y: 28, color: 0xb3945b, size: 2 },
+      { x: 62, y: 24, color: 0xe6cd9c, size: 3 },
+      { x: 88, y: 28, color: 0xcfa970, size: 2 },
+      { x: 50, y: 44, color: 0xfff4d6, size: 2.5 },
+      { x: 74, y: 40, color: 0xb3945b, size: 2 },
+      { x: 96, y: 46, color: 0xe6cd9c, size: 2 },
+      { x: 30, y: 40, color: 0xcfa970, size: 2 },
+      { x: 64, y: 52, color: 0xfff4d6, size: 3 },
+      { x: 80, y: 50, color: 0xb3945b, size: 2 },
+      { x: 20, y: 24, color: 0xe6cd9c, size: 2 },
+    ];
+
+    sandGrains.forEach(g => {
+      graphics.fillStyle(g.color, 0.85);
+      graphics.fillRect(g.x, g.y, g.size, g.size);
+    });
+
+    // 3. Tiny Beach Seashells & Golden Pebbles (Conchitas y piedritas de playa)
+    graphics.fillStyle(0xffedd5, 0.95);
+    graphics.fillCircle(54, 18, 2.5);
+    graphics.fillStyle(0xfb7185, 0.7);
+    graphics.fillRect(53, 18, 2, 1);
+
+    graphics.fillStyle(0xfde047, 0.9);
+    graphics.fillCircle(82, 34, 2);
+
+    graphics.fillStyle(0x94a3b8, 0.85);
+    graphics.fillEllipse(40, 48, 4, 2.5);
+
     graphics.generateTexture('tile-sand', 128, 76);
 
     // 3. Isometric Ocean Water Tile (Bright Daytime HD 128x64)

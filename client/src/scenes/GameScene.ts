@@ -835,8 +835,12 @@ export class GameScene extends Phaser.Scene {
       itemSprite.setData('itemCount', drop.count);
     });
 
-    // 2. XP Reward proportional to Level (Lvl 1 = 50, Lvl 2 = 75, Lvl 3 = 100)
-    const xpReward = c.level === 1 ? 50 : (c.level === 2 ? 75 : 100);
+    // 2. XP Reward proportional to Level with dynamic Level-Difference modifier (+1% per level higher, -1% per level lower)
+    const baseXp = c.level === 1 ? 50 : (c.level === 2 ? 75 : 100);
+    const levelDiff = c.level - this.playerLevel;
+    const xpModifier = 1 + (levelDiff * 0.01);
+    const xpReward = Math.max(1, Math.round(baseXp * Math.max(0.01, xpModifier)));
+
     this.gainXp(xpReward);
 
     const summaryText = dropsToSpawn.map(d => `+${d.count} ${d.name}`).join(' ');

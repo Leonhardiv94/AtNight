@@ -210,11 +210,17 @@
       font-size: 1.3rem;
     }
 
-    /* Bottom-Left Vertical HUD Translucent Box (Sin bordes redondeados y pegado al borde!) */
-    .bottom-left-hud {
+    /* Bottom-Left Unified HUD Container: Sostiene el cuadro del HUD y el Gestor de Poderes pegados */
+    .bottom-left-unified-hud {
       position: absolute;
       bottom: 0;
       left: 0;
+      display: flex;
+      align-items: stretch; /* El Gestor de Poderes se adapta a la altura exacta natural del primer cuadro! */
+      z-index: 30;
+    }
+
+    .bottom-left-hud {
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
@@ -227,16 +233,10 @@
       padding: 0.8rem 1.1rem;
       backdrop-filter: blur(16px);
       box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.7);
-      z-index: 30;
-      height: 125px;
-      justify-content: center;
     }
 
-    /* Gestor de Poderes Box (Pegado al lado del HUD, misma altura y pegado al borde inferior!) */
+    /* Gestor de Poderes Box (Pegado al lado del HUD, se redimensiona a la altura del primero!) */
     .powers-manager-box {
-      position: absolute;
-      bottom: 0;
-      left: 382px; /* Directamente pegado al lado derecho del HUD */
       display: flex;
       flex-direction: column;
       background: rgba(13, 17, 23, 0.82);
@@ -245,11 +245,9 @@
       border-bottom: none;
       border-left: none;
       border-radius: 0; /* Sin bordes redondeados */
-      padding: 0.6rem 1rem;
+      padding: 0.7rem 1.1rem;
       backdrop-filter: blur(16px);
       box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.7);
-      z-index: 30;
-      height: 125px;
       justify-content: space-between;
     }
 
@@ -583,83 +581,86 @@
     <!-- Loot Feed -->
     <div class="loot-feed" id="loot-feed"></div>
 
-    <!-- Bottom-Left Vertical HUD Container: HP, Mana & XP -->
-    <div class="bottom-left-hud interactive" id="bottom-left-hud">
-      <!-- 1. Life Bar Row (❤️ Health) -->
-      <div class="hud-bar-row health-row" id="hud-health-row" title="Vida (HP)">
-        <div class="hud-bar-icon-wrapper heart-wrapper">
-          <svg class="hud-icon-svg heart-svg" viewBox="0 0 24 24">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
+    <!-- Bottom-Left Unified HUD Container: Sostiene el cuadro del HUD y el Gestor de Poderes pegados -->
+    <div class="bottom-left-unified-hud interactive">
+      <!-- 1. Cuadro Principal: Barras de Vida, Maná y Experiencia -->
+      <div class="bottom-left-hud" id="bottom-left-hud">
+        <!-- 1. Life Bar Row (❤️ Health) -->
+        <div class="hud-bar-row health-row" id="hud-health-row" title="Vida (HP)">
+          <div class="hud-bar-icon-wrapper heart-wrapper">
+            <svg class="hud-icon-svg heart-svg" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </div>
+          <div class="hud-bar-track">
+            <div class="hud-bar-fill health-fill" id="bottom-hp-fill"></div>
+            <span class="hud-bar-hover-text" id="bottom-hp-text">100 / 100 HP</span>
+          </div>
         </div>
-        <div class="hud-bar-track">
-          <div class="hud-bar-fill health-fill" id="bottom-hp-fill"></div>
-          <span class="hud-bar-hover-text" id="bottom-hp-text">100 / 100 HP</span>
+
+        <!-- 2. Mana Bar Row (⚡ Mana) -->
+        <div class="hud-bar-row mana-row" id="hud-mana-row" title="Maná (MP)">
+          <div class="hud-bar-icon-wrapper mana-wrapper">
+            <svg class="hud-icon-svg mana-svg" viewBox="0 0 24 24">
+              <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+            </svg>
+          </div>
+          <div class="hud-bar-track">
+            <div class="hud-bar-fill mana-fill" id="bottom-mana-fill"></div>
+            <span class="hud-bar-hover-text" id="bottom-mana-text">10 / 10 MP</span>
+          </div>
+        </div>
+
+        <!-- 3. Experience Bar Row (⭐ XP) -->
+        <div class="hud-bar-row xp-row" id="hud-xp-row" title="Experiencia (XP)">
+          <div class="hud-bar-icon-wrapper xp-wrapper">
+            <svg class="hud-icon-svg xp-svg" viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+          </div>
+          <div class="hud-bar-track">
+            <div class="hud-bar-fill xp-fill" id="bottom-xp-fill"></div>
+            <span class="hud-bar-hover-text" id="bottom-xp-text">0 / 1000 XP</span>
+          </div>
         </div>
       </div>
 
-      <!-- 2. Mana Bar Row (⚡ Mana) -->
-      <div class="hud-bar-row mana-row" id="hud-mana-row" title="Maná (MP)">
-        <div class="hud-bar-icon-wrapper mana-wrapper">
-          <svg class="hud-icon-svg mana-svg" viewBox="0 0 24 24">
-            <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
-          </svg>
+      <!-- 2. Segundo Cuadro: Gestor de Poderes (Se adapta a la altura exacta del primero) -->
+      <div class="powers-manager-box" id="powers-manager-box">
+        <div class="powers-header">
+          <span>⚡ Gestor de Poderes</span>
         </div>
-        <div class="hud-bar-track">
-          <div class="hud-bar-fill mana-fill" id="bottom-mana-fill"></div>
-          <span class="hud-bar-hover-text" id="bottom-mana-text">10 / 10 MP</span>
-        </div>
-      </div>
-
-      <!-- 3. Experience Bar Row (⭐ XP) -->
-      <div class="hud-bar-row xp-row" id="hud-xp-row" title="Experiencia (XP)">
-        <div class="hud-bar-icon-wrapper xp-wrapper">
-          <svg class="hud-icon-svg xp-svg" viewBox="0 0 24 24">
-            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-          </svg>
-        </div>
-        <div class="hud-bar-track">
-          <div class="hud-bar-fill xp-fill" id="bottom-xp-fill"></div>
-          <span class="hud-bar-hover-text" id="bottom-xp-text">0 / 1000 XP</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Gestor de Poderes Box (Misma altura, pegado al HUD y al borde de la pantalla) -->
-    <div class="powers-manager-box interactive" id="powers-manager-box">
-      <div class="powers-header">
-        <span>⚡ Gestor de Poderes</span>
-      </div>
-      <div class="powers-grid">
-        <div class="power-slot locked" title="Poder 1 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 2 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 3 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 4 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 5 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 6 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 7 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 8 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 9 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-        </div>
-        <div class="power-slot locked" title="Poder 10 Bloqueado (Se desbloquea con la evolución del personaje)">
-          <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        <div class="powers-grid">
+          <div class="power-slot locked" title="Poder 1 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 2 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 3 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 4 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 5 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 6 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 7 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 8 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 9 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
+          <div class="power-slot locked" title="Poder 10 Bloqueado (Se desbloquea con la evolución del personaje)">
+            <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </div>
         </div>
       </div>
     </div>

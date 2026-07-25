@@ -223,8 +223,9 @@
     .bottom-left-hud {
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
-      background: rgba(13, 17, 23, 0.82);
+      gap: 0.9rem;
+      justify-content: center;
+      background: rgba(13, 17, 23, 0.85);
       border-top: 1px solid rgba(255, 255, 255, 0.15);
       border-right: 1px solid rgba(255, 255, 255, 0.15);
       border-bottom: none;
@@ -235,7 +236,7 @@
       box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.7);
     }
 
-    /* Gestor de Poderes Box (Estilo Mundo Abierto & Aventura RPG) */
+    /* Gestor de Poderes Box (Estilo Mundo Abierto & Aventura RPG - 64x64px Slots) */
     .powers-manager-box {
       display: flex;
       flex-direction: column;
@@ -245,43 +246,45 @@
       border-bottom: none;
       border-left: none;
       border-radius: 0; /* Sin bordes redondeados */
-      padding: 0.75rem 1.2rem;
+      padding: 0.8rem 1.2rem;
       backdrop-filter: blur(16px);
       box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.75);
       justify-content: space-between;
-      width: 380px; /* Amplitud generosa para llenar el espacio adecuadamente! */
+      width: 405px; /* Ancho ajustado para 5 columnas de 64x64px perfectas! */
     }
 
     .powers-header {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 800;
       color: #fbbf24; /* Tono Dorado Aventura */
       letter-spacing: 1px;
       text-transform: uppercase;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
       text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
     }
 
     .adventure-rune-svg {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       fill: #f59e0b;
       filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.7));
     }
 
     .powers-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0.55rem;
+      grid-template-columns: repeat(5, 64px);
+      gap: 0.6rem;
+      justify-content: center;
     }
 
     .power-slot {
-      height: 38px;
+      width: 64px;
+      height: 64px;
       background: rgba(15, 23, 42, 0.65);
-      border: 1px solid rgba(245, 158, 11, 0.22);
+      border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: 0; /* Sin bordes redondeados */
       display: flex;
       align-items: center;
@@ -293,13 +296,13 @@
 
     .power-slot:hover {
       background: rgba(245, 158, 11, 0.12);
-      border-color: rgba(245, 158, 11, 0.6);
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+      border-color: rgba(245, 158, 11, 0.65);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
     }
 
     .power-slot.locked .lock-icon {
-      width: 16px;
-      height: 16px;
+      width: 22px;
+      height: 22px;
       fill: #78716c;
       transition: fill 0.2s ease;
     }

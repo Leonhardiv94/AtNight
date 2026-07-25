@@ -210,22 +210,23 @@
       font-size: 1.3rem;
     }
 
-    /* Bottom-Left Unified HUD Container: Sostiene el cuadro del HUD y el Gestor de Poderes pegados */
+    /* Bottom-Left Unified HUD Container: Sostiene ambos cuadros con idéntica transparencia */
     .bottom-left-unified-hud {
       position: absolute;
       bottom: 0;
       left: 0;
       display: flex;
-      align-items: stretch; /* El Gestor de Poderes se adapta a la altura exacta natural del primer cuadro! */
+      align-items: stretch; /* Ambos cuadros se adaptan con la misma altura exacta */
       z-index: 30;
     }
 
+    /* Cuadro 1: INFORMACIÓN */
     .bottom-left-hud {
       display: flex;
       flex-direction: column;
-      gap: 0.9rem;
-      justify-content: center;
-      background: rgba(13, 17, 23, 0.85);
+      gap: 0.38rem; /* Barras más pegadas e integradas */
+      justify-content: space-between;
+      background: rgba(13, 17, 23, 0.82); /* Tono de transparencia uniforme */
       border-top: 1px solid rgba(255, 255, 255, 0.15);
       border-right: 1px solid rgba(255, 255, 255, 0.15);
       border-bottom: none;
@@ -236,21 +237,41 @@
       box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.7);
     }
 
-    /* Gestor de Poderes Box (Estilo Mundo Abierto & Aventura RPG - 64x64px Slots) */
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #00f2fe; /* Tono Cian Eléctrico */
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+    }
+
+    .info-rune-svg {
+      width: 20px;
+      height: 20px;
+      fill: #00f2fe;
+      filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.7));
+    }
+
+    /* Cuadro 2: GESTOR DE PODERES (Misma transparencia y altura exacta!) */
     .powers-manager-box {
       display: flex;
       flex-direction: column;
-      background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(11, 15, 23, 0.95));
-      border-top: 1px solid rgba(245, 158, 11, 0.35);
-      border-right: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(13, 17, 23, 0.82); /* Tono de transparencia idéntico al primero */
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
       border-bottom: none;
       border-left: none;
       border-radius: 0; /* Sin bordes redondeados */
       padding: 0.8rem 1.2rem;
       backdrop-filter: blur(16px);
-      box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.75);
+      box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.7);
       justify-content: space-between;
-      width: 405px; /* Ancho ajustado para 5 columnas de 64x64px perfectas! */
+      width: 405px; /* Ancho ajustado para 5 columnas de 64x64px */
     }
 
     .powers-header {
@@ -595,8 +616,14 @@
 
     <!-- Bottom-Left Unified HUD Container: Sostiene el cuadro del HUD y el Gestor de Poderes pegados -->
     <div class="bottom-left-unified-hud interactive">
-      <!-- 1. Cuadro Principal: Barras de Vida, Maná y Experiencia -->
+      <!-- 1. Cuadro INFORMACIÓN (Barras de Vida, Maná y Experiencia) -->
       <div class="bottom-left-hud" id="bottom-left-hud">
+        <div class="info-header">
+          <svg class="info-rune-svg" viewBox="0 0 24 24">
+            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z"/>
+          </svg>
+          <span>INFORMACIÓN</span>
+        </div>
         <!-- 1. Life Bar Row (❤️ Health) -->
         <div class="hud-bar-row health-row" id="hud-health-row" title="Vida (HP)">
           <div class="hud-bar-icon-wrapper heart-wrapper">

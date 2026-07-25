@@ -34,9 +34,10 @@ export class GameScene extends Phaser.Scene {
   // Player Stats
   private playerLevel: number = 1;
   private playerXp: number = 0;
-  private playerXpToNextLevel: number = 100;
   private playerHp: number = 100;
   private playerMaxHp: number = 100;
+  private playerMana: number = 10;
+  private playerMaxMana: number = 10;
   private playerAttackPower: number = 25;
   private lastPlayerAttackTime: number = 0;
 
@@ -86,6 +87,37 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.rockGroup);
     this.physics.add.collider(this.creaturesGroup, this.rockGroup);
     this.physics.add.overlap(this.player, this.lootBags, this.collectLoot, undefined, this);
+
+    // Passive Regeneration Timers:
+    // 1. Life Regeneration: +1 HP per 1 second for Player & Animals
+    this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callback: () => {
+        if (this.playerHp > 0 && this.playerHp < this.playerMaxHp) {
+          this.playerHp = Math.min(this.playerMaxHp, this.playerHp + 1);
+        }
+        this.creatures.forEach(c => {
+          if (c.sprite.active && c.hp > 0 && c.hp < c.maxHp) {
+            c.hp = Math.min(c.maxHp, c.hp + 1);
+          }
+        });
+        this.updateHud();
+      }
+    });
+
+    // 2. Mana Regeneration: +1 Mana every 2 seconds (0.5 Mana/s)
+    this.time.addEvent({
+      delay: 2000,
+      loop: true,
+      callback: () => {
+        if (this.playerMana < this.playerMaxMana) {
+          this.playerMana = Math.min(this.playerMaxMana, this.playerMana + 1);
+          this.updateHud();
+        }
+      }
+    });
+
     this.updateHud();
   }
 
@@ -731,12 +763,12 @@ export class GameScene extends Phaser.Scene {
     this.playerHp = Math.max(0, this.playerHp - amount);
     this.showFloatingText(this.player.x, this.player.y - 40, `-${amount}`, '#ef4444');
 
-    // Trigger Heart Widget Shake Pulse
-    const heartWidget = document.getElementById('bottom-heart-widget');
-    if (heartWidget) {
-      heartWidget.classList.remove('hit-shake');
-      void heartWidget.offsetWidth;
-      heartWidget.classList.add('hit-shake');
+    // Trigger Health Row Shake Pulse
+    const healthRow = document.getElementById('hud-health-row');
+    if (healthRow) {
+      healthRow.classList.remove('hit-shake');
+      void healthRow.offsetWidth;
+      healthRow.classList.add('hit-shake');
     }
 
     this.player.setTint(0xff0000);
@@ -750,8 +782,9 @@ export class GameScene extends Phaser.Scene {
       this.showFloatingText(this.player.x, this.player.y - 40, '¡HAS MUERTO! Reanimando en la Isla...', '#ef4444');
 
       this.time.delayedCall(700, () => {
-        // Reset player HP & position back to island center, keeping inventory completely intact!
+        // Reset player HP & Mana back to max, position back to island center, keeping inventory completely intact!
         this.playerHp = this.playerMaxHp;
+        this.playerMana = this.playerMaxMana;
         this.player.setPosition(this.islandCenterIsoX, this.islandCenterIsoY);
         this.updateHud();
         this.cameras.main.fadeIn(500);
@@ -943,18 +976,33 @@ export class GameScene extends Phaser.Scene {
     this.renderInventoryHtml();
   }
 
+  private getXpRequiredForLevel(lvl: number): number {
+    if (lvl >= 50) return 0; // Level 50 is MAX LEVEL CAP!
+    let req = 1000;
+    for (let l = 1; l < lvl; l++) {
+      req = Math.round(req * 1.10);
+    }
+    return req;
+  }
+
   private gainXp(amount: number) {
     this.playerXp += amount;
-    if (this.playerXp >= this.playerXpToNextLevel) {
-      this.playerLevel++;
-      this.playerXp -= this.playerXpToNextLevel;
-      this.playerXpToNextLevel = Math.round(this.playerXpToNextLevel * 1.5);
-      
-      this.playerMaxHp += 25;
-      this.playerHp = this.playerMaxHp;
-      this.playerAttackPower += 8;
 
-      this.showFloatingText(this.player.x, this.player.y - 50, `¡NIVEL ALCANZADO! LV. ${this.playerLevel}`, '#00f2fe');
+    while (this.playerLevel < 50) {
+      const req = this.getXpRequiredForLevel(this.playerLevel);
+      if (this.playerXp >= req) {
+        this.playerLevel++;
+        this.playerXp -= req;
+        this.playerMaxHp += 25;
+        this.playerHp = this.playerMaxHp;
+        this.playerMaxMana += 1;
+        this.playerMana = this.playerMaxMana;
+        this.playerAttackPower += 8;
+
+        this.showFloatingText(this.player.x, this.player.y - 50, `¡NIVEL ALCANZADO! LV. ${this.playerLevel}`, '#00f2fe');
+      } else {
+        break;
+      }
     }
     this.updateHud();
   }
@@ -994,13 +1042,14 @@ export class GameScene extends Phaser.Scene {
 
   private renderCreatureHpBar(c: Creature) {
     c.hpBar.clear();
-    if (c.hp < c.maxHp) {
-      const w = 36;
-      const h = 5;
+    // Render HP bar DIRECTLY UNDERNEATH the animal when damaged or in combat!
+    if (c.hp < c.maxHp || c.isAggro) {
+      const w = 32;
+      const h = 4;
       const x = c.sprite.x - w / 2;
-      const y = c.sprite.y - 48;
+      const y = c.sprite.y + 12; // Directly underneath the animal's feet!
 
-      c.hpBar.fillStyle(0x000000, 0.6);
+      c.hpBar.fillStyle(0x0f172a, 0.75);
       m_fillRect(c.hpBar, x, y, w, h);
 
       const pct = Math.max(0, c.hp / c.maxHp);
@@ -1013,25 +1062,44 @@ export class GameScene extends Phaser.Scene {
   private updateHud() {
     const nameEl = document.getElementById('hud-player-name');
     const levelEl = document.getElementById('hud-player-level');
-    const hpBarEl = document.getElementById('hud-hp-bar');
-    const xpBarEl = document.getElementById('hud-xp-bar');
+
     const bottomHpFill = document.getElementById('bottom-hp-fill');
     const bottomHpText = document.getElementById('bottom-hp-text');
 
+    const bottomManaFill = document.getElementById('bottom-mana-fill');
+    const bottomManaText = document.getElementById('bottom-mana-text');
+
+    const bottomXpFill = document.getElementById('bottom-xp-fill');
+    const bottomXpText = document.getElementById('bottom-xp-text');
+
     if (nameEl) nameEl.innerText = 'Héroe AtNight';
     if (levelEl) levelEl.innerText = `Nivel ${this.playerLevel}`;
-    if (hpBarEl) {
-      const pct = (this.playerHp / this.playerMaxHp) * 100;
-      hpBarEl.style.width = `${pct}%`;
-    }
-    if (xpBarEl) {
-      const pct = (this.playerXp / this.playerXpToNextLevel) * 100;
-      xpBarEl.style.width = `${pct}%`;
-    }
+
+    // 1. Health Bar Update
     if (bottomHpFill && bottomHpText) {
       const pct = Math.max(0, (this.playerHp / this.playerMaxHp) * 100);
       bottomHpFill.style.width = `${pct}%`;
       bottomHpText.innerText = `${Math.ceil(this.playerHp)} / ${this.playerMaxHp} HP`;
+    }
+
+    // 2. Mana Bar Update (Capacity 10 default)
+    if (bottomManaFill && bottomManaText) {
+      const pct = Math.max(0, (this.playerMana / this.playerMaxMana) * 100);
+      bottomManaFill.style.width = `${pct}%`;
+      bottomManaText.innerText = `${Math.ceil(this.playerMana)} / ${this.playerMaxMana} MP`;
+    }
+
+    // 3. Experience Bar Update (Level 1: 1000 XP, +10% per level up to Level 50 MAX Cap)
+    if (bottomXpFill && bottomXpText) {
+      if (this.playerLevel >= 50) {
+        bottomXpFill.style.width = '100%';
+        bottomXpText.innerText = `Niv. 50 (MÁX) - ${this.playerXp} XP Total`;
+      } else {
+        const req = this.getXpRequiredForLevel(this.playerLevel);
+        const pct = Math.max(0, Math.min(100, (this.playerXp / req) * 100));
+        bottomXpFill.style.width = `${pct}%`;
+        bottomXpText.innerText = `Niv. ${this.playerLevel} (${Math.floor(this.playerXp)} / ${req} XP)`;
+      }
     }
   }
 

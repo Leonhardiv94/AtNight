@@ -210,20 +210,23 @@
       font-size: 1.3rem;
     }
 
-    /* Bottom-Left Vertical HUD Translucent Box */
+    /* Bottom-Left Vertical HUD Translucent Box (Sin bordes redondeados y pegado al borde!) */
     .bottom-left-hud {
       position: absolute;
-      bottom: 1.2rem;
-      left: 1.2rem;
+      bottom: 0;
+      left: 0;
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
-      background: rgba(13, 17, 23, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 20px;
-      padding: 0.8rem 1rem;
+      background: rgba(13, 17, 23, 0.82);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: none;
+      border-left: none;
+      border-radius: 0; /* Sin bordes redondeados */
+      padding: 0.8rem 1.1rem;
       backdrop-filter: blur(16px);
-      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.75);
+      box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.7);
       z-index: 30;
     }
 
@@ -231,10 +234,10 @@
       display: flex;
       align-items: center;
       gap: 0.7rem;
-      background: rgba(17, 24, 39, 0.65);
-      border-radius: 14px;
+      background: rgba(17, 24, 39, 0.7);
+      border-radius: 4px; /* Bordes rectos */
       padding: 0.45rem 0.85rem 0.45rem 0.6rem;
-      width: 320px; /* 30% más largas (de 240px a 320px)! */
+      width: 320px;
       transition: background 0.2s ease;
     }
 
@@ -249,8 +252,7 @@
     }
 
     .hud-bar-row:hover {
-      /* Sin movimiento cuando el mouse pasa por encima */
-      background: rgba(17, 24, 39, 0.85);
+      background: rgba(17, 24, 39, 0.9);
     }
 
     .hud-bar-row.hit-shake {
@@ -295,7 +297,7 @@
       flex: 1;
       height: 16px;
       background: rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
+      border-radius: 2px;
       overflow: hidden;
       position: relative;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -304,7 +306,7 @@
     .hud-bar-fill {
       height: 100%;
       width: 100%;
-      border-radius: 7px;
+      border-radius: 0;
       transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 

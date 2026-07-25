@@ -257,7 +257,7 @@
       filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.7));
     }
 
-    /* Cuadro 2: PODERES (Misma transparencia, anchura de 440px y altura exacta!) */
+    /* Cuadro 2: PODERES (Alineado 100% pixel-perfect con Gestión) */
     .powers-manager-box {
       display: flex;
       flex-direction: column;
@@ -271,7 +271,7 @@
       backdrop-filter: blur(16px);
       box-shadow: 4px -4px 25px rgba(0, 0, 0, 0.7);
       justify-content: space-between;
-      width: 440px; /* Ancho simétrico de 440px a la par con el cuadro de Gestión */
+      width: 440px; /* Ancho simétrico de 440px */
     }
 
     .powers-header {
@@ -342,14 +342,15 @@
     }
 
     .power-slot-label {
-      font-size: 0.68rem;
-      font-weight: 800;
+      font-size: 0.65rem;
+      font-weight: 700;
       color: #fbbf24; /* Tono Dorado Aventura */
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
       letter-spacing: 0.2px;
+      line-height: 1;
     }
 
-    /* Cuadro 3: GESTIÓN (Misma transparencia, bordes rectos y misma altura!) */
+    /* Cuadro 3: GESTIÓN (Alineación perfecta y botones coloridos RPG) */
     .gestion-manager-box {
       display: flex;
       flex-direction: column;
@@ -412,40 +413,69 @@
       width: 64px;
       height: 64px;
       border-radius: 50%; /* Diámetro de 64px totalmente redondo */
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
-      border: 2px solid rgba(16, 185, 129, 0.45);
+      border: 2px solid #10b981; /* Borde Verde Esmeralda */
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.35), inset 0 0 10px rgba(0, 0, 0, 0.5);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Colores Temáticos RPG de Aventura para cada Botón */
+    .btn-caracteristicas .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-poderes .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-inventario .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-misiones .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(147, 51, 234, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-amigos .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-mapa .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(202, 138, 4, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-oficios .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(234, 88, 12, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-monturas .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(132, 204, 22, 0.55), rgba(15, 23, 42, 0.95));
+    }
+    .btn-monstruos .gestion-circle-btn {
+      background: linear-gradient(135deg, rgba(192, 38, 211, 0.55), rgba(15, 23, 42, 0.95));
+    }
+
     .gestion-btn-item:hover .gestion-circle-btn {
-      border-color: #10b981;
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(15, 23, 42, 0.95));
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+      border-color: #34d399;
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.8), inset 0 0 12px rgba(255, 255, 255, 0.2);
     }
 
     .gestion-btn-svg {
       width: 28px;
       height: 28px;
-      fill: #e2e8f0;
-      transition: fill 0.2s ease;
+      fill: #ffffff;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+      transition: all 0.2s ease;
     }
 
     .gestion-btn-item:hover .gestion-btn-svg {
-      fill: #34d399;
+      transform: scale(1.1);
     }
 
     .gestion-btn-label {
-      font-size: 0.62rem;
+      font-size: 0.65rem;
       font-weight: 700;
       color: #cbd5e1;
       white-space: nowrap;
       text-transform: capitalize; /* Inicial Mayúscula, resto minúsculas */
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
       letter-spacing: 0.2px;
+      line-height: 1;
     }
 
     .hud-bar-row {
@@ -874,7 +904,7 @@
 
         <div class="gestion-grid">
           <!-- 1. Características -->
-          <div class="gestion-btn-item" title="Características" onclick="openGestionModal('caracteristicas')">
+          <div class="gestion-btn-item btn-caracteristicas" title="Características" onclick="openGestionModal('caracteristicas')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             </div>
@@ -882,7 +912,7 @@
           </div>
 
           <!-- 2. Poderes -->
-          <div class="gestion-btn-item" title="Poderes" onclick="openGestionModal('poderes')">
+          <div class="gestion-btn-item btn-poderes" title="Poderes" onclick="openGestionModal('poderes')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
             </div>
@@ -890,7 +920,7 @@
           </div>
 
           <!-- 3. Inventario -->
-          <div class="gestion-btn-item" title="Inventario" onclick="openGestionModal('inventario')">
+          <div class="gestion-btn-item btn-inventario" title="Inventario" onclick="openGestionModal('inventario')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
             </div>
@@ -898,7 +928,7 @@
           </div>
 
           <!-- 4. Misiones -->
-          <div class="gestion-btn-item" title="Misiones" onclick="openGestionModal('misiones')">
+          <div class="gestion-btn-item btn-misiones" title="Misiones" onclick="openGestionModal('misiones')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
             </div>
@@ -906,7 +936,7 @@
           </div>
 
           <!-- 5. Amigos -->
-          <div class="gestion-btn-item" title="Amigos" onclick="openGestionModal('amigos')">
+          <div class="gestion-btn-item btn-amigos" title="Amigos" onclick="openGestionModal('amigos')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
             </div>
@@ -914,7 +944,7 @@
           </div>
 
           <!-- 6. Mapa -->
-          <div class="gestion-btn-item" title="Mapa" onclick="openGestionModal('mapa')">
+          <div class="gestion-btn-item btn-mapa" title="Mapa" onclick="openGestionModal('mapa')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
             </div>
@@ -922,7 +952,7 @@
           </div>
 
           <!-- 7. Oficios -->
-          <div class="gestion-btn-item" title="Oficios" onclick="openGestionModal('oficios')">
+          <div class="gestion-btn-item btn-oficios" title="Oficios" onclick="openGestionModal('oficios')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
             </div>
@@ -930,7 +960,7 @@
           </div>
 
           <!-- 8. Monturas -->
-          <div class="gestion-btn-item" title="Monturas" onclick="openGestionModal('monturas')">
+          <div class="gestion-btn-item btn-monturas" title="Monturas" onclick="openGestionModal('monturas')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
             </div>
@@ -938,7 +968,7 @@
           </div>
 
           <!-- 9. Monstruos -->
-          <div class="gestion-btn-item" title="Monstruos" onclick="openGestionModal('monstruos')">
+          <div class="gestion-btn-item btn-monstruos" title="Monstruos" onclick="openGestionModal('monstruos')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
             </div>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AtNight - Action RPG 2D Isométrico</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #05070a;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #e2e8f0;
+    }
+
+    #game-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* UI Overlay (HUD) */
+    .hud-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none; /* Pass clicks to canvas by default */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem;
+    }
+
+    .interactive {
+      pointer-events: auto;
+    }
+
+    /* Top Left: Player Status Bar */
+    .player-hud {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(13, 17, 23, 0.85);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      padding: 0.8rem 1.2rem;
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      max-width: 360px;
+    }
+
+    .player-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #0b0f17;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+    }
+
+    .player-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .player-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .player-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #ffffff;
+    }
+
+    .player-level {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #00f2fe;
+      background: rgba(0, 242, 254, 0.15);
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 242, 254, 0.3);
+    }
+
+    /* Bars (HP & XP) */
+    .bar-container {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hp-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #ef4444, #f87171);
+      transition: width 0.3s ease;
+    }
+
+    .xp-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      transition: width 0.3s ease;
+    }
+
+    /* Top Right: Game Brand & Zone Badge */
+    .game-brand {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.3rem;
+    }
+
+    .brand-title {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+    }
+
+    .brand-title span {
+      color: #00f2fe;
+    }
+
+    .zone-badge {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 0.25rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Bottom Center: Action Bar / Skills */
+    .action-bar-container {
+      align-self: center;
+      margin-bottom: 1.2rem;
+      display: flex;
+      gap: 0.8rem;
+      background: rgba(13, 17, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.6rem 1.2rem;
+      border-radius: 18px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .skill-slot {
+      width: 52px;
+      height: 52px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .skill-slot:hover {
+      border-color: #00f2fe;
+      background: rgba(0, 242, 254, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .skill-slot .key-bind {
+      position: absolute;
+      top: 3px;
+      left: 5px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #94a3b8;
+    }
+
+    .skill-icon {
+      font-size: 1.3rem;
+    }
+
+    /* Bottom Center: Heart Health Bar Widget */
+    .heart-health-container {
+      position: absolute;
+      bottom: 5.4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: rgba(13, 17, 23, 0.9);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 0.5rem 1.2rem;
+      border-radius: 24px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 30px rgba(239, 68, 68, 0.25), 0 4px 20px rgba(0, 0, 0, 0.7);
+      z-index: 25;
+      transition: transform 0.15s ease;
+    }
+
+    .heart-health-container.hit-shake {
+      animation: heartPulse 0.35s ease-in-out;
+    }
+
+    @keyframes heartPulse {
+      0% { transform: translateX(-50%) scale(1); }
+      30% { transform: translateX(-50%) scale(1.18); border-color: #ff0000; box-shadow: 0 0 25px rgba(255, 0, 0, 0.8); }
+      100% { transform: translateX(-50%) scale(1); }
+    }
+
+    .heart-icon-wrapper {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8));
+    }
+
+    .heart-svg {
+      width: 28px;
+      height: 28px;
+      fill: #ef4444;
+      transition: fill 0.3s ease;
+    }
+
+    .heart-bar-track {
+      width: 180px;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .heart-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #dc2626, #f87171);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .heart-hp-text {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      min-width: 90px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Floating Loot Notification Feed */
+    .loot-feed {
+      position: absolute;
+      left: 1.2rem;
+      bottom: 5.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      pointer-events: none;
+    }
+
+    .loot-toast {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #22c55e;
+      color: #22c55e;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      animation: fadeInOut 3s forwards;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(10px); }
+      15% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    /* Modal Windows (Inventory / Stats) */
+    .game-modal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 420px;
+      max-width: 90%;
+      background: rgba(13, 17, 23, 0.95);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 18px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      z-index: 50;
+      display: none;
+    }
+
+    .game-modal.active {
+      display: block;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #00f2fe;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: #ef4444;
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .inventory-slot {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .inventory-slot:hover {
+      border-color: #00f2fe;
+      background: rgba(0, 242, 254, 0.08);
+    }
+
+    .inventory-slot .item-count {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    /* Controls Help Banner */
+    .controls-help {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .controls-help span strong {
+      color: #00f2fe;
+    }
+  </style>
+</head>
+<body>
+  <!-- Phaser 3 Canvas Render Container -->
+  <div id="game-container"></div>
+
+  <!-- HUD User Interface Overlay -->
+  <div class="hud-overlay">
+    <!-- Top Left: Status Bar -->
+    <div class="player-hud interactive">
+      <div class="player-avatar">⚔️</div>
+      <div class="player-info">
+        <div class="player-title-row">
+          <span class="player-name" id="hud-player-name">Héroe AtNight</span>
+          <span class="player-level" id="hud-player-level">Nivel 1</span>
+        </div>
+
+        <!-- HP Bar -->
+        <div class="bar-container" title="Puntos de Vida (HP)">
+          <div class="hp-bar-fill" id="hud-hp-bar"></div>
+        </div>
+
+        <!-- XP Bar -->
+        <div class="bar-container" title="Experiencia (XP)" style="height: 6px;">
+          <div class="xp-bar-fill" id="hud-xp-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Right: Brand Header -->
+    <div class="game-brand">
+      <div class="brand-title">At<span>Night</span></div>
+      <div class="zone-badge">📍 Isla Soleada (Zona Inicial)</div>
+    </div>
+
+    <!-- Loot Feed -->
+    <div class="loot-feed" id="loot-feed"></div>
+
+    <!-- Bottom Center: Heart Health Bar Container -->
+    <div class="heart-health-container interactive" id="bottom-heart-widget">
+      <div class="heart-icon-wrapper" id="heart-icon-wrapper">
+        <svg class="heart-svg" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <div class="heart-bar-track">
+        <div class="heart-bar-fill" id="bottom-hp-fill"></div>
+      </div>
+      <span class="heart-hp-text" id="bottom-hp-text">100 / 100 HP</span>
+    </div>
+
+    <!-- Bottom Center: Skills & Action Bar -->
+    <div class="action-bar-container interactive">
+      <div class="skill-slot" title="Ataque Principal (Clic / Tecla 1)" onclick="triggerAttack()">
+        <span class="key-bind">1</span>
+        <span class="skill-icon">🗡️</span>
+      </div>
+      <div class="skill-slot" title="Habilidad Especial: Golpe Sombrío (Tecla 2)" onclick="triggerSpecialSkill()">
+        <span class="key-bind">2</span>
+        <span class="skill-icon">⚡</span>
+      </div>
+      <div class="skill-slot" title="Talar / Recolectar Recursos (Tecla E)" onclick="triggerGather()">
+        <span class="key-bind">E</span>
+        <span class="skill-icon">🪓</span>
+      </div>
+      <div class="skill-slot" title="Abrir Inventario (Tecla I)" onclick="toggleInventory()">
+        <span class="key-bind">I</span>
+        <span class="skill-icon">🎒</span>
+      </div>
+    </div>
+
+    <!-- Controls Guide -->
+    <div class="controls-help">
+      <span><strong>W, A, S, D / Flechas:</strong> Mover personaje</span>
+      <span><strong>Clic Izquierdo:</strong> Atacar / Moverse</span>
+      <span><strong>Tecla I:</strong> Inventario</span>
+    </div>
+  </div>
+
+  <!-- Inventory Modal Window -->
+  <div class="game-modal interactive" id="inventory-modal">
+    <div class="modal-header">
+      <span class="modal-title">🎒 Inventario & Equipamiento</span>
+      <button class="modal-close" onclick="toggleInventory()">&times;</button>
+    </div>
+    <p style="font-size: 0.82rem; color: #94a3b8;">Recursos y objetos obtenidos en combate o recolección:</p>
+    <div class="inventory-grid" id="inventory-grid">
+      <!-- Generated dynamically -->
+    </div>
+  </div>
+
+  <!-- Main JavaScript Entrypoint -->
+  <script type="module" src="/src/main.ts"></script>
+
+  <script>
+    function toggleInventory() {
+      const modal = document.getElementById('inventory-modal');
+      if (modal) modal.classList.toggle('active');
+    }
+
+    function triggerAttack() {
+      if (window.gameInstance && window.gameInstance.scene) {
+        const gameScene = window.gameInstance.scene.getScene('GameScene');
+        if (gameScene && gameScene.handlePlayerAttack) {
+          gameScene.handlePlayerAttack();
+        }
+      }
+    }
+
+    function triggerSpecialSkill() {
+      if (window.gameInstance && window.gameInstance.scene) {
+        const gameScene = window.gameInstance.scene.getScene('GameScene');
+        if (gameScene && gameScene.handleSpecialSkill) {
+          gameScene.handleSpecialSkill();
+        }
+      }
+    }
+
+    function triggerGather() {
+      if (window.gameInstance && window.gameInstance.scene) {
+        const gameScene = window.gameInstance.scene.getScene('GameScene');
+        if (gameScene && gameScene.handleGathering) {
+          gameScene.handleGathering();
+        }
+      }
+    }
+  </script>
+</body>
+</html>

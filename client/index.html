@@ -2674,7 +2674,7 @@
     let currentGender = 'masculino';
     let charPreviewFrameId = null;
 
-    function onAuthSuccess(user, characters) {
+    async function onAuthSuccess(user, characters) {
       window.activeUser = user;
       const loginBox = document.getElementById('login-modal-box');
       const charHubBox = document.getElementById('character-hub-modal-box');
@@ -2682,14 +2682,7 @@
       if (loginBox) loginBox.style.display = 'none';
       if (charHubBox) charHubBox.style.display = 'flex';
 
-      const userChars = characters && characters.length > 0 ? characters : [];
-
-      if (userChars.length === 0) {
-        openCharacterCreatorView(false); // Si no hay personajes, ir directo a crear
-      } else {
-        renderCharacterList(userChars);
-        openCharacterListView();
-      }
+      await loadPlayerCharacters(user.email);
     }
 
     function renderCharacterList(characters) {

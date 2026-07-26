@@ -461,7 +461,7 @@
       transform: translate(-50%, -50%);
       width: 920px;
       max-width: 96vw;
-      height: 620px;
+      height: 670px;
       max-height: 92vh;
       background: rgba(13, 17, 23, 0.96);
       border: 1px solid rgba(0, 242, 254, 0.35);
@@ -489,7 +489,7 @@
 
     .equipo-left-column {
       display: grid;
-      grid-template-rows: 350px 1fr;
+      grid-template-rows: 400px 1fr;
       gap: 0.8rem;
     }
 
@@ -583,8 +583,8 @@
     }
 
     #character-preview-canvas {
-      width: 220px;
-      height: 250px;
+      width: 280px;
+      height: 320px;
     }
 
     .gestion-btn-item:hover .gestion-circle-btn {
@@ -1193,9 +1193,9 @@
               </div>
             </div>
 
-            <!-- Centro: Representación del Personaje mirando abajo a la derecha sobre adoquín de césped -->
+            <!-- Centro: Representación del Personaje mirando abajo a la derecha sobre adoquín de césped (Agrandado un 30%) -->
             <div class="character-stage-center">
-              <canvas id="character-preview-canvas" width="220" height="250"></canvas>
+              <canvas id="character-preview-canvas" width="280" height="320"></canvas>
             </div>
 
             <!-- Derecha: 3 Cuadros (Amuleto a la altura del cuello, Brazalete 1, Brazalete 2) de 64x64px -->
@@ -1307,7 +1307,7 @@
       }
     }
 
-    /* Renderizado del Personaje en posición de pie mirando abajo a la derecha sobre adoquín de césped */
+    /* Renderizado del Personaje en posición de pie mirando abajo a la derecha sobre adoquín de césped (Agrandado 30% y réplica fidedigna) */
     let animFrameId = null;
     function renderCharacterPreviewCanvas() {
       const canvas = document.getElementById('character-preview-canvas');
@@ -1318,159 +1318,189 @@
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         breathTick += 0.05;
-        const breathY = Math.sin(breathTick) * 1.5;
+        const breathY = Math.sin(breathTick) * 2;
 
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2 + 50;
+        ctx.save();
+        // Escala del 30% adicional (1.30x) centrada en el canvas
+        ctx.translate(canvas.width / 2, canvas.height / 2 + 55);
+        ctx.scale(1.30, 1.30);
 
-        // 1. DIBUJAR ADOQUÍN DE CÉSPED (Bloque Isométrico 3D)
+        const centerX = 0;
+        const centerY = 0;
+
+        // 1. DIBUJAR ADOQUÍN DE CÉSPED (Bloque Isométrico 3D Agrandado)
         // Cara frontal derecha del adoquín (Tierra/Piedra)
         ctx.fillStyle = '#451a03';
         ctx.beginPath();
-        ctx.moveTo(centerX, centerY + 25);
-        ctx.lineTo(centerX + 65, centerY - 5);
-        ctx.lineTo(centerX + 65, centerY + 18);
-        ctx.lineTo(centerX, centerY + 48);
+        ctx.moveTo(centerX, centerY + 28);
+        ctx.lineTo(centerX + 72, centerY - 5);
+        ctx.lineTo(centerX + 72, centerY + 22);
+        ctx.lineTo(centerX, centerY + 55);
         ctx.closePath();
         ctx.fill();
 
         // Cara frontal izquierda del adoquín (Tierra/Piedra)
         ctx.fillStyle = '#78350f';
         ctx.beginPath();
-        ctx.moveTo(centerX - 65, centerY - 5);
-        ctx.lineTo(centerX, centerY + 25);
-        ctx.lineTo(centerX, centerY + 48);
-        ctx.lineTo(centerX - 65, centerY + 18);
+        ctx.moveTo(centerX - 72, centerY - 5);
+        ctx.lineTo(centerX, centerY + 28);
+        ctx.lineTo(centerX, centerY + 55);
+        ctx.lineTo(centerX - 72, centerY + 22);
         ctx.closePath();
         ctx.fill();
 
         // Cara Superior del Adoquín (Césped Verde)
         ctx.fillStyle = '#16a34a';
         ctx.beginPath();
-        ctx.moveTo(centerX, centerY - 35);
-        ctx.lineTo(centerX + 65, centerY - 5);
-        ctx.lineTo(centerX, centerY + 25);
-        ctx.lineTo(centerX - 65, centerY - 5);
+        ctx.moveTo(centerX, centerY - 38);
+        ctx.lineTo(centerX + 72, centerY - 5);
+        ctx.lineTo(centerX, centerY + 28);
+        ctx.lineTo(centerX - 72, centerY - 5);
         ctx.closePath();
         ctx.fill();
 
         // Borde superior de Hierba Fresca
         ctx.fillStyle = '#22c55e';
         ctx.beginPath();
-        ctx.moveTo(centerX, centerY - 35);
-        ctx.lineTo(centerX + 55, centerY - 10);
-        ctx.lineTo(centerX, centerY + 18);
-        ctx.lineTo(centerX - 55, centerY - 10);
+        ctx.moveTo(centerX, centerY - 38);
+        ctx.lineTo(centerX + 62, centerY - 10);
+        ctx.lineTo(centerX, centerY + 20);
+        ctx.lineTo(centerX - 62, centerY - 10);
         ctx.closePath();
         ctx.fill();
 
         // Hojas de Hierba / Césped en los bordes
         ctx.strokeStyle = '#4ade80';
         ctx.lineWidth = 2;
-        for (let i = -40; i <= 40; i += 12) {
+        for (let i = -48; i <= 48; i += 12) {
           ctx.beginPath();
           ctx.moveTo(centerX + i, centerY - 10);
-          ctx.lineTo(centerX + i + 4, centerY - 18);
+          ctx.lineTo(centerX + i + 5, centerY - 20);
           ctx.stroke();
         }
 
         // Sombra suave del personaje sobre el césped
         ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
         ctx.beginPath();
-        ctx.ellipse(centerX + 6, centerY - 2, 24, 10, 0, 0, Math.PI * 2);
+        ctx.ellipse(centerX + 6, centerY - 2, 28, 12, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // 2. DIBUJAR PERSONAJE DE PIE MIRANDO ABAJO A LA DERECHA (3/4 Front-Right)
-        const charX = centerX + 5;
-        const charY = centerY - 65 + breathY;
+        // 2. DIBUJAR REPLICACIÓN FIDEDIGNA DEL PERSONAJE JUGADOR (Mirando abajo a la derecha)
+        const charX = centerX + 4;
+        const charY = centerY - 72 + breathY;
 
-        // Capa/Manto (Detrás del cuerpo, fluyendo a la izquierda)
+        // Capa/Manto Azul del Héroe (Fluyendo a la izquierda-atrás)
         ctx.fillStyle = '#1e3a8a';
         ctx.beginPath();
-        ctx.moveTo(charX - 12, charY - 20);
-        ctx.lineTo(charX - 24, charY + 15);
-        ctx.lineTo(charX - 6, charY + 28);
-        ctx.lineTo(charX + 4, charY - 10);
+        ctx.moveTo(charX - 14, charY - 22);
+        ctx.lineTo(charX - 28, charY + 18);
+        ctx.lineTo(charX - 6, charY + 32);
+        ctx.lineTo(charX + 5, charY - 10);
         ctx.closePath();
         ctx.fill();
 
-        // Pierna Izquierda (Atrás)
+        // Pierna Izquierda / Atrás (Pantalones de armadura)
         ctx.fillStyle = '#1e293b';
-        ctx.fillRect(charX - 8, charY + 30, 8, 22);
+        ctx.fillRect(charX - 9, charY + 30, 9, 25);
         ctx.fillStyle = '#78350f'; // Bota
-        ctx.fillRect(charX - 8, charY + 46, 10, 10);
+        ctx.fillRect(charX - 9, charY + 48, 11, 11);
 
-        // Pierna Derecha (Adelante, apuntando abajo-derecha)
+        // Pierna Derecha / Frente (Pantalón Slate Armor)
         ctx.fillStyle = '#334155';
-        ctx.fillRect(charX + 3, charY + 32, 9, 22);
-        ctx.fillStyle = '#92400e'; // Bota frontal
-        ctx.fillRect(charX + 4, charY + 48, 12, 10);
+        ctx.fillRect(charX + 3, charY + 32, 10, 25);
+        
+        // Bota de Combate de Cuero (Talón + Suela de hule negra idéntica al héroe)
+        ctx.fillStyle = '#451a03';
+        ctx.fillRect(charX + 4, charY + 50, 13, 11);
+        ctx.fillStyle = '#78350f'; // Adorno de la bota
+        ctx.fillRect(charX + 3, charY + 49, 15, 3);
+        ctx.fillStyle = '#1a0c05'; // Suela negra
+        ctx.fillRect(charX + 2, charY + 59, 17, 3);
 
-        // Torso / Armadura (Orientado abajo a la derecha)
+        // Torso / Armadura V-Taper del Héroe (Orientado abajo a la derecha)
+        ctx.fillStyle = '#94a3b8'; // Pechera de Acero
+        ctx.beginPath();
+        ctx.moveTo(charX - 16, charY - 24);
+        ctx.lineTo(charX + 18, charY - 20);
+        ctx.lineTo(charX + 14, charY + 34);
+        ctx.lineTo(charX - 12, charY + 34);
+        ctx.closePath();
+        ctx.fill();
+
+        // Coraza de Pecho Azul Arcano
         ctx.fillStyle = '#0284c7';
         ctx.beginPath();
-        ctx.moveTo(charX - 14, charY - 22);
-        ctx.lineTo(charX + 16, charY - 18);
-        ctx.lineTo(charX + 12, charY + 32);
-        ctx.lineTo(charX - 10, charY + 32);
+        ctx.moveTo(charX - 8, charY - 20);
+        ctx.lineTo(charX + 14, charY - 16);
+        ctx.lineTo(charX + 10, charY + 14);
+        ctx.lineTo(charX - 5, charY + 14);
         ctx.closePath();
         ctx.fill();
 
-        // Pechera de Acero brillante
-        ctx.fillStyle = '#38bdf8';
-        ctx.beginPath();
-        ctx.moveTo(charX - 6, charY - 18);
-        ctx.lineTo(charX + 12, charY - 15);
-        ctx.lineTo(charX + 8, charY + 12);
-        ctx.lineTo(charX - 4, charY + 12);
-        ctx.closePath();
-        ctx.fill();
-
-        // Cinturón Táctico con Hebilla Dorada
+        // Tirantes de Cuero Cruzados
         ctx.fillStyle = '#78350f';
-        ctx.fillRect(charX - 11, charY + 22, 24, 7);
-        ctx.fillStyle = '#fbbf24'; // Hebilla
-        ctx.fillRect(charX + 1, charY + 22, 6, 7);
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(charX - 12, charY - 20);
+        ctx.lineTo(charX + 12, charY + 18);
+        ctx.stroke();
+
+        // Cinturón Táctico con Hebilla Dorada de Aventura
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(charX - 13, charY + 24, 28, 8);
+        ctx.fillStyle = '#fbbf24'; // Hebilla de Oro brillante
+        ctx.fillRect(charX + 1, charY + 24, 7, 8);
 
         // Brazo Izquierdo (Atrás)
         ctx.fillStyle = '#0369a1';
-        ctx.fillRect(charX - 16, charY - 16, 7, 24);
+        ctx.fillRect(charX - 18, charY - 18, 8, 26);
 
         // Cabeza / Rostro mirando abajo a la derecha
-        ctx.fillStyle = '#fed7aa'; // Piel
+        ctx.fillStyle = '#fed7aa'; // Piel del Héroe
         ctx.beginPath();
-        ctx.arc(charX + 4, charY - 32, 14, 0, Math.PI * 2);
+        ctx.arc(charX + 4, charY - 34, 15, 0, Math.PI * 2);
         ctx.fill();
 
-        // Cabello del Héroe
+        // Cabello / Casco del Héroe
         ctx.fillStyle = '#475569';
         ctx.beginPath();
-        ctx.arc(charX + 2, charY - 36, 15, Math.PI, Math.PI * 2.2);
+        ctx.arc(charX + 2, charY - 38, 16, Math.PI, Math.PI * 2.2);
         ctx.fill();
 
-        // Ojo mirando abajo-derecha
+        // Ojo del Héroe mirando abajo-derecha
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
-        ctx.arc(charX + 10, charY - 31, 2.2, 0, Math.PI * 2);
+        ctx.arc(charX + 11, charY - 33, 2.5, 0, Math.PI * 2);
         ctx.fill();
 
-        // Brazo Derecho (Adelante sosteniendo espada)
+        // Brazo Derecho (Adelante sosteniendo la Gran Espada)
         ctx.fillStyle = '#38bdf8';
-        ctx.fillRect(charX + 11, charY - 14, 8, 22);
+        ctx.fillRect(charX + 12, charY - 16, 9, 24);
 
-        // Espada Acero mirando abajo a la derecha
-        ctx.fillStyle = '#cbd5e1';
+        // Gran Espada de Acero apuntando abajo a la derecha (South-East)
+        ctx.fillStyle = '#e2e8f0'; // Hoja
         ctx.beginPath();
-        ctx.moveTo(charX + 16, charY + 4);
-        ctx.lineTo(charX + 38, charY + 28);
-        ctx.lineTo(charX + 34, charY + 30);
-        ctx.lineTo(charX + 12, charY + 8);
+        ctx.moveTo(charX + 18, charY + 4);
+        ctx.lineTo(charX + 44, charY + 32);
+        ctx.lineTo(charX + 39, charY + 35);
+        ctx.lineTo(charX + 13, charY + 9);
         ctx.closePath();
         ctx.fill();
 
-        // Empuñadura Dorada de la Espada
+        // Borde cortante brillante de la Espada
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(charX + 20, charY + 4);
+        ctx.lineTo(charX + 44, charY + 32);
+        ctx.lineTo(charX + 41, charY + 34);
+        ctx.closePath();
+        ctx.fill();
+
+        // Empuñadura y Pomo Dorado de la Espada
         ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(charX + 12, charY + 2, 7, 7);
+        ctx.fillRect(charX + 13, charY + 1, 8, 8);
+
+        ctx.restore();
 
         if (document.getElementById('equipo-modal').classList.contains('active')) {
           animFrameId = requestAnimationFrame(draw);

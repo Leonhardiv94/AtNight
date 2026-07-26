@@ -2858,17 +2858,13 @@
 
         // A. Piernas Musculosas & Pantalones (Pantalón de Cuero Marrón #78350f)
         ctx.fillStyle = '#5c2c16';
-        ctx.beginPath();
-        ctx.roundRect(px - (isFemale ? 9 : 12), py + 20, 8, 26, 4);
-        ctx.roundRect(px + (isFemale ? 1 : 4), py + 20, 8, 26, 4);
-        ctx.fill();
+        ctx.fillRect(px - (isFemale ? 9 : 12), py + 20, 8, 26);
+        ctx.fillRect(px + (isFemale ? 1 : 4), py + 20, 8, 26);
 
         // B. Botas Altas de Combate con Dobladillo y Cordones
         ctx.fillStyle = '#292524';
-        ctx.beginPath();
-        ctx.roundRect(px - (isFemale ? 10 : 13), py + 40, 10, 16, [2, 2, 4, 4]);
-        ctx.roundRect(px + (isFemale ? 0 : 3), py + 40, 10, 16, [2, 2, 4, 4]);
-        ctx.fill();
+        ctx.fillRect(px - (isFemale ? 10 : 13), py + 40, 10, 16);
+        ctx.fillRect(px + (isFemale ? 0 : 3), py + 40, 10, 16);
 
         // Dobladillos de la bota
         ctx.fillStyle = '#44403c';

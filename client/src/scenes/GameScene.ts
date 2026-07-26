@@ -1556,8 +1556,8 @@ export class GameScene extends Phaser.Scene {
       grid.appendChild(slot);
     });
 
-    // 3. Garantizar siempre como mínimo 66 casillas por pestaña (6 columnas x 11 filas)
-    const baseSlots = 66; // 6 columnas x 11 filas de 48x48px
+    // 3. Garantizar siempre como mínimo 54 casillas por pestaña (6 columnas x 9 filas)
+    const baseSlots = 54; // 6 columnas x 9 filas de 48x48px
     const neededEmptySlots = Math.max(0, baseSlots - tabItems.length);
 
     for (let i = 0; i < neededEmptySlots; i++) {

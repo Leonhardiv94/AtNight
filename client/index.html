@@ -1018,7 +1018,7 @@
       display: flex;
     }
 
-    /* Pestañas de Navegación del Inventario (Browser-style tabs) */
+    /* Pestañas de Navegación del Inventario (Browser-style tabs sin animación de agrandamiento) */
     .inv-tabs-nav {
       display: flex;
       gap: 3px;
@@ -1040,13 +1040,15 @@
       padding: 0.45rem 0.2rem;
       cursor: pointer;
       text-align: center;
-      transition: all 0.2s ease;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
       white-space: nowrap;
+      transform: none !important;
     }
 
     .inv-tab-btn:hover {
       background: rgba(16, 185, 129, 0.15);
       color: #e2e8f0;
+      transform: none !important;
     }
 
     .inv-tab-btn.active {
@@ -1055,14 +1057,15 @@
       border-top: 2px solid #10b981;
       color: #ffffff;
       font-weight: 800;
-      box-shadow: 0 -3px 10px rgba(16, 185, 129, 0.3);
+      box-shadow: none !important;
+      transform: none !important;
     }
 
-    /* Área de Scroll Fina para los Slots de 48x48px (11 filas visibles) */
+    /* Área de Scroll Fina para los Slots de 48x48px (Exactamente 9 filas visibles sin barra de scroll) */
     .inv-grid-scroll-area {
-      max-height: 480px;
+      max-height: 484px;
       overflow-y: auto;
-      padding-right: 4px;
+      padding-right: 2px;
       margin-bottom: 0.6rem;
     }
 

@@ -129,13 +129,15 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  private currentCharacterName: string = 'HéroeAtNight';
+  private currentCharacterName: string = '';
   private currentCharacterData: any = null;
 
   public async loadSavedCharacter(charName?: string) {
     if (charName) {
       this.currentCharacterName = charName;
     }
+
+    if (!this.currentCharacterName || this.currentCharacterName === 'HéroeAtNight') return;
 
     try {
       const res = await fetch(`http://localhost:3002/api/player/${encodeURIComponent(this.currentCharacterName)}`);
@@ -150,6 +152,17 @@ export class GameScene extends Phaser.Scene {
         this.playerMaxHp = p.maxHp || 100;
         this.playerMana = p.mana || 10;
         this.playerMaxMana = p.maxMana || 10;
+
+        // Cargar inventario guardado en la base de datos entre sesiones
+        this.inventory.clear();
+        if (Array.isArray(p.inventory)) {
+          p.inventory.forEach((item: any) => {
+            if (item && item.id) {
+              this.inventory.set(item.id, item);
+            }
+          });
+        }
+        this.renderInventoryHtml();
 
         if (typeof window !== 'undefined' && (window as any).characterStats) {
           const stats = (window as any).characterStats;
@@ -168,7 +181,7 @@ export class GameScene extends Phaser.Scene {
 
         this.applyCharacterAppearance(p);
         this.updateHud();
-        console.log('✅ Personaje seleccionado cargado desde el servidor:', p.characterName, p.characterClass);
+        console.log('✅ Personaje e inventario cargados desde la base de datos:', p.characterName, p.inventory?.length || 0, 'ítems');
       }
     } catch (err) {
       console.log('ℹ️ Operando en cliente local para el personaje:', this.currentCharacterName);
@@ -372,6 +385,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   public async savePlayerToServer() {
+    if (!this.currentCharacterName || this.currentCharacterName === 'HéroeAtNight') return;
     try {
       const stats = (typeof window !== 'undefined' && (window as any).characterStats) ? (window as any).characterStats : {};
       const activeUser = (typeof window !== 'undefined' && (window as any).activeUser) ? (window as any).activeUser : null;

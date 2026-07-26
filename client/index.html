@@ -2874,21 +2874,7 @@
         ctx.ellipse(0, 15, 25, 10, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // 2. RENDEREAR PERSONAJE HD HAND-PAINTED TRANSPARENTE (OPCIÓN 3: ESTILO DOFUS / WAKFU)
-        if (clsId === 'espadachin' && !isFemale && swordsmanHDTransparentCanvas) {
-          ctx.save();
-          ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-          ctx.shadowBlur = 10;
-          ctx.shadowOffsetY = 6;
-          // Dibujar la ilustración HD Hand-Painted transparente en el pedestal sin cuadros blancos
-          ctx.drawImage(swordsmanHDTransparentCanvas, -55, -145 + breathY, 110, 160);
-          ctx.restore();
-          ctx.restore();
-          charPreviewFrameId = requestAnimationFrame(render);
-          return;
-        }
-
-        // 2. DIBUJAR PERSONAJE MASCULINO / FEMENINO EN EL PEDESTAL (2D/2.5D ANIMADO NOBLE)
+        // 2. RENDEREAR PERSONAJE CON MOTOR VECTOR BÉZIER ART (OPCIÓN 1: CURVAS BÉZIER VECTORIALES HD)
         const px = 0;
         const py = -50 + breathY;
 

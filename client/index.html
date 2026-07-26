@@ -2567,15 +2567,15 @@
           ctx.restore();
         }
 
-        // 3 Nubes en movimiento fluido de izquierda a derecha en el lado del día
-        const cloudSpan = w * 0.48;
-        const c1X = w * -0.08 + ((tick * 14) % cloudSpan);
-        const c2X = w * -0.12 + (((tick * 9) + 160) % cloudSpan);
-        const c3X = w * -0.10 + (((tick * 11.5) + 310) % cloudSpan);
+        // 3 Nubes bien dispersas en movimiento fluido de izquierda a derecha (Mínimo 3 Nubes separadas)
+        const cloudSpan = w * 0.58;
+        const c1X = w * -0.15 + ((tick * 11) % cloudSpan);
+        const c2X = w * -0.15 + (((tick * 7.5) + 240) % cloudSpan);
+        const c3X = w * -0.15 + (((tick * 9.5) + 460) % cloudSpan);
 
-        drawRealisticCloud(c1X, h * 0.11, 1.25);
-        drawRealisticCloud(c2X, h * 0.25, 0.95);
-        drawRealisticCloud(c3X, h * 0.17, 1.15);
+        drawRealisticCloud(c1X, h * 0.07, 1.28);
+        drawRealisticCloud(c2X, h * 0.24, 0.92);
+        drawRealisticCloud(c3X, h * 0.15, 1.12);
 
         // B. ESTRELLAS Y LUNA LLENA MÍSTICA DE LA NOCHE (DERECHA)
         ctx.fillStyle = '#ffffff';
@@ -2605,17 +2605,17 @@
         ctx.beginPath(); ctx.arc(moonX + 12, moonY + 14, 15, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(moonX + 18, moonY - 10, 8, 0, Math.PI * 2); ctx.fill();
 
-        // 2. PAISAJE Y ÁRBOLES MAJESTUOSOS (IZQ: ROBLES ANCESTRALES DETALLADOS | DER: ÁRBOLES GÓTICOS SECOS)
+        // 2. PAISAJE Y ÁRBOLES MAJESTUOSOS (IZQ: ROBLES ANCESTRALES CON TRONCOS EN TONOS MARRONES)
         const groundY = h * 0.82;
 
-        // ÁRBOLES DEL LADO DEL DÍA (IZQUIERDA) - Roble Ancestral Majestuoso
+        // ÁRBOLES DEL LADO DEL DÍA (IZQUIERDA) - Roble Ancestral con Tronco de Madera Marrón Cálida
         function drawMajesticOak(tx, ty, scale) {
           ctx.save();
           ctx.translate(tx, ty);
           ctx.scale(scale, scale);
 
-          // Raíces y Tronco Robusto de Madera Noble con Corteza
-          ctx.fillStyle = '#292524'; // Tronco oscuro base
+          // Raíces y Tronco Robusto en Tonos Marrones de Madera Castaño/Roble
+          ctx.fillStyle = '#582f0e'; // Marrón madera roble cálido
           ctx.beginPath();
           ctx.moveTo(-25, 20);
           ctx.lineTo(-14, -60);
@@ -2624,10 +2624,13 @@
           ctx.closePath();
           ctx.fill();
 
-          // Detalle de Vetas de Madera
-          ctx.fillStyle = '#44403c';
-          ctx.fillRect(-10, -55, 6, 75);
-          ctx.fillRect(2, -45, 5, 65);
+          // Detalle de Vetas de Madera Marrón Claro y Bronceado
+          ctx.fillStyle = '#78350f';
+          ctx.fillRect(-12, -55, 7, 75);
+          ctx.fillStyle = '#92400e';
+          ctx.fillRect(-1, -50, 6, 70);
+          ctx.fillStyle = '#b45309';
+          ctx.fillRect(8, -42, 5, 60);
 
           // Follaje Multicapa de Roble Ancestral con Sombreado de Volumen
           // Capa 1: Sombra Profunda

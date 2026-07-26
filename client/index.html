@@ -2726,11 +2726,12 @@
         drawGothicSpookyTree(w * 0.77, groundY - 25, 1.45);
         drawGothicSpookyTree(w * 0.90, groundY - 15, 1.25);
 
-        // Suelo de Césped Verde Colina (Gradiente de día a noche en el suelo)
+        // Suelo de Césped Verde Colina (Gradiente de día a noche con profundidad)
         const groundGrad = ctx.createLinearGradient(0, 0, w, 0);
-        groundGrad.addColorStop(0, '#15803d');   // Verde bosque día
-        groundGrad.addColorStop(0.5, '#14532d'); // Verde oscuro
-        groundGrad.addColorStop(1, '#022c22');   // Verde esmeralda noche gótica
+        groundGrad.addColorStop(0, '#16a34a');   // Verde bosque brillante día
+        groundGrad.addColorStop(0.35, '#15803d'); // Verde césped medio
+        groundGrad.addColorStop(0.7, '#14532d');  // Verde bosque noche
+        groundGrad.addColorStop(1, '#022c22');    // Verde esmeralda gótico noche
         ctx.fillStyle = groundGrad;
         ctx.beginPath();
         ctx.moveTo(0, groundY);
@@ -2739,6 +2740,26 @@
         ctx.lineTo(0, h);
         ctx.closePath();
         ctx.fill();
+
+        // TEXTURA ORGÁNICA DE PRADERA (Granulado suave de hierba natural sin líneas)
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.04)'; // Luces suaves de textura
+        for (let i = 0; i < 90; i++) {
+          const gx = (Math.sin(i * 13 + 1) * 0.5 + 0.5) * w;
+          const gy = groundY + (Math.cos(i * 29 + 1) * 0.5 + 0.5) * (h - groundY);
+          ctx.beginPath();
+          ctx.arc(gx, gy, 1.5 + (i % 3), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.06)'; // Sombras suaves de relieve
+        for (let i = 0; i < 90; i++) {
+          const gx = (Math.cos(i * 31 + 3) * 0.5 + 0.5) * w;
+          const gy = groundY + (Math.sin(i * 17 + 2) * 0.5 + 0.5) * (h - groundY);
+          ctx.beginPath();
+          ctx.arc(gx, gy, 2 + (i % 3), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
 
         // 3. POLLO GIGANTE CON HISTORIA ANIMADA: AGACHARSE, EXTRAER LOMBRIZ, SABOREARLA Y TRAGAR 🐓🪱
         const chickX = w * 0.5;

@@ -1298,13 +1298,45 @@ export class GameScene extends Phaser.Scene {
     this.showLootNotification(`¡Obtenido! ${itemCount}x ${itemName}`);
   }
 
+  public calculateTotalInventoryWeight(): number {
+    let totalWeight = 0;
+    this.inventory.forEach(item => {
+      const meta = getItemMetadata(item.id);
+      const weightPerUnit = item.weight !== undefined ? item.weight : meta.weight;
+      totalWeight += (weightPerUnit * (item.count || 1));
+    });
+    return totalWeight;
+  }
+
   private addInventoryItem(id: string, name: string, icon: string, count: number) {
+    const meta = getItemMetadata(id);
+    const itemWeight = meta.weight;
+    const currentWeight = this.calculateTotalInventoryWeight();
+    const addedWeight = itemWeight * count;
+
+    if (currentWeight + addedWeight > 1000) {
+      this.showFloatingText(this.player.x, this.player.y - 40, '⚠️ ¡LÍMITE DE PESO EXCEDIDO (1000 kg)!', '#ef4444');
+      this.showLootNotification('⚠️ Inventario lleno (Capacidad máxima de 1000 kg alcanzada)');
+      return;
+    }
+
     if (this.inventory.has(id)) {
       const existing = this.inventory.get(id)!;
       existing.count += count;
+      existing.category = existing.category || meta.category;
+      existing.weight = existing.weight !== undefined ? existing.weight : meta.weight;
     } else {
-      this.inventory.set(id, { id, name, icon, count });
+      this.inventory.set(id, {
+        id,
+        name,
+        icon,
+        count,
+        category: meta.category,
+        weight: meta.weight
+      });
     }
+
+    this.savePlayerToServer();
     this.renderInventoryHtml();
   }
 
@@ -1476,30 +1508,112 @@ export class GameScene extends Phaser.Scene {
     return '';
   }
 
-  private renderInventoryHtml() {
+  public renderInventoryHtml() {
     const grid = document.getElementById('inventory-grid');
     if (!grid) return;
 
-    grid.innerHTML = '';
+    const currentTab = (typeof window !== 'undefined' && (window as any).currentInventoryTab)
+      ? (window as any).currentInventoryTab
+      : 'recursos';
+
+    // 1. Filtrar ítems pertenecientes a la pestaña activa del navegador
+    const tabItems: Array<{ id: string; name: string; count: number; category: string; weight: number }> = [];
     this.inventory.forEach(item => {
+      const meta = getItemMetadata(item.id);
+      const cat = item.category || meta.category;
+      if (cat === currentTab) {
+        tabItems.push({
+          id: item.id,
+          name: item.name,
+          count: item.count,
+          category: cat,
+          weight: item.weight !== undefined ? item.weight : meta.weight
+        });
+      }
+    });
+
+    grid.innerHTML = '';
+
+    // 2. Renderizar casillas de 48x48px con ítems existentes
+    tabItems.forEach(item => {
       const slot = document.createElement('div');
-      slot.className = 'inventory-slot';
-      slot.title = `${item.name} (${item.count})`;
+      slot.className = 'inv-slot-48';
+      const totalItemWeight = item.weight * item.count;
+      slot.title = `${item.name} | Cantidad: ${item.count} | Peso: ${totalItemWeight} kg (${item.weight} kg/u)`;
 
       const imgSrc = this.getTextureSrc(item.id);
       let imgHtml = '';
       if (imgSrc) {
         imgHtml = `<img src="${imgSrc}" alt="${item.name}" style="width: 32px; height: 32px; object-fit: contain;" />`;
       } else {
-        imgHtml = `<span style="font-size: 11px; color: #cbd5e1;">${item.name}</span>`;
+        imgHtml = `<span style="font-size: 10px; color: #cbd5e1; text-align: center; line-height: 1.1;">${item.name}</span>`;
       }
 
       slot.innerHTML = `
         ${imgHtml}
-        <span class="item-count">${item.count}</span>
+        <span class="inv-slot-count">${item.count}</span>
       `;
       grid.appendChild(slot);
     });
+
+    // 3. Garantizar siempre como mínimo 66 casillas por pestaña (6 columnas x 11 filas)
+    const baseSlots = 66; // 6 columnas x 11 filas de 48x48px
+    const neededEmptySlots = Math.max(0, baseSlots - tabItems.length);
+
+    for (let i = 0; i < neededEmptySlots; i++) {
+      const emptySlot = document.createElement('div');
+      emptySlot.className = 'inv-slot-48 empty';
+      grid.appendChild(emptySlot);
+    }
+
+    // 4. Actualizar Barra de Peso / Capacidad Total (Compartida por todas las pestañas, Máximo 1000 kg)
+    const totalWeight = this.calculateTotalInventoryWeight();
+    const weightText = document.getElementById('inv-weight-text');
+    const weightFill = document.getElementById('inv-weight-fill');
+
+    if (weightText) {
+      weightText.innerText = `${totalWeight} / 1000 kg`;
+      weightText.style.color = totalWeight >= 900 ? '#ef4444' : (totalWeight >= 700 ? '#eab308' : '#10b981');
+    }
+
+    if (weightFill) {
+      const pct = Math.min(100, (totalWeight / 1000) * 100);
+      weightFill.style.width = `${pct}%`;
+      if (pct >= 90) {
+        weightFill.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+        weightFill.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.7)';
+      } else if (pct >= 70) {
+        weightFill.style.background = 'linear-gradient(90deg, #eab308, #f97316)';
+        weightFill.style.boxShadow = '0 0 10px rgba(234, 179, 8, 0.7)';
+      } else {
+        weightFill.style.background = 'linear-gradient(90deg, #10b981, #06b6d4)';
+        weightFill.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.7)';
+      }
+    }
+  }
+}
+
+function getItemMetadata(id: string): { category: 'equipo' | 'recursos' | 'consumibles' | 'mision' | 'especiales'; weight: number } {
+  switch (id) {
+    case 'wood':
+      return { category: 'recursos', weight: 5 }; // Madera / Tronco: 5 de peso por unidad
+    case 'chicken_feather':
+    case 'chicken_egg':
+    case 'chicken_beak':
+    case 'chicken_eye':
+      return { category: 'recursos', weight: 1 }; // Drops de plumas, huevos, picos, ojos: Recursos, 1 de peso
+    case 'apple':
+      return { category: 'consumibles', weight: 1 }; // Manzana: Consumibles, 1 de peso
+    case 'gold':
+      return { category: 'especiales', weight: 0 }; // Oro: Especiales, 0 de peso
+    default:
+      if (id.startsWith('eq_') || id.startsWith('weapon_') || id.startsWith('armor_')) {
+        return { category: 'equipo', weight: 1 };
+      }
+      if (id.startsWith('quest_')) {
+        return { category: 'mision', weight: 1 };
+      }
+      return { category: 'recursos', weight: 1 };
   }
 }
 

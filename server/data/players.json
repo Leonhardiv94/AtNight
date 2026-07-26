@@ -8,7 +8,7 @@
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
     "level": 1,
-    "xp": 102,
+    "xp": 228,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -47,11 +47,24 @@
     "maxHp": 100,
     "mana": 10,
     "maxMana": 10,
-    "inventory": [],
+    "inventory": [
+      {
+        "id": "chicken_egg",
+        "name": "Huevo de Pollo",
+        "icon": "",
+        "count": 1
+      },
+      {
+        "id": "gold",
+        "name": "Monedas de Oro",
+        "icon": "",
+        "count": 95
+      }
+    ],
     "lastPosition": {
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-26T21:04:33.168Z"
+    "updatedAt": "2026-07-26T22:28:41.183Z"
   }
 }

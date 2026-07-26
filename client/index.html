@@ -995,39 +995,180 @@
       color: #ef4444;
     }
 
-    .inventory-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0.6rem;
-      margin-top: 1rem;
+    /* Modal Ventana de Inventario (Esquinas rectos sin redondear, Pestañas estilo navegador) */
+    .inventory-modal-window {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 440px;
+      max-width: 95vw;
+      background: rgba(13, 17, 23, 0.96);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      border-radius: 0 !important;
+      padding: 1rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      z-index: 60;
+      display: none;
+      flex-direction: column;
     }
 
-    .inventory-slot {
-      aspect-ratio: 1;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
+    .inventory-modal-window.active {
+      display: flex;
+    }
+
+    /* Pestañas de Navegación del Inventario (Browser-style tabs) */
+    .inv-tabs-nav {
+      display: flex;
+      gap: 3px;
+      background: rgba(15, 23, 42, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 4px 4px 0 4px;
+      margin-bottom: 0.6rem;
+    }
+
+    .inv-tab-btn {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: none;
+      border-radius: 0;
+      color: #94a3b8;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.45rem 0.2rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .inv-tab-btn:hover {
+      background: rgba(16, 185, 129, 0.15);
+      color: #e2e8f0;
+    }
+
+    .inv-tab-btn.active {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.6);
+      border-top: 2px solid #10b981;
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 -3px 10px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Área de Scroll Fina para los Slots de 48x48px (11 filas visibles) */
+    .inv-grid-scroll-area {
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 0.6rem;
+    }
+
+    /* Custom thin scrollbar */
+    .inv-grid-scroll-area::-webkit-scrollbar {
+      width: 5px;
+    }
+    .inv-grid-scroll-area::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.8);
+    }
+    .inv-grid-scroll-area::-webkit-scrollbar-thumb {
+      background: #10b981;
+      border-radius: 0;
+    }
+
+    /* Cuadrícula de 6 columnas de casillas fijas de 48x48px */
+    .inventory-grid-6x11 {
+      display: grid;
+      grid-template-columns: repeat(6, 48px);
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .inv-slot-48 {
+      width: 48px;
+      height: 48px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0 !important;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
       position: relative;
       cursor: pointer;
+      transition: all 0.18s ease;
+      user-select: none;
     }
 
-    .inventory-slot:hover {
-      border-color: #00f2fe;
-      background: rgba(0, 242, 254, 0.08);
+    .inv-slot-48:hover {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
     }
 
-    .inventory-slot .item-count {
+    .inv-slot-48.empty {
+      background: rgba(15, 23, 42, 0.35);
+      border-color: rgba(255, 255, 255, 0.05);
+      cursor: default;
+    }
+    .inv-slot-48.empty:hover {
+      border-color: rgba(255, 255, 255, 0.05);
+      background: rgba(15, 23, 42, 0.35);
+      box-shadow: none;
+    }
+
+    .inv-slot-count {
       position: absolute;
       bottom: 2px;
-      right: 4px;
-      font-size: 0.68rem;
-      font-weight: 700;
+      right: 3px;
+      font-size: 0.62rem;
+      font-weight: 800;
       color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.95);
+      pointer-events: none;
+    }
+
+    /* Barra de Capacidad y Peso (Debajo de todos los slots) */
+    .inv-capacity-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0 !important;
+      padding: 0.45rem 0.7rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .inv-capacity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .inv-capacity-value {
+      color: #10b981;
+      font-weight: 800;
+    }
+
+    .inv-capacity-track {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inv-capacity-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+      transition: width 0.3s ease, background 0.3s ease;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
     }
 
     /* Controls Help Banner */
@@ -2154,18 +2295,51 @@
     </div>
   </div>
 
-  <!-- Inventory Modal Window -->
-  <div class="game-modal interactive" id="inventory-modal">
-    <div class="modal-header">
+  <!-- Inventory Modal Window (Pestañas estilo navegador + Grid de 6 col x 11 filas de 48x48px + Barra de Peso/Capacidad) -->
+  <div class="inventory-modal-window interactive" id="inventory-modal">
+    <div class="modal-header" style="margin-bottom: 0.6rem;">
       <span class="modal-title">
         <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #10b981; vertical-align: middle; margin-right: 4px;"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-        Inventario & Equipamiento
+        INVENTARIO & ALMACÉN
       </span>
       <button class="modal-close" onclick="toggleInventory()">&times;</button>
     </div>
-    <p style="font-size: 0.82rem; color: #94a3b8;">Recursos y objetos obtenidos en combate o recolección:</p>
-    <div class="inventory-grid" id="inventory-grid">
-      <!-- Generated dynamically -->
+
+    <!-- Navegador de Pestañas (Tabs estilo navegador) -->
+    <div class="inv-tabs-nav">
+      <button class="inv-tab-btn" data-tab="equipo" onclick="switchInventoryTab('equipo')">
+        ⚔️ Equipo
+      </button>
+      <button class="inv-tab-btn active" data-tab="recursos" onclick="switchInventoryTab('recursos')">
+        🌿 Recursos
+      </button>
+      <button class="inv-tab-btn" data-tab="consumibles" onclick="switchInventoryTab('consumibles')">
+        🧪 Consumibles
+      </button>
+      <button class="inv-tab-btn" data-tab="mision" onclick="switchInventoryTab('mision')">
+        📜 Misión
+      </button>
+      <button class="inv-tab-btn" data-tab="especiales" onclick="switchInventoryTab('especiales')">
+        ✨ Especiales
+      </button>
+    </div>
+
+    <!-- Contenedor del Grid de 6 col x 11 filas (48x48px por slot) con scrollbar fino -->
+    <div class="inv-grid-scroll-area">
+      <div class="inventory-grid-6x11" id="inventory-grid">
+        <!-- Generado dinámicamente con casillas de 48x48px -->
+      </div>
+    </div>
+
+    <!-- Barra Inferior de Capacidad y Peso (Común para todas las pestañas, Capacidad Máxima: 1000 kg) -->
+    <div class="inv-capacity-box">
+      <div class="inv-capacity-header">
+        <span class="inv-capacity-label">📦 Capacidad de Peso Total:</span>
+        <span class="inv-capacity-value" id="inv-weight-text">0 / 1000 kg</span>
+      </div>
+      <div class="inv-capacity-track">
+        <div class="inv-capacity-fill" id="inv-weight-fill" style="width: 0%;"></div>
+      </div>
     </div>
   </div>
 
@@ -2195,9 +2369,32 @@
       }
     };
 
+    window.currentInventoryTab = 'recursos';
+
+    function switchInventoryTab(tabName) {
+      window.currentInventoryTab = tabName;
+      document.querySelectorAll('.inv-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+      });
+      if (window.gameInstance && window.gameInstance.scene) {
+        const gameScene = window.gameInstance.scene.getScene('GameScene');
+        if (gameScene && gameScene.renderInventoryHtml) {
+          gameScene.renderInventoryHtml();
+        }
+      }
+    }
+
     function toggleInventory() {
       const modal = document.getElementById('inventory-modal');
-      if (modal) modal.classList.toggle('active');
+      if (modal) {
+        const isActive = modal.classList.toggle('active');
+        if (isActive && window.gameInstance && window.gameInstance.scene) {
+          const gameScene = window.gameInstance.scene.getScene('GameScene');
+          if (gameScene && gameScene.renderInventoryHtml) {
+            gameScene.renderInventoryHtml();
+          }
+        }
+      }
     }
 
     function toggleEquipoModal() {

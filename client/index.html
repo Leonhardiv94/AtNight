@@ -2439,7 +2439,7 @@
     }
 
     /* ---------------------------------------------------- */
-    /* CANVASES DE FONDO: POLLO GIGANTE MIRANDO Y CON LOMBRIZ */
+    /* CANVASES DE FONDO: DÍA (SOL) A NOCHE (LUNA), ÁRBOLES SECOS & POLLO AGACHÁNDOSE POR LOMBRIZ */
     /* ---------------------------------------------------- */
     let authBgFrameId = null;
     function renderAuthBackground() {
@@ -2458,69 +2458,178 @@
 
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        tick += 0.04;
+        tick += 0.035;
 
         const w = canvas.width;
         const h = canvas.height;
 
-        // 1. Cielo Nocturno Tropical con Estrellas
-        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-        bgGrad.addColorStop(0, '#090d16');
-        bgGrad.addColorStop(0.6, '#0f172a');
-        bgGrad.addColorStop(1, '#1e293b');
-        ctx.fillStyle = bgGrad;
+        // 1. TRANSICIÓN DE CIELO HORIZONTAL: SOL DE MEDIODÍA (IZQ) A LUNA DE MEDIANOCHE (DER)
+        const skyGrad = ctx.createLinearGradient(0, 0, w, 0);
+        skyGrad.addColorStop(0, '#38bdf8');    // Azul radiante de sol de mediodía (Izquierda)
+        skyGrad.addColorStop(0.35, '#0284c7'); // Azul atardecer intermedio
+        skyGrad.addColorStop(0.65, '#1e1b4b'); // Azul noche añil
+        skyGrad.addColorStop(1, '#090d16');    // Medianoche oscura (Derecha)
+        ctx.fillStyle = skyGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Estrellas titilantes de fondo
-        ctx.fillStyle = '#ffffff';
-        for (let i = 0; i < 60; i++) {
-          const sx = (Math.sin(i * 99 + 1) * 0.5 + 0.5) * w;
-          const sy = (Math.cos(i * 33 + 1) * 0.5 + 0.5) * (h * 0.65);
-          const alpha = 0.2 + Math.sin(tick * 2 + i) * 0.4;
-          ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.1, alpha)})`;
-          ctx.beginPath();
-          ctx.arc(sx, sy, (i % 2 === 0) ? 1.5 : 2.2, 0, Math.PI * 2);
-          ctx.fill();
-        }
+        // A. SOL DE MEDIODÍA DE LA IZQUIERDA (Con Rayos Dorados)
+        const sunX = w * 0.15;
+        const sunY = h * 0.20;
 
-        // Luna Llena Brillante en el cielo
-        ctx.fillStyle = '#f8fafc';
-        ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
-        ctx.shadowBlur = 30;
+        ctx.save();
+        ctx.translate(sunX, sunY);
+        ctx.rotate(tick * 0.2);
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.25)';
+        for (let r = 0; r < 8; r++) {
+          ctx.rotate(Math.PI / 4);
+          ctx.fillRect(-6, -75, 12, 150);
+        }
+        ctx.restore();
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.shadowColor = 'rgba(251, 191, 36, 0.8)';
+        ctx.shadowBlur = 40;
         ctx.beginPath();
-        ctx.arc(w * 0.85, h * 0.2, 45, 0, Math.PI * 2);
+        ctx.arc(sunX, sunY, 48, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // 2. PAISAJE DE CÉSPED Y ÁRBOLES EN EL FONDO (Lush Greenery & Island Pedestal)
-        const groundY = h * 0.82;
-
-        // Árboles Frondosos de Fondo (Izquierda y Derecha)
-        function drawTree(tx, ty, scale) {
+        // NUBES BLANCAS TRANSLÚCIDAS DEL LADO DEL SOL (IZQUIERDA)
+        function drawCloud(cx, cy, scale) {
           ctx.save();
-          ctx.translate(tx, ty);
+          ctx.translate(cx, cy);
           ctx.scale(scale, scale);
-          // Tronco
-          ctx.fillStyle = '#451a03';
-          ctx.fillRect(-12, -40, 24, 60);
-          // Follaje Verde Frondoso
-          ctx.fillStyle = '#15803d';
-          ctx.beginPath(); ctx.arc(0, -70, 45, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#16a34a';
-          ctx.beginPath(); ctx.arc(-22, -60, 32, 0, Math.PI * 2); ctx.fill();
-          ctx.beginPath(); ctx.arc(22, -60, 32, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#22c55e';
-          ctx.beginPath(); ctx.arc(0, -85, 28, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 25, 0, Math.PI * 2);
+          ctx.arc(22, -10, 20, 0, Math.PI * 2);
+          ctx.arc(42, 0, 22, 0, Math.PI * 2);
+          ctx.arc(20, 10, 20, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.fill();
           ctx.restore();
         }
 
-        drawTree(w * 0.12, groundY - 20, 1.4);
-        drawTree(w * 0.25, groundY - 10, 1.1);
-        drawTree(w * 0.78, groundY - 25, 1.5);
-        drawTree(w * 0.88, groundY - 15, 1.2);
+        const cloudOffset1 = (tick * 12) % (w * 0.5);
+        const cloudOffset2 = (tick * 8) % (w * 0.5);
+        drawCloud(w * 0.05 + cloudOffset1, h * 0.14, 1.2);
+        drawCloud(w * 0.22 + cloudOffset2, h * 0.28, 0.95);
 
-        // Suelo de Césped Verde Colina
-        ctx.fillStyle = '#15803d';
+        // B. ESTRELLAS Y LUNA LLENA DEL LADO DERECHO (NOCHE)
+        ctx.fillStyle = '#ffffff';
+        for (let i = 0; i < 45; i++) {
+          const sx = w * 0.52 + (Math.sin(i * 77 + 1) * 0.5 + 0.5) * (w * 0.48);
+          const sy = (Math.cos(i * 21 + 1) * 0.5 + 0.5) * (h * 0.65);
+          const alpha = 0.25 + Math.sin(tick * 2.5 + i) * 0.45;
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.1, alpha)})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, (i % 2 === 0) ? 1.5 : 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        const moonX = w * 0.85;
+        const moonY = h * 0.20;
+        ctx.fillStyle = '#f8fafc';
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
+        ctx.shadowBlur = 35;
+        ctx.beginPath();
+        ctx.arc(moonX, moonY, 46, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // 2. PAISAJE Y ÁRBOLES ASIMÉTRICOS (IZQ: HOJAS VERDES FRONDOSAS | DER: ÁRBOLES SECOS TERRORÍFICOS)
+        const groundY = h * 0.82;
+
+        // ÁRBOLES DEL LADO DEL DÍA (IZQUIERDA) - Frondosos y Verdes
+        function drawDayTree(tx, ty, scale) {
+          ctx.save();
+          ctx.translate(tx, ty);
+          ctx.scale(scale, scale);
+          ctx.fillStyle = '#451a03';
+          ctx.fillRect(-12, -40, 24, 60);
+          ctx.fillStyle = '#15803d'; ctx.beginPath(); ctx.arc(0, -70, 45, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#16a34a'; ctx.beginPath(); ctx.arc(-22, -60, 32, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(22, -60, 32, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(0, -85, 28, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+
+        // ÁRBOLES SECOS TERRORÍFICOS DEL LADO DE LA LUNA (DERECHA) - Ramas puntiagudas sin hojas
+        function drawSpookyDryTree(tx, ty, scale) {
+          ctx.save();
+          ctx.translate(tx, ty);
+          ctx.scale(scale, scale);
+
+          // Tronco retorcido oscuro
+          ctx.fillStyle = '#1c1917';
+          ctx.beginPath();
+          ctx.moveTo(-16, 20);
+          ctx.quadraticCurveTo(-22, -30, -8, -70);
+          ctx.quadraticCurveTo(8, -30, 16, 20);
+          ctx.closePath();
+          ctx.fill();
+
+          // Ramas Puntiagudas Terroríficas
+          ctx.strokeStyle = '#0c0a09';
+          ctx.lineWidth = 6;
+          ctx.lineCap = 'round';
+
+          // Rama 1 (Izquierda superior puntiaguda)
+          ctx.beginPath();
+          ctx.moveTo(-8, -60);
+          ctx.lineTo(-38, -95);
+          ctx.lineTo(-58, -115);
+          ctx.stroke();
+
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.moveTo(-38, -95);
+          ctx.lineTo(-25, -125);
+          ctx.stroke();
+
+          // Rama 2 (Derecha superior puntiaguda)
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(-4, -65);
+          ctx.lineTo(35, -90);
+          ctx.lineTo(55, -120);
+          ctx.stroke();
+
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.moveTo(35, -90);
+          ctx.lineTo(20, -125);
+          ctx.stroke();
+
+          // Ramas secundarias puntiagudas
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(-12, -40);
+          ctx.lineTo(-45, -55);
+          ctx.lineTo(-65, -70);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(10, -45);
+          ctx.lineTo(42, -60);
+          ctx.lineTo(60, -75);
+          ctx.stroke();
+
+          ctx.restore();
+        }
+
+        drawDayTree(w * 0.10, groundY - 20, 1.4);
+        drawDayTree(w * 0.24, groundY - 10, 1.15);
+
+        drawSpookyDryTree(w * 0.76, groundY - 25, 1.4);
+        drawSpookyDryTree(w * 0.89, groundY - 15, 1.25);
+
+        // Suelo de Césped Verde Colina (Gradiente de día a noche en el suelo también)
+        const groundGrad = ctx.createLinearGradient(0, 0, w, 0);
+        groundGrad.addColorStop(0, '#16a34a');   // Verde brillante día
+        groundGrad.addColorStop(0.5, '#15803d'); // Verde bosque
+        groundGrad.addColorStop(1, '#064e3b');   // Verde oscuro noche
+        ctx.fillStyle = groundGrad;
         ctx.beginPath();
         ctx.moveTo(0, groundY);
         ctx.quadraticCurveTo(w * 0.5, groundY - 30, w, groundY);
@@ -2529,30 +2638,21 @@
         ctx.closePath();
         ctx.fill();
 
-        ctx.fillStyle = '#16a34a';
-        ctx.beginPath();
-        ctx.moveTo(0, groundY + 12);
-        ctx.quadraticCurveTo(w * 0.5, groundY - 18, w, groundY + 12);
-        ctx.lineTo(w, h);
-        ctx.lineTo(0, h);
-        ctx.closePath();
-        ctx.fill();
-
-        // 3. POLLO GIGANTE ANIMADO (Mirando a los lados y sacando una lombriz)
+        // 3. POLLO GIGANTE QUE SE AGACHA PROFUNDO HASTA EL SUELO Y SACA LA LOMBRIZ 🐓🪱
         const chickX = w * 0.5;
         const chickY = groundY + 15;
 
-        // Movimiento de mirar a los lados (Head turn Angle & Pecking Cycle)
-        const lookCycle = Math.sin(tick * 0.8);
-        const isLookingLeft = lookCycle < -0.3;
-        const isLookingRight = lookCycle > 0.3;
-        const isPecking = Math.sin(tick * 1.6) > 0.5;
+        // Ciclo continuo de agacharse profundo a comer/sacar lombriz
+        const cycle = (Math.sin(tick * 1.5) + 1) / 2; // Rango 0 (De pie) a 1 (Totalmente agachado)
+        const isDeepPeck = cycle > 0.45;
 
-        const headOffsetY = isPecking ? 25 : Math.sin(tick * 2) * 4;
-        const headOffsetX = isLookingLeft ? -15 : (isLookingRight ? 15 : 0);
+        // Inclinación del cuerpo al agacharse profundo
+        const bodyLeanY = cycle * 35;
+        const headY = (chickY - 120) + (cycle * 115); // La cabeza baja HASTA EL SUELO (Diferencia de 115px!)
+        const headX = chickX + 35 + (cycle * 25);
 
         // Sombra suave del Pollo en el suelo
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
         ctx.beginPath();
         ctx.ellipse(chickX, chickY + 30, 95, 30, 0, 0, Math.PI * 2);
         ctx.fill();
@@ -2565,89 +2665,94 @@
         ctx.fillRect(chickX - 45, chickY + 40, 26, 8);
         ctx.fillRect(chickX + 13, chickY + 40, 26, 8);
 
-        // Cuerpo Redondo Amigable del Pollo Gigante (Plumas Amarillas)
+        // Cuerpo Redondo del Pollo (Inclinado hacia el suelo cuando se agacha)
+        ctx.save();
+        ctx.translate(chickX, chickY - 45 + (bodyLeanY * 0.5));
+        ctx.rotate(cycle * 0.35); // Cuerpo se inclina hacia adelante
+
         ctx.fillStyle = '#fef08a';
-        ctx.beginPath();
-        ctx.ellipse(chickX, chickY - 45, 90, 75, 0, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.ellipse(0, 0, 90, 75, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath(); ctx.ellipse(-10, 10, 75, 60, 0, 0, Math.PI * 2); ctx.fill();
 
-        ctx.fillStyle = '#fde047'; // Sombras suaves de plumas
-        ctx.beginPath();
-        ctx.ellipse(chickX - 10, chickY - 35, 75, 60, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Ala Izquierda
+        // Alas agitándose suavemente al tirar de la lombriz
         ctx.fillStyle = '#eab308';
         ctx.beginPath();
-        ctx.ellipse(chickX - 70, chickY - 45 + Math.sin(tick * 3) * 3, 30, 45, -0.3, 0, Math.PI * 2);
+        ctx.ellipse(-70, Math.sin(tick * 5) * 5, 30, 45, -0.3 + (cycle * 0.2), 0, Math.PI * 2);
         ctx.fill();
-
-        // Ala Derecha
         ctx.beginPath();
-        ctx.ellipse(chickX + 70, chickY - 45 - Math.sin(tick * 3) * 3, 30, 45, 0.3, 0, Math.PI * 2);
+        ctx.ellipse(70, -Math.sin(tick * 5) * 5, 30, 45, 0.3 - (cycle * 0.2), 0, Math.PI * 2);
         ctx.fill();
 
-        // Cabeza del Pollo
-        const headX = chickX + headOffsetX;
-        const headY = chickY - 120 + headOffsetY;
+        ctx.restore();
 
+        // Cabeza del Pollo (Baja hasta casi tocar la tierra)
         ctx.fillStyle = '#fef08a';
         ctx.beginPath();
-        ctx.arc(headX, headY, 55, 0, Math.PI * 2);
+        ctx.arc(headX, headY, 52, 0, Math.PI * 2);
         ctx.fill();
 
-        // Cresta Roja Superior (Chicken Comb)
+        // Cresta Roja Superior
         ctx.fillStyle = '#ef4444';
-        ctx.beginPath(); ctx.arc(headX - 15, headY - 55, 14, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(headX, headY - 60, 16, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(headX + 15, headY - 55, 14, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(headX - 12, headY - 50, 13, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(headX + 3, headY - 55, 15, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(headX + 18, headY - 50, 13, 0, Math.PI * 2); ctx.fill();
 
-        // Ojos Negros Animados
+        // Ojo Negro del Pollo (Sorprendido/Firme al tirar)
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
-        ctx.arc(headX + (isLookingRight ? 20 : (isLookingLeft ? 5 : 15)), headY - 10, 8, 0, Math.PI * 2);
+        ctx.arc(headX + 20, headY - 8, 7.5, 0, Math.PI * 2);
         ctx.fill();
-        // Brillo blanco en los ojos
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
-        ctx.arc(headX + (isLookingRight ? 22 : (isLookingLeft ? 7 : 17)), headY - 12, 3, 0, Math.PI * 2);
+        ctx.arc(headX + 22, headY - 10, 3, 0, Math.PI * 2);
         ctx.fill();
 
-        // Pico Naranja del Pollo
-        const beakX = headX + (isLookingRight ? 45 : (isLookingLeft ? -45 : 35));
-        const beakY = headY + 5;
+        // Pico Naranja apuntando abajo/frente al suelo
+        const beakX = headX + 45;
+        const beakY = headY + 12;
 
         ctx.fillStyle = '#f97316';
         ctx.beginPath();
-        ctx.moveTo(headX + (isLookingLeft ? -25 : 20), headY - 5);
+        ctx.moveTo(headX + 20, headY - 4);
         ctx.lineTo(beakX, beakY);
-        ctx.lineTo(headX + (isLookingLeft ? -25 : 20), headY + 20);
+        ctx.lineTo(headX + 20, headY + 22);
         ctx.closePath();
         ctx.fill();
 
         // Barbilla Roja (Wattle)
         ctx.fillStyle = '#dc2626';
         ctx.beginPath();
-        ctx.arc(headX + (isLookingLeft ? -20 : 15), headY + 24, 10, 0, Math.PI * 2);
+        ctx.arc(headX + 18, headY + 26, 9, 0, Math.PI * 2);
         ctx.fill();
 
-        // 4. LOMBRIZ ANIMADA ROSADA SALIENDO DE LA TIERRA
-        const wormX = chickX + (isPecking ? 45 : 65);
-        const wormY = groundY + 10;
-        const wormPull = Math.sin(tick * 2) * 12;
+        // 4. LOMBRIZ ROSADA SIENDO EXTRAÍDA CON FUERZA DE LA TIERRA 🪱
+        const holeX = chickX + 105;
+        const holeY = groundY + 25;
 
-        ctx.strokeStyle = '#f472b6'; // Rosado Lombriz
-        ctx.lineWidth = 8;
+        // Agujero en la tierra de donde sale la lombriz
+        ctx.fillStyle = '#292524';
+        ctx.beginPath();
+        ctx.ellipse(holeX, holeY, 14, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Trazo de la lombriz estirándose desde el agujero hasta el pico del pollo
+        ctx.strokeStyle = '#f472b6'; // Rosado Vivo
+        ctx.lineWidth = 9;
         ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.moveTo(wormX, wormY);
-        ctx.quadraticCurveTo(wormX + 15, wormY - 15 - wormPull, wormX + (isPecking ? 0 : 25), isPecking ? beakY + 5 : wormY - 30 - wormPull);
+        ctx.moveTo(holeX, holeY);
+
+        // Si el pollo se agacha profundo, el pico agarra la lombriz justo en la tierra
+        const midWormX = (holeX + beakX) / 2 + (Math.sin(tick * 6) * 6);
+        const midWormY = (holeY + beakY) / 2 - 10;
+        ctx.quadraticCurveTo(midWormX, midWormY, beakX, beakY);
         ctx.stroke();
 
-        // Ojos de la lombriz asustada
+        // Ojos de la lombriz asustada siendo tirada
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
-        ctx.arc(wormX + (isPecking ? -2 : 22), isPecking ? beakY + 2 : wormY - 32 - wormPull, 2, 0, Math.PI * 2);
+        ctx.arc(beakX - 4, beakY + 2, 2.2, 0, Math.PI * 2);
         ctx.fill();
 
         authBgFrameId = requestAnimationFrame(animate);

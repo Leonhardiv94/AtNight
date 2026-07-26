@@ -290,11 +290,39 @@ app.post('/api/auth/login', (req, res) => {
   });
 });
 
-// 0. Listar personajes por correo de usuario
+// 0. Listar todos los personajes pertenecientes o vinculados a la cuenta del usuario
 app.get('/api/player/list/:email', (req, res) => {
+  loadLocalDb();
   const email = req.params.email.trim().toLowerCase();
-  const characters = Object.values(localPlayersDb).filter(p => p.ownerEmail && p.ownerEmail.toLowerCase() === email);
+  
+  // Asignar ownerEmail a cualquier personaje que aún no tenga propietario asignado
+  let hasUpdates = false;
+  Object.values(localPlayersDb).forEach(p => {
+    if (!p.ownerEmail) {
+      p.ownerEmail = email;
+      hasUpdates = true;
+    }
+  });
+
+  if (hasUpdates) {
+    saveLocalDb();
+  }
+
+  const characters = Object.values(localPlayersDb).filter(p => !p.ownerEmail || p.ownerEmail.toLowerCase() === email);
   return res.json({ success: true, characters });
+});
+
+// GET /api/player/:name - Obtener datos completos de un personaje por nombre
+app.get('/api/player/:name', (req, res) => {
+  loadLocalDb();
+  const { name } = req.params;
+  const cleanName = name.trim().toLowerCase();
+  const player = Object.values(localPlayersDb).find(p => p.characterName.toLowerCase() === cleanName);
+  if (player) {
+    return res.json({ success: true, player });
+  } else {
+    return res.status(404).json({ success: false, message: 'Personaje no encontrado.' });
+  }
 });
 
 // 0. Eliminar un personaje de la base de datos

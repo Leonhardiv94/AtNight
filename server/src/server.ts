@@ -331,28 +331,48 @@ app.get('/api/player/:name', (req, res) => {
 
 // 0. Eliminar un personaje de la base de datos
 app.post('/api/player/delete', async (req, res) => {
-  const { characterName, ownerEmail } = req.body;
+  const { characterName } = req.body;
   if (!characterName) {
     return res.status(400).json({ success: false, message: 'Nombre de personaje requerido para eliminar.' });
   }
 
   const cleanName = characterName.trim();
 
-  if (localPlayersDb[cleanName]) {
-    delete localPlayersDb[cleanName];
-    savePlayersDb();
-    console.log(`🗑️ Personaje "${cleanName}" eliminado exitosamente de la base de datos local.`);
+  // Buscar coincidencia sin importar mayúsculas/minúsculas
+  const foundKey = Object.keys(localPlayersDb).find(k => k.toLowerCase() === cleanName.toLowerCase());
+  if (foundKey) {
+    delete localPlayersDb[foundKey];
+    saveLocalDb();
+    console.log(`🗑️ Personaje "${foundKey}" eliminado exitosamente de la base de datos local.`);
   }
 
   if (isMongoConnected) {
     try {
-      await MongoPlayer.deleteOne({ characterName: cleanName });
+      await MongoPlayer.deleteMany({ characterName: new RegExp(`^${cleanName}$`, 'i') });
     } catch (err) {
       console.error('Error eliminando personaje en Mongo:', err);
     }
   }
 
   return res.json({ success: true, message: `El personaje "${cleanName}" fue eliminado exitosamente.` });
+});
+
+// 0. Vaciar completamente la base de datos de personajes
+app.post('/api/player/wipe-all', async (req, res) => {
+  localPlayersDb = {};
+  saveLocalDb();
+  console.log('🗑️ Todos los personajes eliminados de la memoria y players.json.');
+
+  if (isMongoConnected) {
+    try {
+      await MongoPlayer.deleteMany({});
+      console.log('🗑️ Todos los personajes eliminados de MongoDB.');
+    } catch (err) {
+      console.error('Error vaciando Mongo:', err);
+    }
+  }
+
+  return res.json({ success: true, message: 'Todos los personajes han sido eliminados por completo.' });
 });
 
 // 0. Crear un nuevo personaje personalizado

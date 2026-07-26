@@ -1516,9 +1516,16 @@ export class GameScene extends Phaser.Scene {
       ? (window as any).currentInventoryTab
       : 'recursos';
 
-    // 1. Filtrar ítems pertenecientes a la pestaña activa del navegador
+    // 1. Filtrar ítems pertenecientes a la pestaña activa del navegador (excluyendo monedas de oro)
     const tabItems: Array<{ id: string; name: string; count: number; category: string; weight: number }> = [];
+    let totalGold = 0;
+
     this.inventory.forEach(item => {
+      if (item.id === 'gold') {
+        totalGold += (item.count || 0);
+        return; // Excluir monedas de los slots normales
+      }
+
       const meta = getItemMetadata(item.id);
       const cat = item.category || meta.category;
       if (cat === currentTab) {
@@ -1531,6 +1538,12 @@ export class GameScene extends Phaser.Scene {
         });
       }
     });
+
+    // Actualizar contadores de Monedas de Aro Plateadas en Ubicación 1 (Equipo) y Ubicación 2 (Inventario)
+    const equipoGoldVal = document.getElementById('equipo-gold-val');
+    const invGoldVal = document.getElementById('inv-gold-val');
+    if (equipoGoldVal) equipoGoldVal.innerText = totalGold.toLocaleString();
+    if (invGoldVal) invGoldVal.innerText = totalGold.toLocaleString();
 
     grid.innerHTML = '';
 

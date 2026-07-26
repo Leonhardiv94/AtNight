@@ -243,18 +243,18 @@
       gap: 0.4rem;
       font-size: 0.78rem;
       font-weight: 800;
-      color: #00f2fe;
+      color: #cbd5e1; /* Gris Sobrio */
       letter-spacing: 1px;
       text-transform: uppercase;
       margin-bottom: 0.15rem;
-      text-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     }
 
     .info-rune-svg {
       width: 18px;
       height: 18px;
-      fill: #00f2fe;
-      filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.7));
+      fill: #94a3b8;
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
     }
 
     /* Cuadro 2: PODERES (Alineado 100% en línea con Gestión) */
@@ -280,18 +280,18 @@
       gap: 0.4rem;
       font-size: 0.78rem;
       font-weight: 800;
-      color: #fbbf24;
+      color: #cbd5e1; /* Gris Sobrio */
       letter-spacing: 1px;
       text-transform: uppercase;
       margin-bottom: 0.15rem;
-      text-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     }
 
     .adventure-rune-svg {
       width: 18px;
       height: 18px;
-      fill: #f59e0b;
-      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.7));
+      fill: #94a3b8;
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
     }
 
     .powers-grid {
@@ -375,18 +375,18 @@
       gap: 0.4rem;
       font-size: 0.78rem;
       font-weight: 800;
-      color: #10b981;
+      color: #cbd5e1; /* Gris Sobrio */
       letter-spacing: 1px;
       text-transform: uppercase;
       margin-bottom: 0.15rem;
-      text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     }
 
     .gestion-rune-svg {
       width: 18px;
       height: 18px;
-      fill: #10b981;
-      filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.7));
+      fill: #94a3b8;
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7));
     }
 
     .gestion-grid {
@@ -508,7 +508,7 @@
     .equipo-section-title {
       font-size: 0.78rem;
       font-weight: 800;
-      color: #38bdf8;
+      color: #cbd5e1;
       letter-spacing: 1px;
       text-transform: uppercase;
       margin-bottom: 0.5rem;
@@ -649,7 +649,7 @@
     .stats-header-title {
       font-size: 0.8rem;
       font-weight: 800;
-      color: #fbbf24;
+      color: #cbd5e1;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
@@ -980,7 +980,7 @@
     .modal-title {
       font-size: 1.1rem;
       font-weight: 700;
-      color: #00f2fe;
+      color: #cbd5e1;
     }
 
     .modal-close {
@@ -2056,7 +2056,7 @@
               </div>
             </div>
 
-            <!-- Centro: Representación del Personaje mirando abajo a la derecha sobre adoquín de césped (Agrandado un 30%) -->
+            <!-- Centro: Representación del Personaje mirando abajo a la derecha sobre adoquín de césped -->
             <div class="character-stage-center">
               <canvas id="character-preview-canvas" width="280" height="320"></canvas>
             </div>
@@ -2087,6 +2087,23 @@
                 <span class="equip-slot-title">Brazalete</span>
               </div>
             </div>
+          </div>
+
+          <!-- Ubicación 1: Dentro de la ventana de Equipo (Cuadro Equipamiento, Parte Inferior Derecha) -->
+          <div class="equipo-gold-display" style="position: absolute; bottom: 8px; right: 12px; display: flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); padding: 0.25rem 0.6rem; border-radius: 0;">
+            <svg class="silver-coin-icon" viewBox="0 0 24 24" style="width: 18px; height: 18px; vertical-align: middle; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
+              <defs>
+                <linearGradient id="silverCoinGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f8fafc"/>
+                  <stop offset="50%" stop-color="#cbd5e1"/>
+                  <stop offset="100%" stop-color="#64748b"/>
+                </linearGradient>
+              </defs>
+              <circle cx="12" cy="12" r="10" fill="url(#silverCoinGrad1)" stroke="#475569" stroke-width="1"/>
+              <circle cx="12" cy="12" r="7" fill="none" stroke="#475569" stroke-width="1.2"/>
+              <text x="12" y="15.8" font-size="11" font-weight="900" text-anchor="middle" fill="#1e293b" font-family="Arial, sans-serif">$</text>
+            </svg>
+            <span style="font-size: 0.72rem; font-weight: 700; color: #cbd5e1;">Monedas: <strong id="equipo-gold-val" style="color: #ffffff; font-weight: 800;">0</strong></span>
           </div>
         </div>
 
@@ -2334,6 +2351,23 @@
       </div>
     </div>
 
+    <!-- Ubicación 2: Contador de Monedas de Aro Plateadas (Debajo de los slots y arriba de la capacidad de peso) -->
+    <div class="inv-gold-display" style="display: flex; justify-content: flex-end; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.3rem 0.6rem; margin-bottom: 0.4rem;">
+      <svg class="silver-coin-icon" viewBox="0 0 24 24" style="width: 18px; height: 18px; vertical-align: middle; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));">
+        <defs>
+          <linearGradient id="silverCoinGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f8fafc"/>
+            <stop offset="50%" stop-color="#cbd5e1"/>
+            <stop offset="100%" stop-color="#64748b"/>
+          </linearGradient>
+        </defs>
+        <circle cx="12" cy="12" r="10" fill="url(#silverCoinGrad2)" stroke="#475569" stroke-width="1"/>
+        <circle cx="12" cy="12" r="7" fill="none" stroke="#475569" stroke-width="1.2"/>
+        <text x="12" y="15.8" font-size="11" font-weight="900" text-anchor="middle" fill="#1e293b" font-family="Arial, sans-serif">$</text>
+      </svg>
+      <span style="font-size: 0.72rem; font-weight: 700; color: #cbd5e1;">Monedas: <strong id="inv-gold-val" style="color: #ffffff; font-weight: 800;">0</strong></span>
+    </div>
+
     <!-- Barra Inferior de Capacidad y Peso (Común para todas las pestañas, Capacidad Máxima: 1000 kg) -->
     <div class="inv-capacity-box">
       <div class="inv-capacity-header">
@@ -2347,8 +2381,6 @@
   </div>
 
   <!-- Main JavaScript Entrypoint -->
-  <script type="module" src="/src/main.ts"></script>
-
   <script>
     // Estado Global del Personaje & Características
     window.characterStats = {

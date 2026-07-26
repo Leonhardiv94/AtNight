@@ -2638,23 +2638,59 @@
         ctx.closePath();
         ctx.fill();
 
-        // 3. POLLO GIGANTE QUE SE AGACHA PROFUNDO HASTA EL SUELO Y SACA LA LOMBRIZ 🐓🪱
+        // 3. POLLO GIGANTE CON HISTORIA ANIMADA: AGACHARSE, EXTRAER LOMBRIZ, SABOREARLA Y TRAGAR 🐓🪱
         const chickX = w * 0.5;
         const chickY = groundY + 15;
+        const holeX = chickX + 110;
+        const holeY = groundY + 25;
 
-        // Ciclo continuo de agacharse profundo a comer/sacar lombriz
-        const cycle = (Math.sin(tick * 1.5) + 1) / 2; // Rango 0 (De pie) a 1 (Totalmente agachado)
-        const isDeepPeck = cycle > 0.45;
+        // Fases del Ciclo de Animación (0 a Math.PI * 4):
+        // Fase 1: Agacharse profundo al agujero (0 a 1.2)
+        // Fase 2: Tirar con fuerza y sacar la lombriz completa (1.2 a 3.0)
+        // Fase 3: Erguirse, saborear la lombriz y hacer guiño feliz (3.0 a 5.0)
+        // Fase 4: Tragarse la lombriz y buscar otra (5.0 a 6.28...)
+        const storyTick = (tick * 0.9) % (Math.PI * 2);
 
-        // Inclinación del cuerpo al agacharse profundo
-        const bodyLeanY = cycle * 35;
-        const headY = (chickY - 120) + (cycle * 115); // La cabeza baja HASTA EL SUELO (Diferencia de 115px!)
-        const headX = chickX + 35 + (cycle * 25);
+        // Progreso de agachado: 1 = Agachado en el suelo, 0 = Erguido arriba saboreando
+        let peckProgress = 0;
+        let isEatingSavoring = false;
+        let wormExtractedProgress = 0; // 0 = en la tierra, 1 = completamente sacada
+
+        if (storyTick < 1.4) {
+          // Fase 1: Agachándose rápido hacia la tierra
+          peckProgress = Math.sin((storyTick / 1.4) * (Math.PI / 2));
+          wormExtractedProgress = 0.1;
+        } else if (storyTick < 3.2) {
+          // Fase 2: Tirando hacia atrás y sacando la lombriz completa de la tierra
+          const t = (storyTick - 1.4) / 1.8;
+          peckProgress = 1 - Math.sin(t * (Math.PI / 2)) * 0.7; // Se incorpora levantando la lombriz
+          wormExtractedProgress = t; // La lombriz sale gradualmente hasta liberarse
+        } else if (storyTick < 5.2) {
+          // Fase 3: Erguido completamente, saboreando la lombriz en el aire
+          peckProgress = 0;
+          isEatingSavoring = true;
+          wormExtractedProgress = 1;
+        } else {
+          // Fase 4: Tragando y volviendo a buscar
+          peckProgress = ((storyTick - 5.2) / 1.08);
+          isEatingSavoring = false;
+          wormExtractedProgress = 0;
+        }
+
+        const bodyLeanY = peckProgress * 35;
+        const headY = (chickY - 120) + (peckProgress * 115); // Cabeza baja hasta el suelo
+        const headX = chickX + 35 + (peckProgress * 25);
 
         // Sombra suave del Pollo en el suelo
         ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
         ctx.beginPath();
         ctx.ellipse(chickX, chickY + 30, 95, 30, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Agujero oscuro en la tierra de donde sale la lombriz
+        ctx.fillStyle = '#1c1917';
+        ctx.beginPath();
+        ctx.ellipse(holeX, holeY, 16, 7, 0, 0, Math.PI * 2);
         ctx.fill();
 
         // Patas Naranjas del Pollo
@@ -2665,28 +2701,30 @@
         ctx.fillRect(chickX - 45, chickY + 40, 26, 8);
         ctx.fillRect(chickX + 13, chickY + 40, 26, 8);
 
-        // Cuerpo Redondo del Pollo (Inclinado hacia el suelo cuando se agacha)
+        // Cuerpo Redondo del Pollo (Se inclina al agacharse, se agita alegre al saborear)
         ctx.save();
         ctx.translate(chickX, chickY - 45 + (bodyLeanY * 0.5));
-        ctx.rotate(cycle * 0.35); // Cuerpo se inclina hacia adelante
+        const bodyAngle = (peckProgress * 0.38) + (isEatingSavoring ? Math.sin(tick * 8) * 0.05 : 0);
+        ctx.rotate(bodyAngle);
 
         ctx.fillStyle = '#fef08a';
         ctx.beginPath(); ctx.ellipse(0, 0, 90, 75, 0, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#fde047';
         ctx.beginPath(); ctx.ellipse(-10, 10, 75, 60, 0, 0, Math.PI * 2); ctx.fill();
 
-        // Alas agitándose suavemente al tirar de la lombriz
+        // Alas agitándose de alegría al saborear la lombriz
+        const wingWiggle = isEatingSavoring ? Math.sin(tick * 10) * 12 : Math.sin(tick * 4) * 4;
         ctx.fillStyle = '#eab308';
         ctx.beginPath();
-        ctx.ellipse(-70, Math.sin(tick * 5) * 5, 30, 45, -0.3 + (cycle * 0.2), 0, Math.PI * 2);
+        ctx.ellipse(-70, wingWiggle, 30, 45, -0.3 + (peckProgress * 0.2), 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
-        ctx.ellipse(70, -Math.sin(tick * 5) * 5, 30, 45, 0.3 - (cycle * 0.2), 0, Math.PI * 2);
+        ctx.ellipse(70, -wingWiggle, 30, 45, 0.3 - (peckProgress * 0.2), 0, Math.PI * 2);
         ctx.fill();
 
         ctx.restore();
 
-        // Cabeza del Pollo (Baja hasta casi tocar la tierra)
+        // Cabeza del Pollo
         ctx.fillStyle = '#fef08a';
         ctx.beginPath();
         ctx.arc(headX, headY, 52, 0, Math.PI * 2);
@@ -2698,17 +2736,33 @@
         ctx.beginPath(); ctx.arc(headX + 3, headY - 55, 15, 0, Math.PI * 2); ctx.fill();
         ctx.beginPath(); ctx.arc(headX + 18, headY - 50, 13, 0, Math.PI * 2); ctx.fill();
 
-        // Ojo Negro del Pollo (Sorprendido/Firme al tirar)
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.arc(headX + 20, headY - 8, 7.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(headX + 22, headY - 10, 3, 0, Math.PI * 2);
-        ctx.fill();
+        // Ojo Expresivo del Pollo:
+        // Si está saboreando: Ojo guiñado de felicidad (^ ^)
+        // Si está agachado/tirando: Ojo firme y enfocado
+        if (isEatingSavoring) {
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 3.5;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.arc(headX + 20, headY - 6, 7, Math.PI * 1.1, Math.PI * 1.9);
+          ctx.stroke();
 
-        // Pico Naranja apuntando abajo/frente al suelo
+          // Destellos / Chispas de felicidad sobre el pollo ✨
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = '16px sans-serif';
+          ctx.fillText('✨ YUM! ✨', headX - 25, headY - 65 + Math.sin(tick * 5) * 3);
+        } else {
+          ctx.fillStyle = '#0f172a';
+          ctx.beginPath();
+          ctx.arc(headX + 20, headY - 8, 7.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(headX + 22, headY - 10, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Pico Naranja
         const beakX = headX + 45;
         const beakY = headY + 12;
 
@@ -2720,40 +2774,47 @@
         ctx.closePath();
         ctx.fill();
 
-        // Barbilla Roja (Wattle)
+        // Barbilla Roja
         ctx.fillStyle = '#dc2626';
         ctx.beginPath();
         ctx.arc(headX + 18, headY + 26, 9, 0, Math.PI * 2);
         ctx.fill();
 
-        // 4. LOMBRIZ ROSADA SIENDO EXTRAÍDA CON FUERZA DE LA TIERRA 🪱
-        const holeX = chickX + 105;
-        const holeY = groundY + 25;
+        // 4. ANIMACIÓN DE LA LOMBRIZ ROSADA (Estirándose, liberándose y siendo saboreada) 🪱
+        if (wormExtractedProgress > 0) {
+          ctx.strokeStyle = '#f472b6'; // Rosado Lombriz
+          ctx.lineWidth = 9;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
 
-        // Agujero en la tierra de donde sale la lombriz
-        ctx.fillStyle = '#292524';
-        ctx.beginPath();
-        ctx.ellipse(holeX, holeY, 14, 6, 0, 0, Math.PI * 2);
-        ctx.fill();
+          if (wormExtractedProgress < 0.95) {
+            // La lombriz aún se estira desde el agujero hasta el pico del pollo
+            ctx.moveTo(holeX, holeY);
+            const midWormX = (holeX + beakX) / 2 + (Math.sin(tick * 8) * 8);
+            const midWormY = (holeY + beakY) / 2 - 15;
+            ctx.quadraticCurveTo(midWormX, midWormY, beakX, beakY);
+            ctx.stroke();
 
-        // Trazo de la lombriz estirándose desde el agujero hasta el pico del pollo
-        ctx.strokeStyle = '#f472b6'; // Rosado Vivo
-        ctx.lineWidth = 9;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(holeX, holeY);
+            // Ojo asustado de la lombriz siendo extraída
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(beakX - 4, beakY + 2, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (isEatingSavoring) {
+            // ¡Lombriz liberada por completo! Se mueve en el pico mientras la saborea
+            const wormTailX = beakX + 25 + Math.sin(tick * 10) * 8;
+            const wormTailY = beakY + 20 + Math.cos(tick * 10) * 8;
+            ctx.moveTo(beakX, beakY);
+            ctx.quadraticCurveTo(beakX + 15, beakY + 5, wormTailX, wormTailY);
+            ctx.stroke();
 
-        // Si el pollo se agacha profundo, el pico agarra la lombriz justo en la tierra
-        const midWormX = (holeX + beakX) / 2 + (Math.sin(tick * 6) * 6);
-        const midWormY = (holeY + beakY) / 2 - 10;
-        ctx.quadraticCurveTo(midWormX, midWormY, beakX, beakY);
-        ctx.stroke();
-
-        // Ojos de la lombriz asustada siendo tirada
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.arc(beakX - 4, beakY + 2, 2.2, 0, Math.PI * 2);
-        ctx.fill();
+            // Ojo de la lombriz retorciéndose en el pico
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(wormTailX - 2, wormTailY - 2, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
 
         authBgFrameId = requestAnimationFrame(animate);
       }

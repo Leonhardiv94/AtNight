@@ -7,6 +7,7 @@ export class BootScene extends Phaser.Scene {
 
   preload() {
     this.load.image('espadachin_male_hd', '/assets/espadachin_male_hd.jpg');
+    this.load.image('dofus_swordsman_sheet', '/assets/dofus_swordsman_spritesheet.jpg');
   }
 
   create() {

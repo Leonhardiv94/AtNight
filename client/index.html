@@ -2381,6 +2381,7 @@
   </div>
 
   <!-- Main JavaScript Entrypoint -->
+  <script type="module" src="/src/main.ts"></script>
   <script>
     // Estado Global del Personaje & Características
     window.characterStats = {
@@ -3083,6 +3084,8 @@
     }
 
     function selectAndEnterGame(characterName) {
+      window.selectedCharacterName = characterName;
+
       const overlay = document.getElementById('auth-screen-overlay');
       if (overlay) overlay.classList.add('hidden');
 

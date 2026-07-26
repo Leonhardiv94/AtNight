@@ -119,7 +119,10 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.updateHud();
-    this.loadSavedCharacter();
+    const initialChar = (typeof window !== 'undefined' && (window as any).selectedCharacterName)
+      ? (window as any).selectedCharacterName
+      : undefined;
+    this.loadSavedCharacter(initialChar);
 
     // Auto-Save Player Progress to Server every 10 seconds
     this.time.addEvent({
@@ -133,8 +136,9 @@ export class GameScene extends Phaser.Scene {
   private currentCharacterData: any = null;
 
   public async loadSavedCharacter(charName?: string) {
-    if (charName) {
-      this.currentCharacterName = charName;
+    const targetName = charName || (typeof window !== 'undefined' ? (window as any).selectedCharacterName : undefined);
+    if (targetName) {
+      this.currentCharacterName = targetName;
     }
 
     if (!this.currentCharacterName || this.currentCharacterName === 'HéroeAtNight') return;

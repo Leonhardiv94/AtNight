@@ -8,7 +8,7 @@
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
     "level": 1,
-    "xp": 432,
+    "xp": 888,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -52,7 +52,7 @@
         "id": "chicken_egg",
         "name": "Huevo de Pollo",
         "icon": "",
-        "count": 2,
+        "count": 5,
         "category": "recursos",
         "weight": 1
       },
@@ -60,7 +60,7 @@
         "id": "gold",
         "name": "Monedas de Oro",
         "icon": "",
-        "count": 182,
+        "count": 557,
         "category": "especiales",
         "weight": 0
       },
@@ -68,15 +68,31 @@
         "id": "chicken_feather",
         "name": "Pluma de Pollo",
         "icon": "",
+        "count": 4,
+        "category": "recursos",
+        "weight": 1
+      },
+      {
+        "id": "chicken_eye",
+        "name": "Ojo de Pollo",
+        "icon": "",
+        "count": 2,
+        "category": "recursos",
+        "weight": 1
+      },
+      {
+        "id": "chicken_beak",
+        "name": "Pico de Pollo",
+        "icon": "",
         "count": 2,
         "category": "recursos",
         "weight": 1
       }
     ],
     "lastPosition": {
-      "x": 15.856958816977135,
-      "y": 740.5655834267468
+      "x": 0.624868096452909,
+      "y": 1638.5688666666665
     },
-    "updatedAt": "2026-07-26T23:22:46.339Z"
+    "updatedAt": "2026-07-26T23:46:51.303Z"
   }
 }

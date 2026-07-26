@@ -71,6 +71,24 @@ export class GameScene extends Phaser.Scene {
     this.stumpGroup = this.add.group(); // PURE VISUAL GROUP: Visual stump sprites
     this.rockGroup = this.physics.add.staticGroup(); // STATIC PHYSICS GROUP: Small decorative rocks with small collider!
 
+    if (this.textures.exists('gold')) {
+      this.textures.remove('gold');
+    }
+    const goldG = this.make.graphics({ x: 0, y: 0 });
+    goldG.fillStyle(0xcbd5e1, 1);
+    goldG.fillCircle(16, 16, 13);
+    goldG.lineStyle(1.5, 0x475569, 1);
+    goldG.strokeCircle(16, 16, 13);
+
+    goldG.lineStyle(1.2, 0x64748b, 1);
+    goldG.strokeCircle(16, 16, 9);
+
+    goldG.fillStyle(0xf8fafc, 1);
+    goldG.fillCircle(16, 16, 7.5);
+
+    goldG.generateTexture('gold', 32, 32);
+    goldG.destroy();
+
     this.createIslandMap();
     this.createGatheringNodes();
     this.createPlayer();
@@ -190,6 +208,29 @@ export class GameScene extends Phaser.Scene {
     } catch (err) {
       console.log('ℹ️ Operando en cliente local para el personaje:', this.currentCharacterName);
     }
+  }
+
+  private createGoldDropTexture() {
+    if (this.textures.exists('gold')) {
+      this.textures.remove('gold');
+    }
+    const g = this.make.graphics({ x: 0, y: 0 });
+    // Anillo Exterior Plateado
+    g.fillStyle(0xcbd5e1, 1);
+    g.fillCircle(16, 16, 13);
+    g.lineStyle(1.5, 0x475569, 1);
+    g.strokeCircle(16, 16, 13);
+
+    // Círculo Interior Concéntrico
+    g.lineStyle(1.2, 0x64748b, 1);
+    g.strokeCircle(16, 16, 9);
+
+    // Fondo del símbolo de dinero
+    g.fillStyle(0xf8fafc, 1);
+    g.fillCircle(16, 16, 7.5);
+
+    g.generateTexture('gold', 32, 32);
+    g.destroy();
   }
 
   private applyCharacterAppearance(p: any) {

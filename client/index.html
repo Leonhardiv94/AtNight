@@ -1900,17 +1900,7 @@
         </div>
 
         <div class="gestion-grid">
-          <!-- 1. Equipo (Espada) -->
-          <div class="gestion-btn-item btn-equipo" title="Equipo" onclick="openGestionModal('equipo')">
-            <div class="gestion-circle-btn">
-              <svg class="gestion-btn-svg" viewBox="0 0 24 24">
-                <path d="M6.92 5.51L12 10.59l5.08-5.08 1.41 1.41-5.08 5.08 5.08 5.08-1.41 1.41L12 13.41l-5.08 5.08-1.41-1.41 5.08-5.08L5.51 6.92z"/>
-              </svg>
-            </div>
-            <span class="gestion-btn-label">Equipo</span>
-          </div>
-
-          <!-- 2. Características -->
+          <!-- 1. Características (Primero) -->
           <div class="gestion-btn-item btn-caracteristicas" title="Características" onclick="openGestionModal('caracteristicas')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
@@ -1918,12 +1908,22 @@
             <span class="gestion-btn-label">Características</span>
           </div>
 
-          <!-- 3. Poderes -->
+          <!-- 2. Poderes (Segundo) -->
           <div class="gestion-btn-item btn-poderes" title="Poderes" onclick="openGestionModal('poderes')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
             </div>
             <span class="gestion-btn-label">Poderes</span>
+          </div>
+
+          <!-- 3. Equipo (Tercero - Espada SVG Táctica) -->
+          <div class="gestion-btn-item btn-equipo" title="Equipo" onclick="openGestionModal('equipo')">
+            <div class="gestion-circle-btn">
+              <svg class="gestion-btn-svg" viewBox="0 0 24 24">
+                <path d="M19.71 4.29a1 1 0 0 0-1.42 0L9.17 12.41l-1.88-1.88a1 1 0 0 0-1.41 1.41l1.88 1.88-4.47 4.47a1 1 0 0 0 1.41 1.41l4.47-4.47 1.88 1.88a1 1 0 0 0 1.41-1.41l-1.88-1.88 8.12-8.12a1 1 0 0 0 0-1.41z"/>
+              </svg>
+            </div>
+            <span class="gestion-btn-label">Equipo</span>
           </div>
 
           <!-- 4. Inventario -->
@@ -2003,7 +2003,7 @@
   <div class="equipo-modal-window interactive" id="equipo-modal">
     <div class="modal-header">
       <span class="modal-title">
-        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #38bdf8; vertical-align: middle; margin-right: 4px;"><path d="M6.92 5.51L12 10.59l5.08-5.08 1.41 1.41-5.08 5.08 5.08 5.08-1.41 1.41L12 13.41l-5.08 5.08-1.41-1.41 5.08-5.08L5.51 6.92z"/></svg>
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #cbd5e1; vertical-align: middle; margin-right: 4px;"><path d="M19.71 4.29a1 1 0 0 0-1.42 0L9.17 12.41l-1.88-1.88a1 1 0 0 0-1.41 1.41l1.88 1.88-4.47 4.47a1 1 0 0 0 1.41 1.41l4.47-4.47 1.88 1.88a1 1 0 0 0 1.41-1.41l-1.88-1.88 8.12-8.12a1 1 0 0 0 0-1.41z"/></svg>
         EQUIPO & PERSONAJE
       </span>
       <button class="modal-close" onclick="toggleEquipoModal()">&times;</button>

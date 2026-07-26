@@ -2674,6 +2674,26 @@
     let currentGender = 'masculino';
     let charPreviewFrameId = null;
 
+    async function loadPlayerCharacters(email) {
+      try {
+        const res = await fetch(`http://localhost:3002/api/player/list/${encodeURIComponent(email)}`);
+        const data = await res.json();
+        if (data.success) {
+          if (data.characters.length === 0) {
+            openCharacterCreatorView(false);
+          } else {
+            renderCharacterList(data.characters);
+            openCharacterListView();
+          }
+        } else {
+          openCharacterCreatorView(false);
+        }
+      } catch (err) {
+        console.error('Error cargando lista de personajes:', err);
+        openCharacterCreatorView(false);
+      }
+    }
+
     async function onAuthSuccess(user, characters) {
       window.activeUser = user;
       const loginBox = document.getElementById('login-modal-box');

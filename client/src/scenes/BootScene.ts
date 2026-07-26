@@ -154,28 +154,37 @@ export class BootScene extends Phaser.Scene {
     graphics.strokePath();
     graphics.generateTexture('tile-water', 128, 64);
 
-    // 4. Human Warrior with Leather & Chainmail Armor (HD 64x112, 8 Directions x 3 Frames)
+    // 4. Male Swordsman / Espadachín Hombre (HD Hand-Painted Style - Athletic Build, Medieval Blue Tunic, Unarmed, 8 Directions x 4 Frames)
     const directions = ['down', 'up', 'right', 'left', 'down-right', 'down-left', 'up-right', 'up-left'];
 
     directions.forEach(dir => {
-      for (let frame = 0; frame < 3; frame++) {
+      for (let frame = 0; frame < 4; frame++) {
         graphics.clear();
 
         let legStep = 0;
         let armPendulumX = 0;
         let armPendulumY = 0;
 
-        if (frame === 1) {
-          legStep = -8;
-          armPendulumX = 9;  // Swing Forward
-          armPendulumY = -3;
+        // Frame 0: Reposo / Static Idle Mode (Respiración natural)
+        if (frame === 0) {
+          legStep = 0;
+          armPendulumX = 0;
+          armPendulumY = 0;
+        } else if (frame === 1) {
+          legStep = -7;
+          armPendulumX = 8;  // Arm Swing Forward
+          armPendulumY = -2;
         } else if (frame === 2) {
-          legStep = 8;
-          armPendulumX = -9; // Swing Backward
-          armPendulumY = 3;
+          legStep = 0;
+          armPendulumX = 0;
+          armPendulumY = 1;  // Mid-stride vertical bounce
+        } else if (frame === 3) {
+          legStep = 7;
+          armPendulumX = -8; // Arm Swing Backward
+          armPendulumY = 2;
         }
 
-        // Shadow
+        // Shadow Base (Sombra proyectada en el suelo)
         graphics.fillStyle(0x000000, 0.35);
         graphics.fillEllipse(32, 104, 46, 14);
 
@@ -183,64 +192,44 @@ export class BootScene extends Phaser.Scene {
         const isLeft = dir.includes('left');
 
         // ----------------------------------------------------
-        // 1. LEGS & COMBAT BOOTS
+        // 1. LEGS & LEATHER COMBAT BOOTS (Pantalones Marrones + Botas de Cuero)
         // ----------------------------------------------------
         if (isSide) {
           const backX = 32 - (isLeft ? -legStep : legStep);
           const frontX = 32 + (isLeft ? -legStep : legStep);
 
-          // A. BACK LEG (Further in depth)
-          graphics.fillStyle(0x1e293b, 1); // Darker Slate Pants
-          graphics.fillEllipse(backX, 68, 10, 20); // Thigh & Calf
-          graphics.fillStyle(0x381d09, 1); // Dark Leather Boot
-          graphics.fillRect(backX - 4, 84, 8, 8);  // Shaft
-          graphics.fillRect(isLeft ? backX : backX - 6, 90, 6, 7); // Heel Block
-          graphics.fillRect(isLeft ? backX - 7 : backX - 1, 90, 8, 7); // Foot Base
-          graphics.fillTriangle(
-            isLeft ? backX - 7 : backX + 7, 97,
-            isLeft ? backX - 9 : backX + 9, 93,
-            isLeft ? backX - 1 : backX + 1, 90
-          ); // Toe Cap
+          // A. BACK LEG (Pantalón de Cuero Marrón #78350f)
+          graphics.fillStyle(0x5c2c16, 1);
+          graphics.fillEllipse(backX, 68, 10, 20);
+          graphics.fillStyle(0x292524, 1); // Bota de Cuero Oscuro
+          graphics.fillRect(backX - 4, 84, 8, 8);
+          graphics.fillRect(isLeft ? backX : backX - 6, 90, 6, 7);
+          graphics.fillRect(isLeft ? backX - 7 : backX - 1, 90, 8, 7);
 
-          // B. FRONT LEG (Closer to camera)
-          graphics.fillStyle(0x334155, 1); // Slate Armor Pants
-          graphics.fillEllipse(frontX, 68, 11, 20); // Thigh
-          graphics.fillStyle(0x1e293b, 1); // Knee Cap
-          graphics.fillCircle(frontX, 75, 5);
-          graphics.fillStyle(0x334155, 1); // Calf
-          graphics.fillEllipse(frontX, 81, 10, 14);
+          // B. FRONT LEG (Atláta Musculoso, Pantalón Marrón #78350f)
+          graphics.fillStyle(0x78350f, 1);
+          graphics.fillEllipse(frontX, 68, 11, 20);
+          graphics.fillStyle(0x5c2c16, 1);
+          graphics.fillCircle(frontX, 75, 4.5);
 
-          // Leather Combat Boot
-          graphics.fillStyle(0x451a03, 1);
-          graphics.fillRect(frontX - 5, 84, 10, 8); // Boot Shaft
-          graphics.fillStyle(0x78350f, 1); // Cuff Trim
+          // Botas de Combate con Dobladillo y Cordones
+          graphics.fillStyle(0x292524, 1);
+          graphics.fillRect(frontX - 5, 84, 10, 8);
+          graphics.fillStyle(0x44403c, 1); // Dobladillo
           graphics.fillRect(frontX - 6, 83, 12, 3);
 
-          // Heel Block ("Cuadrito del Talón")
-          graphics.fillStyle(0x381d09, 1);
+          // Talón y Suela
+          graphics.fillStyle(0x1c1917, 1);
           graphics.fillRect(isLeft ? frontX + 1 : frontX - 7, 90, 6, 7);
-
-          // Foot Sole Base & Toe Extension
-          graphics.fillStyle(0x451a03, 1);
+          graphics.fillStyle(0x292524, 1);
           graphics.fillRect(isLeft ? frontX - 7 : frontX - 1, 90, 8, 7);
-          graphics.beginPath();
-          if (isLeft) {
-            graphics.moveTo(frontX + 1, 90);
-            graphics.lineTo(frontX - 11, 93);
-            graphics.lineTo(frontX - 9, 97);
-            graphics.lineTo(frontX + 1, 97);
-          } else {
-            graphics.moveTo(frontX - 1, 90);
-            graphics.lineTo(frontX + 11, 93);
-            graphics.lineTo(frontX + 9, 97);
-            graphics.lineTo(frontX - 1, 97);
-          }
-          graphics.closePath();
-          graphics.fillPath();
 
-          // Rubber Bottom Sole Line
-          graphics.fillStyle(0x1a0c05, 1);
-          graphics.fillRect(isLeft ? frontX - 11 : frontX - 7, 96, 18, 2);
+          // Cordones de las Botas
+          graphics.lineStyle(1, 0xa8a29e, 0.8);
+          graphics.beginPath();
+          graphics.moveTo(frontX - 2, 85); graphics.lineTo(frontX - 2, 92);
+          graphics.moveTo(frontX + 2, 85); graphics.lineTo(frontX + 2, 92);
+          graphics.strokePath();
 
         } else {
           // FRONT / BACK VIEW LEGS
@@ -249,119 +238,137 @@ export class BootScene extends Phaser.Scene {
           const leftY = 66 + legStep;
           const rightY = 66 - legStep;
 
-          graphics.fillStyle(0x334155, 1);
+          graphics.fillStyle(0x78350f, 1);
           graphics.fillEllipse(leftX, leftY, 11, 18);
           graphics.fillEllipse(rightX, rightY, 11, 18);
 
-          graphics.fillStyle(0x1e293b, 1);
+          graphics.fillStyle(0x5c2c16, 1);
           graphics.fillEllipse(leftX, leftY + 9, 11, 6);
           graphics.fillEllipse(rightX, rightY + 9, 11, 6);
 
-          graphics.fillStyle(0x334155, 1);
-          graphics.fillEllipse(leftX, leftY + 16, 10, 14);
-          graphics.fillEllipse(rightX, rightY + 16, 10, 14);
-
-          graphics.fillStyle(0x451a03, 1);
+          graphics.fillStyle(0x292524, 1);
           graphics.fillRect(leftX - 5, leftY + 18, 10, 10);
           graphics.fillRect(rightX - 5, rightY + 18, 10, 10);
 
-          graphics.fillStyle(0x78350f, 1);
+          graphics.fillStyle(0x44403c, 1);
           graphics.fillRect(leftX - 6, leftY + 17, 12, 3);
           graphics.fillRect(rightX - 6, rightY + 17, 12, 3);
 
-          graphics.fillStyle(0x381d09, 1);
-          graphics.fillRect(leftX - 5, leftY + 26, 10, 3);
-          graphics.fillRect(rightX - 5, rightY + 26, 10, 3);
-
-          graphics.fillStyle(0x451a03, 1);
-          graphics.fillEllipse(leftX - 1, leftY + 27, 12, 7);
-          graphics.fillEllipse(rightX + 1, rightY + 27, 12, 7);
-
-          graphics.fillStyle(0x1a0c05, 1);
-          graphics.fillRect(leftX - 6, leftY + 29, 11, 2);
-          graphics.fillRect(rightX - 5, rightY + 29, 11, 2);
+          graphics.lineStyle(1, 0xa8a29e, 0.8);
+          graphics.beginPath();
+          graphics.moveTo(leftX, leftY + 19); graphics.lineTo(leftX, leftY + 26);
+          graphics.moveTo(rightX, rightY + 19); graphics.lineTo(rightX, rightY + 26);
+          graphics.strokePath();
         }
 
         // ----------------------------------------------------
-        // 2. NECK & COLLAR BONE
-        // ----------------------------------------------------
-        graphics.fillStyle(0xf5c6a5, 1);
-        graphics.fillRect(28, 33, 8, 7);
-
-        // ----------------------------------------------------
-        // 3. TORSO & V-TAPER CHEST
+        // 2. TORSO & TÚNICA MEDIEVAL NOBLE BORDADA (Azul Real #1d4ed8)
         // ----------------------------------------------------
         if (dir === 'down' || dir === 'down-left' || dir === 'down-right') {
-          graphics.fillStyle(0x94a3b8, 1);
-          graphics.fillEllipse(32, 44, 32, 24);
-
-          graphics.fillStyle(0x78350f, 1);
+          // Torso Masculino Fornido / Hombros Anchos V-Taper
+          graphics.fillStyle(0x1d4ed8, 1); // Túnica Azul Real
           graphics.beginPath();
-          graphics.moveTo(18, 38);
-          graphics.lineTo(46, 38);
-          graphics.lineTo(40, 62);
-          graphics.lineTo(24, 62);
+          graphics.moveTo(16, 36);
+          graphics.lineTo(48, 36);
+          graphics.lineTo(43, 64);
+          graphics.lineTo(21, 64);
           graphics.closePath();
           graphics.fillPath();
 
+          // Bordado de Plata/Gris en el Cuello y Falda de la Túnica
+          graphics.lineStyle(2, 0xe2e8f0, 0.95);
+          graphics.beginPath();
+          graphics.moveTo(21, 63); graphics.lineTo(43, 63); // Ribete inferior
+          graphics.moveTo(32, 40); graphics.lineTo(32, 63); // Costura central
+          graphics.strokePath();
+
+          // Hombreras de Cuero con Anclajes de Bronce
+          graphics.fillStyle(0x78350f, 1);
+          graphics.fillRect(13, 34, 7, 12);
+          graphics.fillRect(44, 34, 7, 12);
+          graphics.fillStyle(0xfbbf24, 1);
+          graphics.fillRect(15, 38, 3, 3);
+          graphics.fillRect(46, 38, 3, 3);
+
+          // Cinturón de Cuero Marrón con Hebilla de León Dorado
+          graphics.fillStyle(0x451a03, 1);
+          graphics.fillRect(20, 52, 24, 6);
+          graphics.fillRect(34, 58, 4, 8); // Correa colgante
+          graphics.fillStyle(0xfbbf24, 1); // Hebilla de León
+          graphics.fillRect(28, 51, 8, 8);
           graphics.fillStyle(0xd97706, 1);
-          graphics.fillRect(20, 44, 24, 3);
-          graphics.fillRect(22, 54, 20, 3);
-          graphics.fillStyle(0xfef08a, 1);
-          graphics.fillRect(30, 43, 4, 5);
-          graphics.fillRect(30, 53, 4, 5);
+          graphics.fillRect(30, 53, 4, 4);
 
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillCircle(18, 40, 6);
-          graphics.fillCircle(46, 40, 6);
-        } else if (dir === 'up' || dir === 'up-left' || dir === 'up-right') {
-          graphics.fillStyle(0x78350f, 1);
+          // Blasón Heraldico del León Dorado en el Pecho
+          graphics.fillStyle(0x1e3a8a, 1);
           graphics.beginPath();
-          graphics.moveTo(18, 38);
-          graphics.lineTo(46, 38);
-          graphics.lineTo(40, 62);
-          graphics.lineTo(24, 62);
+          graphics.moveTo(28, 40); graphics.lineTo(36, 40); graphics.lineTo(36, 47); graphics.lineTo(32, 50); graphics.lineTo(28, 47);
+          graphics.closePath();
+          graphics.fillPath();
+          graphics.fillStyle(0xfbbf24, 1);
+          graphics.fillCircle(32, 44, 2.5);
+
+        } else if (dir === 'up' || dir === 'up-left' || dir === 'up-right') {
+          // Espalda de la Túnica Noble
+          graphics.fillStyle(0x1d4ed8, 1);
+          graphics.beginPath();
+          graphics.moveTo(16, 36);
+          graphics.lineTo(48, 36);
+          graphics.lineTo(43, 64);
+          graphics.lineTo(21, 64);
           graphics.closePath();
           graphics.fillPath();
 
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(22, 58, 20, 5);
+          graphics.lineStyle(2, 0xe2e8f0, 0.95);
+          graphics.beginPath();
+          graphics.moveTo(21, 63); graphics.lineTo(43, 63);
+          graphics.strokePath();
 
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillCircle(18, 40, 6);
-          graphics.fillCircle(46, 40, 6);
-        } else {
-          // SIDE VIEW TORSO
           graphics.fillStyle(0x78350f, 1);
-          graphics.fillEllipse(32, 48, 22, 26);
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(23, 58, 18, 5);
+          graphics.fillRect(13, 34, 7, 12);
+          graphics.fillRect(44, 34, 7, 12);
 
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillCircle(32, 40, 7);
+          graphics.fillStyle(0x451a03, 1);
+          graphics.fillRect(20, 52, 24, 6);
+        } else {
+          // Vista Lateral Torso Túnica Noble
+          graphics.fillStyle(0x1d4ed8, 1);
+          graphics.fillEllipse(32, 48, 22, 26);
+          graphics.lineStyle(2, 0xe2e8f0, 0.95);
+          graphics.beginPath();
+          graphics.moveTo(21, 61); graphics.lineTo(43, 61);
+          graphics.strokePath();
+
+          graphics.fillStyle(0x78350f, 1);
+          graphics.fillCircle(32, 38, 7);
+          graphics.fillStyle(0x451a03, 1);
+          graphics.fillRect(22, 52, 20, 6);
         }
 
         // ----------------------------------------------------
-        // 4. ARMS & PENDULUM SWING
+        // 3. BRAZOS DESARMADOS (UNARMED - SIN ESPADA EN MANO)
         // ----------------------------------------------------
-        graphics.fillStyle(0xf5c6a5, 1);
+        graphics.fillStyle(0xf5c6a5, 1); // Piel humana
         if (dir === 'left' || dir === 'up-left' || dir === 'down-left') {
           graphics.fillEllipse(28, 44, 8, 12);
           const forearmX = 28 - armPendulumX;
           graphics.fillEllipse(forearmX, 54, 8, 14);
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(forearmX - 4, 50, 8, 7);
-          graphics.fillStyle(0xf5c6a5, 1);
-          graphics.fillCircle(forearmX, 61, 4);
+          graphics.fillStyle(0x1d4ed8, 1); // Manga azul
+          graphics.fillRect(forearmX - 4, 48, 8, 6);
+          graphics.fillStyle(0xf5c6a5, 1); // Puño cerrado desarmado
+          graphics.fillCircle(forearmX, 61, 4.5);
+
         } else if (dir === 'right' || dir === 'up-right' || dir === 'down-right') {
           graphics.fillEllipse(36, 44, 8, 12);
           const forearmX = 36 + armPendulumX;
           graphics.fillEllipse(forearmX, 54, 8, 14);
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(forearmX - 4, 50, 8, 7);
+          graphics.fillStyle(0x1d4ed8, 1);
+          graphics.fillRect(forearmX - 4, 48, 8, 6);
           graphics.fillStyle(0xf5c6a5, 1);
-          graphics.fillCircle(forearmX, 61, 4);
+          graphics.fillCircle(forearmX, 61, 4.5);
+
         } else {
+          // Vista Frontal / Trasera: Ambos brazos relajados a los lados
           graphics.fillEllipse(12, 44, 7, 12);
           graphics.fillEllipse(52, 44, 7, 12);
 
@@ -370,104 +377,65 @@ export class BootScene extends Phaser.Scene {
 
           graphics.fillEllipse(12, leftForearmY, 7, 14);
           graphics.fillEllipse(52, rightForearmY, 7, 14);
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(9, leftForearmY - 3, 7, 6);
-          graphics.fillRect(49, rightForearmY - 3, 7, 6);
+
+          graphics.fillStyle(0x1d4ed8, 1);
+          graphics.fillRect(9, leftForearmY - 4, 7, 6);
+          graphics.fillRect(49, rightForearmY - 4, 7, 6);
+
           graphics.fillStyle(0xf5c6a5, 1);
-          graphics.fillCircle(12, leftForearmY + 7, 4);
-          graphics.fillCircle(52, rightForearmY + 7, 4);
+          graphics.fillCircle(12, leftForearmY + 7, 4.5);
+          graphics.fillCircle(52, rightForearmY + 7, 4.5);
         }
 
         // ----------------------------------------------------
-        // 5. HUMAN HEAD, NOSE, EAR & HAIR
+        // 4. CABEZA, PEINADO NOBLE & ROSTRO
         // ----------------------------------------------------
         graphics.fillStyle(0xf5c6a5, 1);
+        graphics.fillEllipse(32, 22, 26, 24); // Cabeza masculina limpia
+        graphics.fillEllipse(32, 27, 22, 16);
 
         if (isSide) {
-          // --- CLEAN SIDE PROFILE HEAD ---
-          // Head Base Oval
-          graphics.fillEllipse(32, 23, 22, 24);
-
-          // Ear Lobe at Center
+          // Orejas & Perfil
           const earX = isLeft ? 35 : 29;
-          graphics.fillStyle(0xf5c6a5, 1);
-          graphics.fillCircle(earX, 24, 3);
-          graphics.fillStyle(0xd9a07a, 1);
-          graphics.fillCircle(earX, 24, 1.5);
+          graphics.fillStyle(0xf5c6a5, 1); graphics.fillCircle(earX, 24, 3);
+          graphics.fillStyle(0xd9a07a, 1); graphics.fillCircle(earX, 24, 1.5);
 
-          // Nose Profile Tip
-          graphics.fillStyle(0xe5b08d, 1);
-          if (isLeft) graphics.fillTriangle(22, 22, 19, 25, 22, 25);
-          else graphics.fillTriangle(42, 22, 45, 25, 42, 25);
+          // Cabello Castaño Peinado Noble (Como en la imagen de referencia)
+          graphics.fillStyle(0x451a03, 1);
+          graphics.fillEllipse(32, 16, 24, 12);
+          graphics.fillCircle(isLeft ? 36 : 28, 20, 10);
+          graphics.fillRect(isLeft ? 24 : 32, 15, 9, 5); // Flequillo
 
-          // Dark Brown Layered Hair
-          graphics.fillStyle(0x381d09, 1);
-          graphics.fillEllipse(32, 16, 22, 12); // Hair Top Cap
-          graphics.fillCircle(isLeft ? 36 : 28, 20, 10); // Back Hair Volume
-          graphics.fillRect(isLeft ? 26 : 32, 15, 8, 4); // Bangs
-
-          // Eyebrow & Side Eye
-          graphics.fillStyle(0x27140a, 1); // Eyebrow
-          graphics.fillRect(isLeft ? 24 : 34, 21, 5, 2);
-          graphics.fillStyle(0x0f172a, 1); // Eye
-          graphics.fillRect(isLeft ? 25 : 35, 24, 3, 4);
-          graphics.fillStyle(0xffffff, 1); // Pupil
-          graphics.fillRect(isLeft ? 25 : 36, 24, 1, 2);
+          // Ojo Noble
+          graphics.fillStyle(0x0f172a, 1); graphics.fillRect(isLeft ? 25 : 35, 24, 3, 4);
+          graphics.fillStyle(0xffffff, 1); graphics.fillRect(isLeft ? 25 : 36, 24, 1, 2);
 
         } else {
-          // FRONT / BACK VIEW HEAD - FULL HEALTHY HUMAN HEAD WITH CHEEKS ("CACHETES")
-          graphics.fillStyle(0xf5c6a5, 1);
-          // Full Upper Cranium & Wide Cheeks Base (x=18 to x=46)
-          graphics.fillEllipse(32, 22, 28, 24);
-          // Natural Rounded Lower Jaw & Chin Base
-          graphics.fillEllipse(32, 27, 24, 16);
+          if (dir === 'down' || dir.includes('down')) {
+            // Orejas
+            graphics.fillStyle(0xf5c6a5, 1); graphics.fillCircle(19, 24, 3); graphics.fillCircle(45, 24, 3);
+            // Cabello Castaño Noble
+            graphics.fillStyle(0x451a03, 1);
+            graphics.fillEllipse(32, 14, 26, 13);
+            graphics.fillRect(19, 14, 26, 6);
+            // Flequillo elegante
+            graphics.beginPath();
+            graphics.moveTo(20, 18); graphics.lineTo(34, 22); graphics.lineTo(26, 25);
+            graphics.closePath(); graphics.fillPath();
 
-          if (dir === 'down') {
-            // Ears
-            graphics.fillStyle(0xf5c6a5, 1);
-            graphics.fillCircle(20, 24, 3);
-            graphics.fillCircle(44, 24, 3);
-            graphics.fillStyle(0xd9a07a, 1);
-            graphics.fillCircle(20, 24, 1.5);
-            graphics.fillCircle(44, 24, 1.5);
-
-            // Defined Nose Bridge
-            graphics.fillStyle(0xe5b08d, 1);
-            graphics.fillRect(31, 24, 2, 5);
-
-            // Soft Cheek Volume & Cheekbone Contour ("Cachetes")
-            graphics.fillStyle(0xebba9b, 0.8);
-            graphics.fillEllipse(22, 27, 5, 3);
-            graphics.fillEllipse(42, 27, 5, 3);
-          }
-
-          graphics.fillStyle(0x381d09, 1);
-          if (dir === 'up') {
-            graphics.fillCircle(32, 21, 14);
-            graphics.fillEllipse(32, 26, 22, 16);
-          } else if (dir.includes('up')) {
-            graphics.fillCircle(32, 20, 14);
-            graphics.fillEllipse(32, 24, 22, 14);
-          } else {
-            graphics.fillEllipse(32, 14, 24, 12);
-            graphics.fillRect(19, 14, 26, 5);
+            // Ojos Expresivos & Cejas Nobles
             graphics.fillStyle(0x27140a, 1);
-            graphics.fillRect(20, 12, 24, 3);
-
-            graphics.fillStyle(0x5c2c16, 1);
-            graphics.fillRect(24, 13, 6, 4);
-            graphics.fillRect(34, 13, 6, 4);
-
-            graphics.fillStyle(0x27140a, 1);
-            graphics.fillRect(23, 22, 6, 2);
-            graphics.fillRect(35, 22, 6, 2);
-
+            graphics.fillRect(23, 21, 6, 2); graphics.fillRect(35, 21, 6, 2); // Cejas
             graphics.fillStyle(0x0f172a, 1);
-            graphics.fillRect(24, 25, 4, 4);
-            graphics.fillRect(36, 25, 4, 4);
+            graphics.fillRect(24, 24, 4, 4); graphics.fillRect(36, 24, 4, 4); // Ojos
             graphics.fillStyle(0xffffff, 1);
-            graphics.fillRect(25, 25, 2, 2);
-            graphics.fillRect(37, 25, 2, 2);
+            graphics.fillRect(25, 24, 2, 2); graphics.fillRect(37, 24, 2, 2); // Brillo pupilas
+
+          } else {
+            // Vista Posterior Cabello
+            graphics.fillStyle(0x451a03, 1);
+            graphics.fillCircle(32, 20, 14);
+            graphics.fillEllipse(32, 25, 22, 16);
           }
         }
 

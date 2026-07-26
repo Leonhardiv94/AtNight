@@ -306,11 +306,21 @@ export class GameScene extends Phaser.Scene {
           key: `hero-walk-${d}`,
           frames: [
             { key: `hero-${d}-1` },
-            { key: `hero-${d}-0` },
             { key: `hero-${d}-2` },
+            { key: `hero-${d}-3` },
             { key: `hero-${d}-0` }
           ],
-          frameRate: 10,
+          frameRate: 9,
+          repeat: -1
+        });
+      }
+      if (!this.anims.exists(`hero-idle-${d}`)) {
+        this.anims.create({
+          key: `hero-idle-${d}`,
+          frames: [
+            { key: `hero-${d}-0` }
+          ],
+          frameRate: 1,
           repeat: -1
         });
       }
@@ -599,9 +609,8 @@ export class GameScene extends Phaser.Scene {
       this.lastDirection = currentDir;
       this.player.play(`hero-walk-${currentDir}`, true);
     } else {
-      // Idle Stance matching last movement direction
-      this.player.stop();
-      this.player.setTexture(`hero-${this.lastDirection}-0`);
+      // Idle Stance / Reposo en las 8 direcciones
+      this.player.play(`hero-idle-${this.lastDirection}`, true);
     }
   }
 

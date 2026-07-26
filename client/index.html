@@ -2988,16 +2988,11 @@
 
         // 3. ARMAS Y ACCESORIOS SEGÚN LA CLASE DE PERSONAJE ⚔️🏹🔮☀️🌙
         if (clsId === 'espadachin') {
-          // Espada Real de Acero con Canalón y Pomo de León
-          ctx.fillStyle = '#f8fafc';
-          ctx.fillRect(px + 14, py - 14, 6, 44);
-          // Canalón de la espada
-          ctx.fillStyle = '#94a3b8';
-          ctx.fillRect(px + 16, py - 12, 2, 38);
-          // Guardamonte y Pomo Dorado de León
-          ctx.fillStyle = '#fbbf24';
-          ctx.fillRect(px + 11, py - 16, 12, 5);
-          ctx.beginPath(); ctx.arc(px + 17, py + 32, 4, 0, Math.PI * 2); ctx.fill();
+          // Espadachín Inicialmente Desarmado (Sin espada en mano ni equipo cargado)
+          ctx.fillStyle = skinColor;
+          ctx.beginPath();
+          ctx.arc(px + (isFemale ? 12 : 14), py + 18, 4.5, 0, Math.PI * 2);
+          ctx.fill();
         } else if (clsId === 'arquero') {
           ctx.strokeStyle = '#78350f';
           ctx.lineWidth = 3.5;

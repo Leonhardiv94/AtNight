@@ -1056,7 +1056,9 @@
   <div class="hud-overlay">
     <!-- Top Left: Status Bar -->
     <div class="player-hud interactive">
-      <div class="player-avatar">⚔️</div>
+      <div class="player-avatar">
+        <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; fill: #38bdf8;"><path d="M6.92 5.51L12 10.59l5.08-5.08 1.41 1.41-5.08 5.08 5.08 5.08-1.41 1.41L12 13.41l-5.08 5.08-1.41-1.41 5.08-5.08L5.51 6.92z"/></svg>
+      </div>
       <div class="player-info">
         <div class="player-title-row">
           <span class="player-name" id="hud-player-name">Héroe AtNight</span>
@@ -1094,7 +1096,7 @@
           </svg>
           <span>INFORMACIÓN</span>
         </div>
-        <!-- 1. Life Bar Row (❤️ Health) -->
+        <!-- 1. Life Bar Row (Health) -->
         <div class="hud-bar-row health-row" id="hud-health-row" title="Vida (HP)">
           <div class="hud-bar-icon-wrapper heart-wrapper">
             <svg class="hud-icon-svg heart-svg" viewBox="0 0 24 24">
@@ -1107,7 +1109,7 @@
           </div>
         </div>
 
-        <!-- 2. Mana Bar Row (⚡ Mana) -->
+        <!-- 2. Mana Bar Row (Mana) -->
         <div class="hud-bar-row mana-row" id="hud-mana-row" title="Maná (MP)">
           <div class="hud-bar-icon-wrapper mana-wrapper">
             <svg class="hud-icon-svg mana-svg" viewBox="0 0 24 24">
@@ -1120,7 +1122,7 @@
           </div>
         </div>
 
-        <!-- 3. Experience Bar Row (⭐ XP) -->
+        <!-- 3. Experience Bar Row (XP) -->
         <div class="hud-bar-row xp-row" id="hud-xp-row" title="Experiencia (XP)">
           <div class="hud-bar-icon-wrapper xp-wrapper">
             <svg class="hud-icon-svg xp-svg" viewBox="0 0 24 24">
@@ -1148,35 +1150,35 @@
             <div class="power-slot locked" title="Poder 1 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">1</span>
+            <span class="power-slot-number">1</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 2 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">2</span>
+            <span class="power-slot-number">2</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 3 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">3</span>
+            <span class="power-slot-number">3</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 4 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">4</span>
+            <span class="power-slot-number">4</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 5 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">5</span>
+            <span class="power-slot-number">5</span>
           </div>
 
           <!-- Abajo: 6 al 0 -->
@@ -1184,35 +1186,35 @@
             <div class="power-slot locked" title="Poder 6 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">6</span>
+            <span class="power-slot-number">6</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 7 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">7</span>
+            <span class="power-slot-number">7</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 8 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">8</span>
+            <span class="power-slot-number">8</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 9 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">9</span>
+            <span class="power-slot-number">9</span>
           </div>
 
           <div class="power-slot-item">
             <div class="power-slot locked" title="Poder 10 Bloqueado (Se desbloquea con la evolución del personaje)">
               <svg class="lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
             </div>
-            <span class="power-slot-label">0</span>
+            <span class="power-slot-number">0</span>
           </div>
         </div>
       </div>
@@ -1231,7 +1233,7 @@
           <div class="gestion-btn-item btn-equipo" title="Equipo" onclick="openGestionModal('equipo')">
             <div class="gestion-circle-btn">
               <svg class="gestion-btn-svg" viewBox="0 0 24 24">
-                <path d="M19.7 4.3a1 1 0 0 0-1.4 0L12 10.6 8.4 7 7 8.4l3.6 3.6-5.8 5.8H3v1.8L4.8 21h1.8v-1.8l5.8-5.8 3.6 3.6 1.4-1.4-3.6-3.6 6.3-6.3a1 1 0 0 0 0-1.4z"/>
+                <path d="M6.92 5.51L12 10.59l5.08-5.08 1.41 1.41-5.08 5.08 5.08 5.08-1.41 1.41L12 13.41l-5.08 5.08-1.41-1.41 5.08-5.08L5.51 6.92z"/>
               </svg>
             </div>
             <span class="gestion-btn-label">Equipo</span>
@@ -1240,7 +1242,7 @@
           <!-- 2. Características -->
           <div class="gestion-btn-item btn-caracteristicas" title="Características" onclick="openGestionModal('caracteristicas')">
             <div class="gestion-circle-btn">
-              <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              <svg class="gestion-btn-svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
             </div>
             <span class="gestion-btn-label">Características</span>
           </div>
@@ -1329,7 +1331,10 @@
   <!-- Modal Ventana de Equipo (Esquinas sin redondear, 3 Secciones) -->
   <div class="equipo-modal-window interactive" id="equipo-modal">
     <div class="modal-header">
-      <span class="modal-title">🗡️ EQUIPO & PERSONAJE</span>
+      <span class="modal-title">
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #38bdf8; vertical-align: middle; margin-right: 4px;"><path d="M6.92 5.51L12 10.59l5.08-5.08 1.41 1.41-5.08 5.08 5.08 5.08-1.41 1.41L12 13.41l-5.08 5.08-1.41-1.41 5.08-5.08L5.51 6.92z"/></svg>
+        EQUIPO & PERSONAJE
+      </span>
       <button class="modal-close" onclick="toggleEquipoModal()">&times;</button>
     </div>
 
@@ -1398,7 +1403,7 @@
               <!-- 2. Brazalete 1 -->
               <div class="equip-slot-box" title="Brazalete Izquierdo Bloqueado">
                 <svg class="equip-slot-svg" viewBox="0 0 24 24">
-                  <path d="M18 6H6c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 9c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/>
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
                 </svg>
                 <span class="equip-slot-title">Brazalete</span>
               </div>
@@ -1406,7 +1411,7 @@
               <!-- 3. Brazalete 2 -->
               <div class="equip-slot-box" title="Brazalete Derecho Bloqueado">
                 <svg class="equip-slot-svg" viewBox="0 0 24 24">
-                  <path d="M18 6H6c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 9c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/>
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
                 </svg>
                 <span class="equip-slot-title">Brazalete</span>
               </div>
@@ -1421,12 +1426,30 @@
             <span>Características</span>
           </div>
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.72rem; color: #e2e8f0;">
-            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #ef4444;">❤️ Vitalidad: <strong style="color: #f87171;">100 / 100</strong></div>
-            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #3b82f6;">⚡ Maná: <strong style="color: #60a5fa;">50 / 50</strong></div>
-            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #f59e0b;">⚔️ Ataque: <strong style="color: #fbbf24;">25</strong></div>
-            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #10b981;">🛡️ Defensa: <strong style="color: #34d399;">12</strong></div>
-            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #a855f7;">✨ Crítico: <strong style="color: #c084fc;">5%</strong></div>
-            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #06b6d4;">🏃 Velocidad: <strong style="color: #22d3ee;">180</strong></div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #ef4444; display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: #f87171;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span>Vitalidad: <strong style="color: #f87171;">100 / 100</strong></span>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #3b82f6; display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: #60a5fa;"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+              <span>Maná: <strong style="color: #60a5fa;">50 / 50</strong></span>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #f59e0b; display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: #fbbf24;"><path d="M6.92 5.51L12 10.59l5.08-5.08 1.41 1.41-5.08 5.08 5.08 5.08-1.41 1.41L12 13.41l-5.08 5.08-1.41-1.41 5.08-5.08L5.51 6.92z"/></svg>
+              <span>Ataque: <strong style="color: #fbbf24;">25</strong></span>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #10b981; display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: #34d399;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+              <span>Defensa: <strong style="color: #34d399;">12</strong></span>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #a855f7; display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: #c084fc;"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61z"/></svg>
+              <span>Crítico: <strong style="color: #c084fc;">5%</strong></span>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 0.4rem; border-left: 2px solid #06b6d4; display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: #22d3ee;"><path d="M13.5 13.5c-2.2 0-4 1.8-4 4 0 .7.2 1.4.6 2 1.2-1.3 2.9-2 4.7-2s3.5.7 4.7 2c.4-.6.6-1.3.6-2 0-2.2-1.8-4-4-4zm6.8-5.3L13.8 2.7C13.4 2.3 12.7 2 12 2H6C4.9 2 4 2.9 4 4v12c0 1.1.9 2 2 2h4.2c.5-2.4 2.4-4.2 4.8-4.5V9.5c0-.6.4-1 1-1h4.3z"/></svg>
+              <span>Velocidad: <strong style="color: #22d3ee;">180</strong></span>
+            </div>
           </div>
         </div>
       </div>
@@ -1434,7 +1457,7 @@
       <!-- Columna Derecha: SECCIÓN 3 (Equipo) -->
       <div class="equipo-section-box">
         <div class="equipo-section-title">
-          <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #a855f7;"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.9 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+          <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #a855f7;"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
           <span>Equipo</span>
         </div>
         <p style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 0.5rem;">Objetos equipados y zurrón táctico:</p>
@@ -1449,7 +1472,10 @@
   <div class="caracteristicas-modal-window interactive" id="caracteristicas-modal">
     <div class="modal-header">
       <div class="char-header-title-box">
-        <span class="modal-title" id="caracteristicas-name-val">👤 Héroe</span>
+        <span class="modal-title" id="caracteristicas-name-val">
+          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #fbbf24; vertical-align: middle; margin-right: 4px;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Héroe
+        </span>
         <span class="char-level-badge" id="caracteristicas-level-badge">Nivel 1</span>
       </div>
       <button class="modal-close" onclick="toggleCaracteristicasModal()">&times;</button>
@@ -1459,7 +1485,10 @@
       <!-- SECCIÓN 1: ELEMENTOS (Puntos de Características Disponibles + Botones +) -->
       <div class="stats-section-box">
         <div class="stats-section-header">
-          <span class="stats-header-title">🔥 ELEMENTOS</span>
+          <span class="stats-header-title" style="display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #f97316;"><path d="M13.5 11c-.48 2.37-2.37 4.1-4.75 4.1-2.62 0-4.75-2.13-4.75-4.75 0-2.25 1.56-4.14 3.69-4.63.14.73.53 1.39 1.1 1.86.67.55 1.52.87 2.41.87.8 0 1.55-.26 2.17-.71.09.43.13.87.13 1.26zm6.2-2.88C19 6.2 17.5 4.5 15.5 3.5c.3 1.2.1 2.5-.6 3.5-.7 1-1.8 1.6-3 1.6-1.5 0-2.8-1-3.3-2.4C6.5 7.4 5 9.7 5 12.3c0 3.7 3 6.7 6.7 6.7s6.7-3 6.7-6.7c0-1.5-.5-3-1.7-4.18z"/></svg>
+            ELEMENTOS
+          </span>
           <span class="stat-points-available">Puntos Disponibles: <strong id="caracteristicas-points-val" style="color: #fbbf24; font-size: 0.9rem;">0</strong></span>
         </div>
 
@@ -1467,7 +1496,7 @@
           <!-- 1. Vitalidad -->
           <div class="element-row-item">
             <div class="element-info">
-              <span class="element-icon">❤️</span>
+              <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #f87171;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               <span class="element-name">Vitalidad</span>
             </div>
             <div class="element-val-box">
@@ -1479,7 +1508,7 @@
           <!-- 2. Sabiduría -->
           <div class="element-row-item">
             <div class="element-info">
-              <span class="element-icon">📖</span>
+              <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #38bdf8;"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
               <span class="element-name">Sabiduría</span>
             </div>
             <div class="element-val-box">
@@ -1491,7 +1520,7 @@
           <!-- 3. Aire -->
           <div class="element-row-item">
             <div class="element-info">
-              <span class="element-icon">🌪️</span>
+              <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #6ee7b7;"><path d="M14.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3h2c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1H2v-2h9.5c1.65 0 3 1.35 3 3zM19 12c0 1.65-1.35 3-3 3s-3-1.35-3-3h2c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1H2v-2h14c1.65 0 3 1.35 3 3zM16.5 7c0-1.65 1.35-3 3-3s3 1.35 3 3h-2c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1H2V9h14.5c1.65 0 3-1.35 3-3z"/></svg>
               <span class="element-name">Aire</span>
             </div>
             <div class="element-val-box">
@@ -1503,7 +1532,7 @@
           <!-- 4. Tierra -->
           <div class="element-row-item">
             <div class="element-info">
-              <span class="element-icon">🪨</span>
+              <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #fde047;"><path d="M12 2L2 7l10 15 10-15L12 2zm0 3.8l6.3 3.2L12 12.2 5.7 9 12 5.8z"/></svg>
               <span class="element-name">Tierra</span>
             </div>
             <div class="element-val-box">
@@ -1515,7 +1544,7 @@
           <!-- 5. Fuego -->
           <div class="element-row-item">
             <div class="element-info">
-              <span class="element-icon">🔥</span>
+              <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #f97316;"><path d="M13.5 11c-.48 2.37-2.37 4.1-4.75 4.1-2.62 0-4.75-2.13-4.75-4.75 0-2.25 1.56-4.14 3.69-4.63.14.73.53 1.39 1.1 1.86.67.55 1.52.87 2.41.87.8 0 1.55-.26 2.17-.71.09.43.13.87.13 1.26zm6.2-2.88C19 6.2 17.5 4.5 15.5 3.5c.3 1.2.1 2.5-.6 3.5-.7 1-1.8 1.6-3 1.6-1.5 0-2.8-1-3.3-2.4C6.5 7.4 5 9.7 5 12.3c0 3.7 3 6.7 6.7 6.7s6.7-3 6.7-6.7c0-1.5-.5-3-1.7-4.18z"/></svg>
               <span class="element-name">Fuego</span>
             </div>
             <div class="element-val-box">
@@ -1527,7 +1556,7 @@
           <!-- 6. Agua -->
           <div class="element-row-item">
             <div class="element-info">
-              <span class="element-icon">💧</span>
+              <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #38bdf8;"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
               <span class="element-name">Agua</span>
             </div>
             <div class="element-val-box">
@@ -1541,38 +1570,56 @@
       <!-- SECCIÓN 2: CARACTERÍSTICAS ESPECIALES (Solamente suben con equipo, inician en 0) -->
       <div class="stats-section-box" style="margin-top: 0.8rem;">
         <div class="stats-section-header">
-          <span class="stats-header-title">✨ CARACTERÍSTICAS ESPECIALES</span>
+          <span class="stats-header-title" style="display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #c084fc;"><path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61z"/></svg>
+            CARACTERÍSTICAS ESPECIALES
+          </span>
           <span style="font-size: 0.65rem; color: #94a3b8;">(Suben solo con equipo)</span>
         </div>
 
         <div class="special-stats-grid">
           <!-- 1. Tasa de Maná -->
           <div class="special-stat-card">
-            <span class="special-stat-label">⚡ Tasa de Maná</span>
+            <span class="special-stat-label" style="display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 13px; height: 13px; fill: #60a5fa;"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+              Tasa de Maná
+            </span>
             <span class="special-stat-val" id="spec-val-tasa-mana">0</span>
           </div>
 
           <!-- 2. Maná Total -->
           <div class="special-stat-card">
-            <span class="special-stat-label">🔮 Maná Total</span>
+            <span class="special-stat-label" style="display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 13px; height: 13px; fill: #c084fc;"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/></svg>
+              Maná Total
+            </span>
             <span class="special-stat-val" id="spec-val-mana-total">0</span>
           </div>
 
           <!-- 3. Velocidad -->
           <div class="special-stat-card">
-            <span class="special-stat-label">🏃 Velocidad</span>
+            <span class="special-stat-label" style="display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 13px; height: 13px; fill: #22d3ee;"><path d="M13.5 13.5c-2.2 0-4 1.8-4 4 0 .7.2 1.4.6 2 1.2-1.3 2.9-2 4.7-2s3.5.7 4.7 2c.4-.6.6-1.3.6-2 0-2.2-1.8-4-4-4zm6.8-5.3L13.8 2.7C13.4 2.3 12.7 2 12 2H6C4.9 2 4 2.9 4 4v12c0 1.1.9 2 2 2h4.2c.5-2.4 2.4-4.2 4.8-4.5V9.5c0-.6.4-1 1-1h4.3z"/></svg>
+              Velocidad
+            </span>
             <span class="special-stat-val" id="spec-val-velocidad">0</span>
           </div>
 
           <!-- 4. Defensa -->
           <div class="special-stat-card">
-            <span class="special-stat-label">🛡️ Defensa</span>
+            <span class="special-stat-label" style="display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 13px; height: 13px; fill: #34d399;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+              Defensa
+            </span>
             <span class="special-stat-val" id="spec-val-defensa">0</span>
           </div>
 
           <!-- 5. Ataque -->
           <div class="special-stat-card">
-            <span class="special-stat-label">⚔️ Ataque</span>
+            <span class="special-stat-label" style="display: flex; align-items: center; gap: 4px;">
+              <svg viewBox="0 0 24 24" style="width: 13px; height: 13px; fill: #fbbf24;"><path d="M6.92 5.51L12 10.59l5.08-5.08 1.41 1.41-5.08 5.08 5.08 5.08-1.41 1.41L12 13.41l-5.08 5.08-1.41-1.41 5.08-5.08L5.51 6.92z"/></svg>
+              Ataque
+            </span>
             <span class="special-stat-val" id="spec-val-ataque">0</span>
           </div>
         </div>
@@ -1583,7 +1630,10 @@
   <!-- Inventory Modal Window -->
   <div class="game-modal interactive" id="inventory-modal">
     <div class="modal-header">
-      <span class="modal-title">🎒 Inventario & Equipamiento</span>
+      <span class="modal-title">
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #10b981; vertical-align: middle; margin-right: 4px;"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+        Inventario & Equipamiento
+      </span>
       <button class="modal-close" onclick="toggleInventory()">&times;</button>
     </div>
     <p style="font-size: 0.82rem; color: #94a3b8;">Recursos y objetos obtenidos en combate o recolección:</p>

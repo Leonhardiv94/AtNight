@@ -43,11 +43,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 70.45163333333355,
-      "y": 1373.0239333333452
+      "x": 51.43252512784991,
+      "y": 802.8379372892077
     },
-    "updatedAt": "2026-07-26T20:37:53.038Z",
-    "ownerEmail": "leonhardiv94@gmail.com"
+    "updatedAt": "2026-07-26T20:45:32.492Z"
   },
   "HéroeAtNight": {
     "characterName": "HéroeAtNight",
@@ -96,6 +95,6 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-26T20:40:35.660Z"
+    "updatedAt": "2026-07-26T20:42:10.597Z"
   }
 }

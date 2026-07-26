@@ -818,12 +818,20 @@ export class GameScene extends Phaser.Scene {
       this.lastDirection = currentDir;
       const walkKey = `char-${this.currentCharacterName}-walk-${currentDir}`;
       const fallbackWalkKey = `hero-walk-${currentDir}`;
-      this.player.play(this.anims.exists(walkKey) ? walkKey : fallbackWalkKey, true);
+      try {
+        this.player.play(this.anims.exists(walkKey) ? walkKey : fallbackWalkKey, true);
+      } catch (e) {
+        this.player.play(fallbackWalkKey, true);
+      }
     } else {
       // Idle Stance / Reposo en las 8 direcciones
       const idleKey = `char-${this.currentCharacterName}-idle-${this.lastDirection}`;
       const fallbackIdleKey = `hero-idle-${this.lastDirection}`;
-      this.player.play(this.anims.exists(idleKey) ? idleKey : fallbackIdleKey, true);
+      try {
+        this.player.play(this.anims.exists(idleKey) ? idleKey : fallbackIdleKey, true);
+      } catch (e) {
+        this.player.play(fallbackIdleKey, true);
+      }
     }
   }
 

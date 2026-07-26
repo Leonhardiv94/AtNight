@@ -131,9 +131,156 @@ const PlayerSchema = new mongoose.Schema({
 const MongoPlayer = mongoose.model('Player', PlayerSchema);
 let isMongoConnected = false;
 
+// Accounts Database Store
+export interface UserAccount {
+  email: string;
+  passwordHash: string;
+  fullName: string;
+  idDocument: string;
+  birthDate: string;
+  country: string;
+  characterName: string;
+  createdAt: string;
+}
+
+let localUsersDb: Record<string, UserAccount> = {};
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+
+function loadUsersDb() {
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      localUsersDb = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
+    } else {
+      localUsersDb = {};
+      fs.writeFileSync(USERS_FILE, JSON.stringify(localUsersDb, null, 2), 'utf-8');
+    }
+  } catch (err) {
+    localUsersDb = {};
+  }
+}
+
+function saveUsersDb() {
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(localUsersDb, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error guardando usuarios:', err);
+  }
+}
+
+loadUsersDb();
+
 // ----------------------------------------------------
-// REST API ENDPOINTS FOR LOCAL & CLOUD STORAGE
+// REST API ENDPOINTS FOR AUTH & GAME DATA
 // ----------------------------------------------------
+
+// 0. Autenticación: Registro
+app.post('/api/auth/register', (req, res) => {
+  const { email, password, confirmPassword, fullName, idDocument, birthDate, country } = req.body;
+
+  if (!email || !password || !fullName || !idDocument || !birthDate || !country) {
+    return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios.' });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ success: false, message: 'Las contraseñas no coinciden.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+
+  if (localUsersDb[cleanEmail]) {
+    return res.status(400).json({ success: false, message: 'El correo electrónico ya está registrado.' });
+  }
+
+  // Generar nombre de personaje derivado del nombre completo
+  const charName = fullName.trim().split(' ')[0] + '_' + idDocument.slice(-4);
+
+  const newUser: UserAccount = {
+    email: cleanEmail,
+    passwordHash: password, // Para dev local
+    fullName,
+    idDocument,
+    birthDate,
+    country,
+    characterName: charName,
+    createdAt: new Date().toISOString()
+  };
+
+  localUsersDb[cleanEmail] = newUser;
+  saveUsersDb();
+
+  // Inicializar Personaje en players.json
+  const defaultPlayer: PlayerRecord = {
+    characterName: charName,
+    level: 1,
+    xp: 0,
+    availablePoints: 0,
+    elements: {
+      vitalidad: { equip: 0, base: 0 },
+      sabiduria: { equip: 0, base: 0 },
+      aire: { equip: 0, base: 0 },
+      tierra: { equip: 0, base: 0 },
+      fuego: { equip: 0, base: 0 },
+      agua: { equip: 0, base: 0 }
+    },
+    specials: {
+      tasaMana: 0,
+      manaTotal: 0,
+      velocidad: 0,
+      defensa: 0,
+      ataque: 0
+    },
+    hp: 100,
+    maxHp: 100,
+    mana: 10,
+    maxMana: 10,
+    inventory: [],
+    lastPosition: { x: 0, y: 0 },
+    updatedAt: new Date().toISOString()
+  };
+
+  localPlayersDb[charName] = defaultPlayer;
+  saveLocalDb();
+
+  return res.json({
+    success: true,
+    message: '¡Registro completado exitosamente!',
+    user: newUser,
+    player: defaultPlayer
+  });
+});
+
+// 0. Autenticación: Login
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: 'Ingresa correo y contraseña.' });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const user = localUsersDb[cleanEmail];
+
+  if (!user || user.passwordHash !== password) {
+    return res.status(400).json({ success: false, message: 'Credenciales inválidas. Verifica tu correo y contraseña.' });
+  }
+
+  const player = localPlayersDb[user.characterName] || {
+    characterName: user.characterName,
+    level: 1,
+    xp: 0,
+    availablePoints: 0,
+    elements: { vitalidad: { equip: 0, base: 0 }, sabiduria: { equip: 0, base: 0 }, aire: { equip: 0, base: 0 }, tierra: { equip: 0, base: 0 }, fuego: { equip: 0, base: 0 }, agua: { equip: 0, base: 0 } },
+    specials: { tasaMana: 0, manaTotal: 0, velocidad: 0, defensa: 0, ataque: 0 },
+    hp: 100, maxHp: 100, mana: 10, maxMana: 10, inventory: [], lastPosition: { x: 0, y: 0 }, updatedAt: new Date().toISOString()
+  };
+
+  return res.json({
+    success: true,
+    message: `¡Bienvenido de nuevo, ${user.fullName}!`,
+    user,
+    player
+  });
+});
 
 // 1. Health Status endpoint
 app.get('/api/status', (req, res) => {

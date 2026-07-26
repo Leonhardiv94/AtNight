@@ -1046,9 +1046,331 @@
     .controls-help span strong {
       color: #00f2fe;
     }
+
+    /* ---------------------------------------------------- */
+    /* AUTH SCREEN & BACKGROUND ANIMATED CANVAS STYLES      */
+    /* ---------------------------------------------------- */
+    #auth-screen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      background: #090d16;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #auth-screen-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #auth-bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .auth-content-box {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 500px;
+      width: 92vw;
+      margin: 2rem 0;
+    }
+
+    .auth-brand-logo {
+      font-size: 3.2rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      text-transform: none;
+      user-select: none;
+      filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.8));
+    }
+
+    .brand-at-sun {
+      background: linear-gradient(135deg, #fff066, #f59e0b, #d97706);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.7));
+    }
+
+    .brand-night-moon {
+      background: linear-gradient(135deg, #ffffff, #cbd5e1, #64748b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+    }
+
+    /* Modal Blanco Muy Transparente */
+    .auth-glass-modal {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 0 !important; /* Esquinas rectos sin redondear */
+      padding: 1.8rem 2rem;
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .auth-modal-header {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .auth-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      position: relative;
+    }
+
+    .auth-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: 0.5px;
+    }
+
+    .auth-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .auth-input, .auth-select {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0 !important;
+      color: #ffffff;
+      font-size: 0.88rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .auth-input:focus, .auth-select:focus {
+      border-color: #f59e0b;
+      background: rgba(15, 23, 42, 0.85);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+    }
+
+    .auth-eye-btn {
+      position: absolute;
+      right: 10px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    .auth-eye-svg {
+      width: 20px;
+      height: 20px;
+      fill: #cbd5e1;
+      transition: fill 0.2s ease;
+    }
+
+    .auth-eye-btn:hover .auth-eye-svg {
+      fill: #fbbf24;
+    }
+
+    .auth-submit-btn {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.5rem;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border: 1px solid #fbbf24;
+      border-radius: 0 !important;
+      color: #0f172a;
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.5);
+    }
+
+    .auth-submit-btn:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.7);
+    }
+
+    .auth-switch-link {
+      font-size: 0.78rem;
+      color: #e2e8f0;
+      text-align: center;
+      margin-top: 0.4rem;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.2s ease;
+    }
+
+    .auth-switch-link:hover {
+      color: #fbbf24;
+    }
+
+    .auth-error-msg {
+      font-size: 0.78rem;
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 0.4rem 0.6rem;
+      border-radius: 0;
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <!-- Auth Screen Overlay (Login & Registro) -->
+  <div id="auth-screen-overlay">
+    <canvas id="auth-bg-canvas"></canvas>
+
+    <div class="auth-content-box">
+      <!-- Title Header: At (Sun Gradient) + Night (Moon Gradient) -->
+      <div class="auth-brand-logo">
+        <span class="brand-at-sun">At</span><span class="brand-night-moon">Night</span>
+      </div>
+
+      <!-- FORMULARIO DE LOGIN -->
+      <div class="auth-glass-modal" id="login-modal-box">
+        <div class="auth-modal-header">
+          <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #fbbf24;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Iniciar Sesión
+        </div>
+
+        <div class="auth-error-msg" id="login-error-msg"></div>
+
+        <div class="auth-field-group">
+          <label class="auth-label" for="login-email">Correo Electrónico</label>
+          <input type="email" id="login-email" class="auth-input" placeholder="tu@correo.com" required>
+        </div>
+
+        <div class="auth-field-group">
+          <label class="auth-label" for="login-password">Contraseña</label>
+          <div class="auth-input-wrapper">
+            <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required>
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('login-password', 'login-eye-svg')" title="Mostrar/Ocultar Contraseña">
+              <svg id="login-eye-svg" class="auth-eye-svg" viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="auth-submit-btn" onclick="handleLoginSubmit()">ENTRAR AL JUEGO</button>
+        <span class="auth-switch-link" onclick="switchAuthTab('register')">¿No tienes cuenta? Regístrate aquí</span>
+      </div>
+
+      <!-- FORMULARIO DE REGISTRO -->
+      <div class="auth-glass-modal" id="register-modal-box" style="display: none;">
+        <div class="auth-modal-header">
+          <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: #fbbf24;"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Crear Cuenta de Aventurero
+        </div>
+
+        <div class="auth-error-msg" id="register-error-msg"></div>
+
+        <div class="auth-field-group">
+          <label class="auth-label" for="reg-email">Correo Electrónico</label>
+          <input type="email" id="reg-email" class="auth-input" placeholder="ejemplo@correo.com" required>
+        </div>
+
+        <div class="auth-field-group">
+          <label class="auth-label" for="reg-fullname">Nombre Completo</label>
+          <input type="text" id="reg-fullname" class="auth-input" placeholder="Juan Pérez" required>
+        </div>
+
+        <div class="auth-field-group">
+          <label class="auth-label" for="reg-iddocument">Documento de Identidad</label>
+          <input type="text" id="reg-iddocument" class="auth-input" placeholder="123456789" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+          <div class="auth-field-group">
+            <label class="auth-label" for="reg-birthdate">Fecha de Nacimiento</label>
+            <input type="date" id="reg-birthdate" class="auth-input" required>
+          </div>
+
+          <div class="auth-field-group">
+            <label class="auth-label" for="reg-country">País</label>
+            <select id="reg-country" class="auth-select" required>
+              <option value="Colombia">Colombia</option>
+              <option value="México">México</option>
+              <option value="España">España</option>
+              <option value="Argentina">Argentina</option>
+              <option value="Chile">Chile</option>
+              <option value="Perú">Perú</option>
+              <option value="Ecuador">Ecuador</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="auth-field-group">
+          <label class="auth-label" for="reg-password">Contraseña</label>
+          <div class="auth-input-wrapper">
+            <input type="password" id="reg-password" class="auth-input" placeholder="••••••••" required>
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('reg-password', 'reg-eye-svg-1')" title="Mostrar/Ocultar Contraseña">
+              <svg id="reg-eye-svg-1" class="auth-eye-svg" viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-field-group">
+          <label class="auth-label" for="reg-confirmpassword">Confirmación de Contraseña</label>
+          <div class="auth-input-wrapper">
+            <input type="password" id="reg-confirmpassword" class="auth-input" placeholder="••••••••" required>
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('reg-confirmpassword', 'reg-eye-svg-2')" title="Mostrar/Ocultar Contraseña">
+              <svg id="reg-eye-svg-2" class="auth-eye-svg" viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="auth-submit-btn" onclick="handleRegisterSubmit()">COMPLETAR REGISTRO</button>
+        <span class="auth-switch-link" onclick="switchAuthTab('login')">¿Ya tienes cuenta? Inicia Sesión</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Phaser 3 Canvas Render Container -->
   <div id="game-container"></div>
 
@@ -1984,6 +2306,358 @@
       if (animFrameId) cancelAnimationFrame(animFrameId);
       draw();
     }
+
+    /* ---------------------------------------------------- */
+    /* LÓGICA DE AUTENTICACIÓN (LOGIN, REGISTRO & EYE SVG)   */
+    /* ---------------------------------------------------- */
+    function switchAuthTab(tab) {
+      const loginBox = document.getElementById('login-modal-box');
+      const regBox = document.getElementById('register-modal-box');
+      const loginErr = document.getElementById('login-error-msg');
+      const regErr = document.getElementById('register-error-msg');
+      if (loginErr) loginErr.style.display = 'none';
+      if (regErr) regErr.style.display = 'none';
+
+      if (tab === 'register') {
+        loginBox.style.display = 'none';
+        regBox.style.display = 'flex';
+      } else {
+        regBox.style.display = 'none';
+        loginBox.style.display = 'flex';
+      }
+    }
+
+    function togglePasswordVisibility(inputId, svgId) {
+      const input = document.getElementById(inputId);
+      const svg = document.getElementById(svgId);
+      if (!input || !svg) return;
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        // Eye Slash SVG Icon (Ojo tachado para ocultar)
+        svg.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.17c0-1.66-1.34-3-3-3l-.17.02z"/>';
+      } else {
+        input.type = 'password';
+        // Eye Open SVG Icon (Ojo abierto)
+        svg.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+      }
+    }
+
+    async function handleLoginSubmit() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const errMsg = document.getElementById('login-error-msg');
+
+      if (!email || !password) {
+        errMsg.innerText = 'Por favor ingresa tu correo y contraseña.';
+        errMsg.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3002/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          onAuthSuccess(data.user, data.player);
+        } else {
+          errMsg.innerText = data.message || 'Error al iniciar sesión.';
+          errMsg.style.display = 'block';
+        }
+      } catch (err) {
+        // Fallback local en caso de que no haya conexión
+        onAuthSuccess({ email, fullName: 'Aventurero', characterName: 'HéroeAtNight' }, null);
+      }
+    }
+
+    async function handleRegisterSubmit() {
+      const email = document.getElementById('reg-email').value;
+      const fullName = document.getElementById('reg-fullname').value;
+      const idDocument = document.getElementById('reg-iddocument').value;
+      const birthDate = document.getElementById('reg-birthdate').value;
+      const country = document.getElementById('reg-country').value;
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-confirmpassword').value;
+      const errMsg = document.getElementById('register-error-msg');
+
+      if (!email || !fullName || !idDocument || !birthDate || !country || !password || !confirmPassword) {
+        errMsg.innerText = 'Todos los campos son obligatorios.';
+        errMsg.style.display = 'block';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        errMsg.innerText = 'Las contraseñas no coinciden.';
+        errMsg.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3002/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, fullName, idDocument, birthDate, country, password, confirmPassword })
+        });
+        const data = await res.json();
+        if (data.success) {
+          onAuthSuccess(data.user, data.player);
+        } else {
+          errMsg.innerText = data.message || 'Error en el registro.';
+          errMsg.style.display = 'block';
+        }
+      } catch (err) {
+        onAuthSuccess({ email, fullName, characterName: 'Héroe_' + idDocument.slice(-4) }, null);
+      }
+    }
+
+    function onAuthSuccess(user, player) {
+      window.activeUser = user;
+      const overlay = document.getElementById('auth-screen-overlay');
+      if (overlay) overlay.classList.add('hidden');
+
+      if (player && window.characterStats) {
+        window.characterStats.name = player.characterName || user.fullName;
+        window.characterStats.level = player.level || 1;
+        window.characterStats.availablePoints = player.availablePoints || 0;
+        if (player.elements) window.characterStats.elements = player.elements;
+        if (player.specials) window.characterStats.specials = player.specials;
+        if (window.updateCaracteristicasUI) window.updateCaracteristicasUI();
+      }
+
+      const hudName = document.getElementById('hud-player-name');
+      if (hudName) hudName.innerText = user.characterName || user.fullName;
+
+      if (window.gameInstance && window.gameInstance.scene) {
+        const gameScene = window.gameInstance.scene.getScene('GameScene');
+        if (gameScene && gameScene.loadSavedCharacter) {
+          gameScene.loadSavedCharacter();
+        }
+      }
+    }
+
+    /* ---------------------------------------------------- */
+    /* CANVASES DE FONDO: POLLO GIGANTE MIRANDO Y CON LOMBRIZ */
+    /* ---------------------------------------------------- */
+    let authBgFrameId = null;
+    function renderAuthBackground() {
+      const canvas = document.getElementById('auth-bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      let tick = 0;
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        tick += 0.04;
+
+        const w = canvas.width;
+        const h = canvas.height;
+
+        // 1. Cielo Nocturno Tropical con Estrellas
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+        bgGrad.addColorStop(0, '#090d16');
+        bgGrad.addColorStop(0.6, '#0f172a');
+        bgGrad.addColorStop(1, '#1e293b');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Estrellas titilantes de fondo
+        ctx.fillStyle = '#ffffff';
+        for (let i = 0; i < 60; i++) {
+          const sx = (Math.sin(i * 99 + 1) * 0.5 + 0.5) * w;
+          const sy = (Math.cos(i * 33 + 1) * 0.5 + 0.5) * (h * 0.65);
+          const alpha = 0.2 + Math.sin(tick * 2 + i) * 0.4;
+          ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0.1, alpha)})`;
+          ctx.beginPath();
+          ctx.arc(sx, sy, (i % 2 === 0) ? 1.5 : 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Luna Llena Brillante en el cielo
+        ctx.fillStyle = '#f8fafc';
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+        ctx.shadowBlur = 30;
+        ctx.beginPath();
+        ctx.arc(w * 0.85, h * 0.2, 45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // 2. PAISAJE DE CÉSPED Y ÁRBOLES EN EL FONDO (Lush Greenery & Island Pedestal)
+        const groundY = h * 0.82;
+
+        // Árboles Frondosos de Fondo (Izquierda y Derecha)
+        function drawTree(tx, ty, scale) {
+          ctx.save();
+          ctx.translate(tx, ty);
+          ctx.scale(scale, scale);
+          // Tronco
+          ctx.fillStyle = '#451a03';
+          ctx.fillRect(-12, -40, 24, 60);
+          // Follaje Verde Frondoso
+          ctx.fillStyle = '#15803d';
+          ctx.beginPath(); ctx.arc(0, -70, 45, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#16a34a';
+          ctx.beginPath(); ctx.arc(-22, -60, 32, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(22, -60, 32, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#22c55e';
+          ctx.beginPath(); ctx.arc(0, -85, 28, 0, Math.PI * 2); ctx.fill();
+          ctx.restore();
+        }
+
+        drawTree(w * 0.12, groundY - 20, 1.4);
+        drawTree(w * 0.25, groundY - 10, 1.1);
+        drawTree(w * 0.78, groundY - 25, 1.5);
+        drawTree(w * 0.88, groundY - 15, 1.2);
+
+        // Suelo de Césped Verde Colina
+        ctx.fillStyle = '#15803d';
+        ctx.beginPath();
+        ctx.moveTo(0, groundY);
+        ctx.quadraticCurveTo(w * 0.5, groundY - 30, w, groundY);
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#16a34a';
+        ctx.beginPath();
+        ctx.moveTo(0, groundY + 12);
+        ctx.quadraticCurveTo(w * 0.5, groundY - 18, w, groundY + 12);
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        ctx.fill();
+
+        // 3. POLLO GIGANTE ANIMADO (Mirando a los lados y sacando una lombriz)
+        const chickX = w * 0.5;
+        const chickY = groundY + 15;
+
+        // Movimiento de mirar a los lados (Head turn Angle & Pecking Cycle)
+        const lookCycle = Math.sin(tick * 0.8);
+        const isLookingLeft = lookCycle < -0.3;
+        const isLookingRight = lookCycle > 0.3;
+        const isPecking = Math.sin(tick * 1.6) > 0.5;
+
+        const headOffsetY = isPecking ? 25 : Math.sin(tick * 2) * 4;
+        const headOffsetX = isLookingLeft ? -15 : (isLookingRight ? 15 : 0);
+
+        // Sombra suave del Pollo en el suelo
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.beginPath();
+        ctx.ellipse(chickX, chickY + 30, 95, 30, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Patas Naranjas del Pollo
+        ctx.fillStyle = '#f97316';
+        ctx.fillRect(chickX - 35, chickY + 10, 12, 35);
+        ctx.fillRect(chickX + 23, chickY + 10, 12, 35);
+        // Garras
+        ctx.fillRect(chickX - 45, chickY + 40, 26, 8);
+        ctx.fillRect(chickX + 13, chickY + 40, 26, 8);
+
+        // Cuerpo Redondo Amigable del Pollo Gigante (Plumas Amarillas)
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.ellipse(chickX, chickY - 45, 90, 75, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#fde047'; // Sombras suaves de plumas
+        ctx.beginPath();
+        ctx.ellipse(chickX - 10, chickY - 35, 75, 60, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ala Izquierda
+        ctx.fillStyle = '#eab308';
+        ctx.beginPath();
+        ctx.ellipse(chickX - 70, chickY - 45 + Math.sin(tick * 3) * 3, 30, 45, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Ala Derecha
+        ctx.beginPath();
+        ctx.ellipse(chickX + 70, chickY - 45 - Math.sin(tick * 3) * 3, 30, 45, 0.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cabeza del Pollo
+        const headX = chickX + headOffsetX;
+        const headY = chickY - 120 + headOffsetY;
+
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.arc(headX, headY, 55, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cresta Roja Superior (Chicken Comb)
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath(); ctx.arc(headX - 15, headY - 55, 14, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(headX, headY - 60, 16, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(headX + 15, headY - 55, 14, 0, Math.PI * 2); ctx.fill();
+
+        // Ojos Negros Animados
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(headX + (isLookingRight ? 20 : (isLookingLeft ? 5 : 15)), headY - 10, 8, 0, Math.PI * 2);
+        ctx.fill();
+        // Brillo blanco en los ojos
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(headX + (isLookingRight ? 22 : (isLookingLeft ? 7 : 17)), headY - 12, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pico Naranja del Pollo
+        const beakX = headX + (isLookingRight ? 45 : (isLookingLeft ? -45 : 35));
+        const beakY = headY + 5;
+
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath();
+        ctx.moveTo(headX + (isLookingLeft ? -25 : 20), headY - 5);
+        ctx.lineTo(beakX, beakY);
+        ctx.lineTo(headX + (isLookingLeft ? -25 : 20), headY + 20);
+        ctx.closePath();
+        ctx.fill();
+
+        // Barbilla Roja (Wattle)
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.arc(headX + (isLookingLeft ? -20 : 15), headY + 24, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 4. LOMBRIZ ANIMADA ROSADA SALIENDO DE LA TIERRA
+        const wormX = chickX + (isPecking ? 45 : 65);
+        const wormY = groundY + 10;
+        const wormPull = Math.sin(tick * 2) * 12;
+
+        ctx.strokeStyle = '#f472b6'; // Rosado Lombriz
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(wormX, wormY);
+        ctx.quadraticCurveTo(wormX + 15, wormY - 15 - wormPull, wormX + (isPecking ? 0 : 25), isPecking ? beakY + 5 : wormY - 30 - wormPull);
+        ctx.stroke();
+
+        // Ojos de la lombriz asustada
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(wormX + (isPecking ? -2 : 22), isPecking ? beakY + 2 : wormY - 32 - wormPull, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        authBgFrameId = requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+
+    // Iniciar renderizado del fondo animado
+    renderAuthBackground();
   </script>
 </body>
 </html>

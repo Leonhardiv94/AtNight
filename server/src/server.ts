@@ -53,6 +53,12 @@ export interface SpecialStats {
 
 export interface PlayerRecord {
   characterName: string;
+  ownerEmail?: string;
+  characterClass: 'espadachin' | 'arquero' | 'mago' | 'amigo_sol' | 'amigo_luna';
+  gender: 'masculino' | 'femenino';
+  skinColor: string;
+  hairColor: string;
+  outfitColor: string;
   level: number;
   xp: number;
   availablePoints: number;
@@ -274,11 +280,81 @@ app.post('/api/auth/login', (req, res) => {
     hp: 100, maxHp: 100, mana: 10, maxMana: 10, inventory: [], lastPosition: { x: 0, y: 0 }, updatedAt: new Date().toISOString()
   };
 
+  const userCharacters = Object.values(localPlayersDb).filter(p => p.ownerEmail && p.ownerEmail.toLowerCase() === cleanEmail);
+
   return res.json({
     success: true,
     message: `¡Bienvenido de nuevo, ${user.fullName}!`,
     user,
-    player
+    characters: userCharacters
+  });
+});
+
+// 0. Listar personajes por correo de usuario
+app.get('/api/player/list/:email', (req, res) => {
+  const email = req.params.email.trim().toLowerCase();
+  const characters = Object.values(localPlayersDb).filter(p => p.ownerEmail && p.ownerEmail.toLowerCase() === email);
+  return res.json({ success: true, characters });
+});
+
+// 0. Crear un nuevo personaje personalizado
+app.post('/api/player/create', async (req, res) => {
+  const { characterName, ownerEmail, characterClass, gender, skinColor, hairColor, outfitColor } = req.body;
+
+  if (!characterName || !ownerEmail || !characterClass || !gender || !skinColor || !hairColor || !outfitColor) {
+    return res.status(400).json({ success: false, message: 'Todos los campos de personalización son obligatorios.' });
+  }
+
+  const cleanName = characterName.trim();
+  const cleanEmail = ownerEmail.trim().toLowerCase();
+
+  // Validar si el nombre de personaje ya existe
+  if (localPlayersDb[cleanName]) {
+    return res.status(400).json({ success: false, message: `El nombre "${cleanName}" ya existe. Por favor escoge un nombre diferente.` });
+  }
+
+  const newPlayer: PlayerRecord = {
+    characterName: cleanName,
+    ownerEmail: cleanEmail,
+    characterClass,
+    gender,
+    skinColor,
+    hairColor,
+    outfitColor,
+    level: 1,
+    xp: 0,
+    availablePoints: 0,
+    elements: {
+      vitalidad: { equip: 0, base: 0 },
+      sabiduria: { equip: 0, base: 0 },
+      aire: { equip: 0, base: 0 },
+      tierra: { equip: 0, base: 0 },
+      fuego: { equip: 0, base: 0 },
+      agua: { equip: 0, base: 0 }
+    },
+    specials: {
+      tasaMana: 0,
+      manaTotal: 0,
+      velocidad: 0,
+      defensa: 0,
+      ataque: 0
+    },
+    hp: 100,
+    maxHp: 100,
+    mana: 10,
+    maxMana: 10,
+    inventory: [],
+    lastPosition: { x: 0, y: 0 },
+    updatedAt: new Date().toISOString()
+  };
+
+  localPlayersDb[cleanName] = newPlayer;
+  saveLocalDb();
+
+  return res.json({
+    success: true,
+    message: `¡Personaje "${cleanName}" creado exitosamente!`,
+    player: newPlayer
   });
 });
 

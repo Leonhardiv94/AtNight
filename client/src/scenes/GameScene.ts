@@ -535,6 +535,12 @@ export class GameScene extends Phaser.Scene {
   private handlePlayerMovement() {
     if (!this.player || !this.player.body) return;
 
+    // Ignore keyboard movement if typing inside any form input field
+    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+    if (activeTag === 'input' || activeTag === 'select' || activeTag === 'textarea') {
+      return;
+    }
+
     const speed = 220;
     let vx = 0;
     let vy = 0;

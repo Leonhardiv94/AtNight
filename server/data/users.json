@@ -1,1 +1,22 @@
-{}
+{
+  "leonhardiv94@gmail.com": {
+    "email": "leonhardiv94@gmail.com",
+    "passwordHash": "123.Leoking.123",
+    "fullName": "LEONHARD IGLESIAS VARGAS",
+    "idDocument": "1143448454",
+    "birthDate": "1994-10-04",
+    "country": "Colombia",
+    "characterName": "LEONHARD_8454",
+    "createdAt": "2026-07-26T03:20:53.629Z"
+  },
+  "esneridelcarmenp@gmail.com": {
+    "email": "esneridelcarmenp@gmail.com",
+    "passwordHash": "Esneri1605*",
+    "fullName": "Esneri Perez Pertuz",
+    "idDocument": "1047365566",
+    "birthDate": "2003-05-16",
+    "country": "Colombia",
+    "characterName": "Esneri_5566",
+    "createdAt": "2026-07-26T03:25:23.076Z"
+  }
+}

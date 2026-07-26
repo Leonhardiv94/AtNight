@@ -2853,22 +2853,7 @@
         ctx.ellipse(0, 15, 25, 10, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // 2. RENDEREAR EL ESPADACHÍN MASCULINO HD (OPCIÓN 3: SPRITESHEET HD DE ATNIGHT)
-        if (clsId === 'espadachin' && !isFemale && window.gameInstance && window.gameInstance.textures && window.gameInstance.textures.has('hero-down-0')) {
-          const animFrame = Math.floor(tick * 3.5) % 4;
-          const texKey = `hero-down-${animFrame}`;
-          const texture = window.gameInstance.textures.get(texKey);
-          if (texture && texture.getSourceImage()) {
-            const img = texture.getSourceImage();
-            // Dibujar el Sprite HD Pintado a Mano directamente en la Vista Previa
-            ctx.drawImage(img, -44, -120 + breathY, 88, 140);
-            ctx.restore();
-            charPreviewFrameId = requestAnimationFrame(render);
-            return;
-          }
-        }
-
-        // 2. DIBUJAR PERSONAJE SEGÚN CLASE Y SEXO
+        // 2. DIBUJAR PERSONAJE MASCULINO / FEMENINO EN EL PEDESTAL
         const px = 0;
         const py = -50 + breathY;
 

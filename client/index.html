@@ -2465,59 +2465,107 @@
 
         // 1. TRANSICIÓN DE CIELO HORIZONTAL: SOL DE MEDIODÍA (IZQ) A LUNA DE MEDIANOCHE (DER)
         const skyGrad = ctx.createLinearGradient(0, 0, w, 0);
-        skyGrad.addColorStop(0, '#38bdf8');    // Azul radiante de sol de mediodía (Izquierda)
-        skyGrad.addColorStop(0.35, '#0284c7'); // Azul atardecer intermedio
-        skyGrad.addColorStop(0.65, '#1e1b4b'); // Azul noche añil
-        skyGrad.addColorStop(1, '#090d16');    // Medianoche oscura (Derecha)
+        skyGrad.addColorStop(0, '#0284c7');    // Azul zafiro radiante de día
+        skyGrad.addColorStop(0.35, '#0369a1'); // Azul atmosférico intermedio
+        skyGrad.addColorStop(0.65, '#1e1b4b'); // Azul noche mística
+        skyGrad.addColorStop(1, '#090d16');    // Medianoche gótica (Derecha)
         ctx.fillStyle = skyGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // A. SOL DE MEDIODÍA DE LA IZQUIERDA (Con Rayos Dorados)
+        // A. SOL CELESTIAL ÉPICO (Izquierda) - Núcleo solar multicapa con Rayos Divinos
         const sunX = w * 0.15;
         const sunY = h * 0.20;
 
+        // Rayos solares divinos (God Rays) proyectados sobre el cielo
         ctx.save();
         ctx.translate(sunX, sunY);
-        ctx.rotate(tick * 0.2);
-        ctx.fillStyle = 'rgba(254, 240, 138, 0.25)';
-        for (let r = 0; r < 8; r++) {
-          ctx.rotate(Math.PI / 4);
-          ctx.fillRect(-6, -75, 12, 150);
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.08)';
+        for (let ray = 0; ray < 12; ray++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(ray * 0.52 + tick * 0.05) * (w * 0.6), Math.sin(ray * 0.52 + tick * 0.05) * (h * 0.8));
+          ctx.lineTo(Math.cos((ray + 0.35) * 0.52 + tick * 0.05) * (w * 0.6), Math.sin((ray + 0.35) * 0.52 + tick * 0.05) * (h * 0.8));
+          ctx.closePath();
+          ctx.fill();
         }
-        ctx.restore();
 
-        ctx.fillStyle = '#fbbf24';
-        ctx.shadowColor = 'rgba(251, 191, 36, 0.8)';
-        ctx.shadowBlur = 40;
+        // Corona Solar Resplandeciente con textura de destellos
+        const sunGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, 85);
+        sunGrad.addColorStop(0, '#ffffff');
+        sunGrad.addColorStop(0.2, '#fff7ed');
+        sunGrad.addColorStop(0.45, '#fde047');
+        sunGrad.addColorStop(0.75, 'rgba(245, 158, 11, 0.4)');
+        sunGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        ctx.fillStyle = sunGrad;
         ctx.beginPath();
-        ctx.arc(sunX, sunY, 48, 0, Math.PI * 2);
+        ctx.arc(0, 0, 85, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Núcleo del Sol Dorado
+        ctx.fillStyle = '#f59e0b';
+        ctx.shadowColor = 'rgba(245, 158, 11, 0.9)';
+        ctx.shadowBlur = 45;
+        ctx.beginPath();
+        ctx.arc(0, 0, 42, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // NUBES BLANCAS TRANSLÚCIDAS DEL LADO DEL SOL (IZQUIERDA)
-        function drawCloud(cx, cy, scale) {
+        // Destello Geométrico Solar Interior
+        ctx.rotate(tick * 0.15);
+        ctx.fillStyle = 'rgba(254, 240, 138, 0.6)';
+        for (let i = 0; i < 8; i++) {
+          ctx.rotate(Math.PI / 4);
+          ctx.beginPath();
+          ctx.moveTo(0, -52);
+          ctx.lineTo(8, -42);
+          ctx.lineTo(0, -32);
+          ctx.lineTo(-8, -42);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // NUBES VOLUMÉTRICAS REALISTAS DEL LADO DEL DÍA (IZQUIERDA)
+        function drawRealisticCloud(cx, cy, scale) {
           ctx.save();
           ctx.translate(cx, cy);
           ctx.scale(scale, scale);
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+
+          // Sombra inferior de la nube
+          ctx.fillStyle = 'rgba(148, 163, 184, 0.35)';
           ctx.beginPath();
-          ctx.arc(0, 0, 25, 0, Math.PI * 2);
-          ctx.arc(22, -10, 20, 0, Math.PI * 2);
-          ctx.arc(42, 0, 22, 0, Math.PI * 2);
-          ctx.arc(20, 10, 20, 0, Math.PI * 2);
-          ctx.closePath();
+          ctx.arc(-20, 12, 28, 0, Math.PI * 2);
+          ctx.arc(15, 14, 32, 0, Math.PI * 2);
+          ctx.arc(50, 10, 26, 0, Math.PI * 2);
           ctx.fill();
+
+          // Cuerpo de la nube blanca
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 32, 0, Math.PI * 2);
+          ctx.arc(-25, 8, 25, 0, Math.PI * 2);
+          ctx.arc(28, -6, 28, 0, Math.PI * 2);
+          ctx.arc(55, 4, 22, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Brillo superior iluminado por el Sol
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+          ctx.beginPath();
+          ctx.arc(0, -8, 24, 0, Math.PI * 2);
+          ctx.arc(26, -14, 20, 0, Math.PI * 2);
+          ctx.fill();
+
           ctx.restore();
         }
 
-        const cloudOffset1 = (tick * 12) % (w * 0.5);
-        const cloudOffset2 = (tick * 8) % (w * 0.5);
-        drawCloud(w * 0.05 + cloudOffset1, h * 0.14, 1.2);
-        drawCloud(w * 0.22 + cloudOffset2, h * 0.28, 0.95);
+        const cloudOffset1 = (tick * 10) % (w * 0.55);
+        const cloudOffset2 = (tick * 6) % (w * 0.55);
+        drawRealisticCloud(w * 0.02 + cloudOffset1, h * 0.12, 1.3);
+        drawRealisticCloud(w * 0.18 + cloudOffset2, h * 0.26, 1.0);
 
-        // B. ESTRELLAS Y LUNA LLENA DEL LADO DERECHO (NOCHE)
+        // B. ESTRELLAS Y LUNA LLENA MÍSTICA DE LA NOCHE (DERECHA)
         ctx.fillStyle = '#ffffff';
-        for (let i = 0; i < 45; i++) {
+        for (let i = 0; i < 50; i++) {
           const sx = w * 0.52 + (Math.sin(i * 77 + 1) * 0.5 + 0.5) * (w * 0.48);
           const sy = (Math.cos(i * 21 + 1) * 0.5 + 0.5) * (h * 0.65);
           const alpha = 0.25 + Math.sin(tick * 2.5 + i) * 0.45;
@@ -2530,105 +2578,142 @@
         const moonX = w * 0.85;
         const moonY = h * 0.20;
         ctx.fillStyle = '#f8fafc';
-        ctx.shadowColor = 'rgba(255, 255, 255, 0.6)';
-        ctx.shadowBlur = 35;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+        ctx.shadowBlur = 40;
         ctx.beginPath();
-        ctx.arc(moonX, moonY, 46, 0, Math.PI * 2);
+        ctx.arc(moonX, moonY, 48, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // 2. PAISAJE Y ÁRBOLES ASIMÉTRICOS (IZQ: HOJAS VERDES FRONDOSAS | DER: ÁRBOLES SECOS TERRORÍFICOS)
+        // Cráteres detallados de la Luna
+        ctx.fillStyle = 'rgba(203, 213, 225, 0.4)';
+        ctx.beginPath(); ctx.arc(moonX - 15, moonY - 12, 11, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(moonX + 12, moonY + 14, 15, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(moonX + 18, moonY - 10, 8, 0, Math.PI * 2); ctx.fill();
+
+        // 2. PAISAJE Y ÁRBOLES MAJESTUOSOS (IZQ: ROBLES ANCESTRALES DETALLADOS | DER: ÁRBOLES GÓTICOS SECOS)
         const groundY = h * 0.82;
 
-        // ÁRBOLES DEL LADO DEL DÍA (IZQUIERDA) - Frondosos y Verdes
-        function drawDayTree(tx, ty, scale) {
-          ctx.save();
-          ctx.translate(tx, ty);
-          ctx.scale(scale, scale);
-          ctx.fillStyle = '#451a03';
-          ctx.fillRect(-12, -40, 24, 60);
-          ctx.fillStyle = '#15803d'; ctx.beginPath(); ctx.arc(0, -70, 45, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#16a34a'; ctx.beginPath(); ctx.arc(-22, -60, 32, 0, Math.PI * 2); ctx.fill();
-          ctx.beginPath(); ctx.arc(22, -60, 32, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(0, -85, 28, 0, Math.PI * 2); ctx.fill();
-          ctx.restore();
-        }
-
-        // ÁRBOLES SECOS TERRORÍFICOS DEL LADO DE LA LUNA (DERECHA) - Ramas puntiagudas sin hojas
-        function drawSpookyDryTree(tx, ty, scale) {
+        // ÁRBOLES DEL LADO DEL DÍA (IZQUIERDA) - Roble Ancestral Majestuoso
+        function drawMajesticOak(tx, ty, scale) {
           ctx.save();
           ctx.translate(tx, ty);
           ctx.scale(scale, scale);
 
-          // Tronco retorcido oscuro
-          ctx.fillStyle = '#1c1917';
+          // Raíces y Tronco Robusto de Madera Noble con Corteza
+          ctx.fillStyle = '#292524'; // Tronco oscuro base
           ctx.beginPath();
-          ctx.moveTo(-16, 20);
-          ctx.quadraticCurveTo(-22, -30, -8, -70);
-          ctx.quadraticCurveTo(8, -30, 16, 20);
+          ctx.moveTo(-25, 20);
+          ctx.lineTo(-14, -60);
+          ctx.lineTo(14, -60);
+          ctx.lineTo(25, 20);
           ctx.closePath();
           ctx.fill();
 
-          // Ramas Puntiagudas Terroríficas
-          ctx.strokeStyle = '#0c0a09';
-          ctx.lineWidth = 6;
-          ctx.lineCap = 'round';
+          // Detalle de Vetas de Madera
+          ctx.fillStyle = '#44403c';
+          ctx.fillRect(-10, -55, 6, 75);
+          ctx.fillRect(2, -45, 5, 65);
 
-          // Rama 1 (Izquierda superior puntiaguda)
-          ctx.beginPath();
-          ctx.moveTo(-8, -60);
-          ctx.lineTo(-38, -95);
-          ctx.lineTo(-58, -115);
-          ctx.stroke();
+          // Follaje Multicapa de Roble Ancestral con Sombreado de Volumen
+          // Capa 1: Sombra Profunda
+          ctx.fillStyle = '#14532d';
+          ctx.beginPath(); ctx.arc(-28, -75, 42, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(28, -75, 42, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(0, -100, 48, 0, Math.PI * 2); ctx.fill();
 
-          ctx.lineWidth = 3.5;
-          ctx.beginPath();
-          ctx.moveTo(-38, -95);
-          ctx.lineTo(-25, -125);
-          ctx.stroke();
+          // Capa 2: Verde Medio
+          ctx.fillStyle = '#15803d';
+          ctx.beginPath(); ctx.arc(-22, -80, 36, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(22, -80, 36, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(0, -105, 40, 0, Math.PI * 2); ctx.fill();
 
-          // Rama 2 (Derecha superior puntiaguda)
-          ctx.lineWidth = 6;
-          ctx.beginPath();
-          ctx.moveTo(-4, -65);
-          ctx.lineTo(35, -90);
-          ctx.lineTo(55, -120);
-          ctx.stroke();
+          // Capa 3: Verde Vivo
+          ctx.fillStyle = '#16a34a';
+          ctx.beginPath(); ctx.arc(-15, -88, 30, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(15, -88, 30, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(0, -112, 32, 0, Math.PI * 2); ctx.fill();
 
-          ctx.lineWidth = 3.5;
-          ctx.beginPath();
-          ctx.moveTo(35, -90);
-          ctx.lineTo(20, -125);
-          ctx.stroke();
-
-          // Ramas secundarias puntiagudas
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(-12, -40);
-          ctx.lineTo(-45, -55);
-          ctx.lineTo(-65, -70);
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(10, -45);
-          ctx.lineTo(42, -60);
-          ctx.lineTo(60, -75);
-          ctx.stroke();
+          // Capa 4: Luces Solares Superiores
+          ctx.fillStyle = '#4ade80';
+          ctx.beginPath(); ctx.arc(-8, -98, 20, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(8, -98, 20, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(0, -120, 22, 0, Math.PI * 2); ctx.fill();
 
           ctx.restore();
         }
 
-        drawDayTree(w * 0.10, groundY - 20, 1.4);
-        drawDayTree(w * 0.24, groundY - 10, 1.15);
+        // ÁRBOLES SECOS GÓTICOS DEL LADO DE LA LUNA (DERECHA) - Ramas retorcidas puntiagudas con detalles de magia oscura
+        function drawGothicSpookyTree(tx, ty, scale) {
+          ctx.save();
+          ctx.translate(tx, ty);
+          ctx.scale(scale, scale);
 
-        drawSpookyDryTree(w * 0.76, groundY - 25, 1.4);
-        drawSpookyDryTree(w * 0.89, groundY - 15, 1.25);
+          // Tronco Retorcido de Ébano
+          ctx.fillStyle = '#090514';
+          ctx.beginPath();
+          ctx.moveTo(-20, 20);
+          ctx.quadraticCurveTo(-30, -35, -10, -80);
+          ctx.quadraticCurveTo(10, -35, 20, 20);
+          ctx.closePath();
+          ctx.fill();
 
-        // Suelo de Césped Verde Colina (Gradiente de día a noche en el suelo también)
+          // Grietas en la madera con tenue brillo púrpura místico
+          ctx.strokeStyle = '#a855f7';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(-10, -10);
+          ctx.lineTo(-5, -45);
+          ctx.lineTo(2, -70);
+          ctx.stroke();
+
+          // Ramas Puntiagudas Retorcidas y Puntiagudas
+          ctx.strokeStyle = '#020005';
+          ctx.lineWidth = 7;
+          ctx.lineCap = 'round';
+
+          // Rama Izquierda Superior Épica
+          ctx.beginPath();
+          ctx.moveTo(-10, -70);
+          ctx.lineTo(-45, -110);
+          ctx.lineTo(-70, -135);
+          ctx.stroke();
+
+          ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.moveTo(-45, -110); ctx.lineTo(-30, -145); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(-60, -125); ctx.lineTo(-85, -140); ctx.stroke();
+
+          // Rama Derecha Superior Épica
+          ctx.lineWidth = 7;
+          ctx.beginPath();
+          ctx.moveTo(-5, -75);
+          ctx.lineTo(42, -105);
+          ctx.lineTo(68, -138);
+          ctx.stroke();
+
+          ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.moveTo(42, -105); ctx.lineTo(28, -142); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(58, -125); ctx.lineTo(82, -145); ctx.stroke();
+
+          // Ramas Inferiores Puntiagudas
+          ctx.lineWidth = 3.5;
+          ctx.beginPath(); ctx.moveTo(-15, -45); ctx.lineTo(-55, -65); ctx.lineTo(-75, -80); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(12, -50); ctx.lineTo(50, -70); ctx.lineTo(72, -85); ctx.stroke();
+
+          ctx.restore();
+        }
+
+        drawMajesticOak(w * 0.09, groundY - 20, 1.45);
+        drawMajesticOak(w * 0.23, groundY - 10, 1.2);
+
+        drawGothicSpookyTree(w * 0.77, groundY - 25, 1.45);
+        drawGothicSpookyTree(w * 0.90, groundY - 15, 1.25);
+
+        // Suelo de Césped Verde Colina (Gradiente de día a noche en el suelo)
         const groundGrad = ctx.createLinearGradient(0, 0, w, 0);
-        groundGrad.addColorStop(0, '#16a34a');   // Verde brillante día
-        groundGrad.addColorStop(0.5, '#15803d'); // Verde bosque
-        groundGrad.addColorStop(1, '#064e3b');   // Verde oscuro noche
+        groundGrad.addColorStop(0, '#15803d');   // Verde bosque día
+        groundGrad.addColorStop(0.5, '#14532d'); // Verde oscuro
+        groundGrad.addColorStop(1, '#022c22');   // Verde esmeralda noche gótica
         ctx.fillStyle = groundGrad;
         ctx.beginPath();
         ctx.moveTo(0, groundY);

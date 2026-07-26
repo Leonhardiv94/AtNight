@@ -144,7 +144,7 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-26T20:04:54.598Z"
+    "updatedAt": "2026-07-26T20:07:53.012Z"
   },
   "LEONHARD_8454": {
     "characterName": "LEONHARD_8454",
@@ -344,12 +344,6 @@
   },
   "Leonhard94": {
     "characterName": "Leonhard94",
-    "ownerEmail": "leonhardiv94@gmail.com",
-    "characterClass": "espadachin",
-    "gender": "masculino",
-    "skinColor": "#fed7aa",
-    "hairColor": "#fde047",
-    "outfitColor": "#0284c7",
     "level": 1,
     "xp": 0,
     "availablePoints": 0,
@@ -392,10 +386,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 0,
-      "y": 0
+      "x": -403.2447666666665,
+      "y": 1601.2248000000063
     },
-    "updatedAt": "2026-07-26T17:08:51.923Z"
+    "updatedAt": "2026-07-26T20:07:09.527Z"
   },
   "Leonhardqq": {
     "characterName": "Leonhardqq",

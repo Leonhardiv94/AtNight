@@ -297,6 +297,32 @@ app.get('/api/player/list/:email', (req, res) => {
   return res.json({ success: true, characters });
 });
 
+// 0. Eliminar un personaje de la base de datos
+app.post('/api/player/delete', async (req, res) => {
+  const { characterName, ownerEmail } = req.body;
+  if (!characterName) {
+    return res.status(400).json({ success: false, message: 'Nombre de personaje requerido para eliminar.' });
+  }
+
+  const cleanName = characterName.trim();
+
+  if (localPlayersDb[cleanName]) {
+    delete localPlayersDb[cleanName];
+    savePlayersDb();
+    console.log(`🗑️ Personaje "${cleanName}" eliminado exitosamente de la base de datos local.`);
+  }
+
+  if (isMongoConnected) {
+    try {
+      await MongoPlayer.deleteOne({ characterName: cleanName });
+    } catch (err) {
+      console.error('Error eliminando personaje en Mongo:', err);
+    }
+  }
+
+  return res.json({ success: true, message: `El personaje "${cleanName}" fue eliminado exitosamente.` });
+});
+
 // 0. Crear un nuevo personaje personalizado
 app.post('/api/player/create', async (req, res) => {
   const { characterName, ownerEmail, characterClass, gender, skinColor, hairColor, outfitColor } = req.body;

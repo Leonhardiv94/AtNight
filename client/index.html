@@ -2798,7 +2798,9 @@
           gameScene.loadSavedCharacter();
         }
       }
-    }
+    // Cargar la Ilustración HD de Alta Definición del Espadachín (Opción 3: Estilo Dofus/Wakfu)
+    const espadachinMaleHDImg = new Image();
+    espadachinMaleHDImg.src = '/assets/espadachin_male_hd.jpg';
 
     function startCharPreviewAnimation() {
       const canvas = document.getElementById('char-preview-canvas');
@@ -2852,6 +2854,20 @@
         ctx.beginPath();
         ctx.ellipse(0, 15, 25, 10, 0, 0, Math.PI * 2);
         ctx.fill();
+
+        // 2. DIBUJAR ILUSTRACIÓN HD DEL ESPADACHÍN MASCULINO (OPCIÓN 3: ESTILO DOFUS / WAKFU)
+        if (clsId === 'espadachin' && !isFemale && espadachinMaleHDImg.complete && espadachinMaleHDImg.naturalWidth > 0) {
+          ctx.save();
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+          ctx.shadowBlur = 12;
+          ctx.shadowOffsetY = 6;
+          // Dibujar la ilustración HD de alta definición estilo Wakfu / Dofus en el pedestal
+          ctx.drawImage(espadachinMaleHDImg, -55, -145 + breathY, 110, 160);
+          ctx.restore();
+          ctx.restore();
+          charPreviewFrameId = requestAnimationFrame(render);
+          return;
+        }
 
         // 2. DIBUJAR PERSONAJE MASCULINO / FEMENINO EN EL PEDESTAL
         const px = 0;

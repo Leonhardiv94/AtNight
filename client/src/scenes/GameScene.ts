@@ -119,6 +119,75 @@ export class GameScene extends Phaser.Scene {
     });
 
     this.updateHud();
+    this.loadSavedCharacter();
+
+    // Auto-Save Player Progress to Server every 10 seconds
+    this.time.addEvent({
+      delay: 10000,
+      loop: true,
+      callback: () => this.savePlayerToServer()
+    });
+  }
+
+  public async loadSavedCharacter() {
+    try {
+      const res = await fetch('http://localhost:3002/api/player/HéroeAtNight');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.success && data.player) {
+        const p = data.player;
+        this.playerLevel = p.level || 1;
+        this.playerXp = p.xp || 0;
+        this.playerHp = p.hp || 100;
+        this.playerMaxHp = p.maxHp || 100;
+        this.playerMana = p.mana || 10;
+        this.playerMaxMana = p.maxMana || 10;
+
+        if (typeof window !== 'undefined' && (window as any).characterStats) {
+          const stats = (window as any).characterStats;
+          stats.name = p.characterName || 'Héroe de la Noche';
+          stats.level = this.playerLevel;
+          stats.availablePoints = p.availablePoints || 0;
+          if (p.elements) stats.elements = p.elements;
+          if (p.specials) stats.specials = p.specials;
+          if ((window as any).updateCaracteristicasUI) {
+            (window as any).updateCaracteristicasUI();
+          }
+        }
+        this.updateHud();
+        console.log('✅ Personaje cargado desde el servidor local:', p.characterName);
+      }
+    } catch (err) {
+      console.log('ℹ️ Servidor local no disponible, operando en cliente.');
+    }
+  }
+
+  public async savePlayerToServer() {
+    try {
+      const stats = (typeof window !== 'undefined' && (window as any).characterStats) ? (window as any).characterStats : {};
+      const payload = {
+        characterName: 'HéroeAtNight',
+        level: this.playerLevel,
+        xp: this.playerXp,
+        availablePoints: stats.availablePoints || 0,
+        elements: stats.elements || {},
+        specials: stats.specials || {},
+        hp: this.playerHp,
+        maxHp: this.playerMaxHp,
+        mana: this.playerMana,
+        maxMana: this.playerMaxMana,
+        inventory: Array.from(this.inventory.values()),
+        lastPosition: { x: this.player ? this.player.x : 0, y: this.player ? this.player.y : 0 }
+      };
+
+      await fetch('http://localhost:3002/api/player/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      // Silent catch
+    }
   }
 
   update(time: number, _delta: number) {

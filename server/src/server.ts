@@ -4,6 +4,8 @@ import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
@@ -22,8 +24,217 @@ app.use(express.json());
 const PORT = process.env.PORT || 3002;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/atnight';
 
-// In-Memory Player Store for Real-Time Sync
-interface PlayerData {
+// ----------------------------------------------------
+// LOCAL PERSISTENT FILE DATABASE CONTROLLER (Local DB)
+// ----------------------------------------------------
+const DATA_DIR = path.join(__dirname, '..', 'data');
+const PLAYERS_FILE = path.join(DATA_DIR, 'players.json');
+
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+export interface CharacterStats {
+  vitalidad: { equip: number; base: number };
+  sabiduria: { equip: number; base: number };
+  aire: { equip: number; base: number };
+  tierra: { equip: number; base: number };
+  fuego: { equip: number; base: number };
+  agua: { equip: number; base: number };
+}
+
+export interface SpecialStats {
+  tasaMana: number;
+  manaTotal: number;
+  velocidad: number;
+  defensa: number;
+  ataque: number;
+}
+
+export interface PlayerRecord {
+  characterName: string;
+  level: number;
+  xp: number;
+  availablePoints: number;
+  elements: CharacterStats;
+  specials: SpecialStats;
+  hp: number;
+  maxHp: number;
+  mana: number;
+  maxMana: number;
+  inventory: Array<{ id: string; name: string; count: number }>;
+  lastPosition: { x: number; y: number };
+  updatedAt: string;
+}
+
+// Memory Cache synced with players.json
+let localPlayersDb: Record<string, PlayerRecord> = {};
+
+function loadLocalDb() {
+  try {
+    if (fs.existsSync(PLAYERS_FILE)) {
+      const data = fs.readFileSync(PLAYERS_FILE, 'utf-8');
+      localPlayersDb = JSON.parse(data);
+      console.log(`📁 Base de datos local cargada: ${Object.keys(localPlayersDb).length} personajes almacenados.`);
+    } else {
+      localPlayersDb = {};
+      saveLocalDb();
+    }
+  } catch (err) {
+    console.error('Error cargando la base de datos local:', err);
+    localPlayersDb = {};
+  }
+}
+
+function saveLocalDb() {
+  try {
+    fs.writeFileSync(PLAYERS_FILE, JSON.stringify(localPlayersDb, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Error guardando en la base de datos local:', err);
+  }
+}
+
+loadLocalDb();
+
+// ----------------------------------------------------
+// MONGOOSE SCHEMA (Fase de Producción futuro en MongoDB)
+// ----------------------------------------------------
+const PlayerSchema = new mongoose.Schema({
+  characterName: { type: String, required: true, unique: true },
+  level: { type: Number, default: 1 },
+  xp: { type: Number, default: 0 },
+  availablePoints: { type: Number, default: 0 },
+  elements: {
+    vitalidad: { equip: { type: Number, default: 0 }, base: { type: Number, default: 0 } },
+    sabiduria: { equip: { type: Number, default: 0 }, base: { type: Number, default: 0 } },
+    aire: { equip: { type: Number, default: 0 }, base: { type: Number, default: 0 } },
+    tierra: { equip: { type: Number, default: 0 }, base: { type: Number, default: 0 } },
+    fuego: { equip: { type: Number, default: 0 }, base: { type: Number, default: 0 } },
+    agua: { equip: { type: Number, default: 0 }, base: { type: Number, default: 0 } }
+  },
+  specials: {
+    tasaMana: { type: Number, default: 0 },
+    manaTotal: { type: Number, default: 0 },
+    velocidad: { type: Number, default: 0 },
+    defensa: { type: Number, default: 0 },
+    ataque: { type: Number, default: 0 }
+  },
+  hp: { type: Number, default: 100 },
+  maxHp: { type: Number, default: 100 },
+  mana: { type: Number, default: 10 },
+  maxMana: { type: Number, default: 10 },
+  inventory: Array,
+  lastPosition: { x: Number, y: Number },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const MongoPlayer = mongoose.model('Player', PlayerSchema);
+let isMongoConnected = false;
+
+// ----------------------------------------------------
+// REST API ENDPOINTS FOR LOCAL & CLOUD STORAGE
+// ----------------------------------------------------
+
+// 1. Health Status endpoint
+app.get('/api/status', (req, res) => {
+  res.json({
+    status: 'ONLINE',
+    game: 'AtNight Action RPG',
+    databaseMode: isMongoConnected ? 'MongoDB Cloud/Cluster' : 'Archivos Locales JSON (Development)',
+    storedCharacters: Object.keys(localPlayersDb).length,
+    activePlayers: connectedPlayers.size,
+    timestamp: new Date()
+  });
+});
+
+// 2. Cargar personaje por nombre
+app.get('/api/player/:characterName', async (req, res) => {
+  const name = req.params.characterName;
+
+  if (isMongoConnected) {
+    try {
+      const doc = await MongoPlayer.findOne({ characterName: name });
+      if (doc) return res.json({ success: true, player: doc });
+    } catch (err) {
+      console.error('Error buscando personaje en MongoDB:', err);
+    }
+  }
+
+  // Fallback a Base de datos local
+  const localDoc = localPlayersDb[name];
+  if (localDoc) {
+    return res.json({ success: true, player: localDoc });
+  }
+
+  // Crear personaje inicial si es nuevo
+  const defaultPlayer: PlayerRecord = {
+    characterName: name,
+    level: 1,
+    xp: 0,
+    availablePoints: 0,
+    elements: {
+      vitalidad: { equip: 0, base: 0 },
+      sabiduria: { equip: 0, base: 0 },
+      aire: { equip: 0, base: 0 },
+      tierra: { equip: 0, base: 0 },
+      fuego: { equip: 0, base: 0 },
+      agua: { equip: 0, base: 0 }
+    },
+    specials: {
+      tasaMana: 0,
+      manaTotal: 0,
+      velocidad: 0,
+      defensa: 0,
+      ataque: 0
+    },
+    hp: 100,
+    maxHp: 100,
+    mana: 10,
+    maxMana: 10,
+    inventory: [],
+    lastPosition: { x: 0, y: 0 },
+    updatedAt: new Date().toISOString()
+  };
+
+  localPlayersDb[name] = defaultPlayer;
+  saveLocalDb();
+  return res.json({ success: true, player: defaultPlayer, isNew: true });
+});
+
+// 3. Guardar estado del personaje
+app.post('/api/player/save', async (req, res) => {
+  const playerData: PlayerRecord = req.body;
+
+  if (!playerData || !playerData.characterName) {
+    return res.status(400).json({ success: false, message: 'Datos de personaje inválidos' });
+  }
+
+  playerData.updatedAt = new Date().toISOString();
+
+  // Guardar en BD Local JSON
+  localPlayersDb[playerData.characterName] = playerData;
+  saveLocalDb();
+
+  // Si Mongo está conectado, sincronizar también
+  if (isMongoConnected) {
+    try {
+      await MongoPlayer.findOneAndUpdate(
+        { characterName: playerData.characterName },
+        playerData,
+        { upsert: true, new: true }
+      );
+    } catch (err) {
+      console.error('Error sincronizando con MongoDB:', err);
+    }
+  }
+
+  return res.json({ success: true, message: 'Progreso guardado correctamente en servidor local', timestamp: playerData.updatedAt });
+});
+
+// ----------------------------------------------------
+// SOCKET.IO MULTIPLAYER REAL-TIME SYNC
+// ----------------------------------------------------
+interface ConnectedPlayer {
   id: string;
   name: string;
   x: number;
@@ -33,42 +244,27 @@ interface PlayerData {
   maxHp: number;
 }
 
-const connectedPlayers = new Map<string, PlayerData>();
+const connectedPlayers = new Map<string, ConnectedPlayer>();
 
-// Health & Status endpoint
-app.get('/api/status', (req, res) => {
-  res.json({
-    status: 'ONLINE',
-    game: 'AtNight Action RPG',
-    onlinePlayers: connectedPlayers.size,
-    timestamp: new Date()
-  });
-});
-
-// Socket.io Real-Time Game Event Handling
 io.on('connection', (socket: Socket) => {
   console.log(`🎮 Jugador conectado a AtNight: ${socket.id}`);
 
-  // Create initial player state
-  const newPlayer: PlayerData = {
-    id: socket.id,
-    name: `Héroe_${socket.id.substring(0, 4)}`,
-    x: 0,
-    y: 0,
-    level: 1,
-    hp: 100,
-    maxHp: 100
-  };
+  socket.on('joinGame', (data: { characterName: string; x?: number; y?: number; level?: number }) => {
+    const player: ConnectedPlayer = {
+      id: socket.id,
+      name: data.characterName || `Héroe_${socket.id.substring(0, 4)}`,
+      x: data.x || 0,
+      y: data.y || 0,
+      level: data.level || 1,
+      hp: 100,
+      maxHp: 100
+    };
 
-  connectedPlayers.set(socket.id, newPlayer);
+    connectedPlayers.set(socket.id, player);
+    socket.emit('currentPlayers', Array.from(connectedPlayers.values()));
+    socket.broadcast.emit('playerJoined', player);
+  });
 
-  // Send current player list to newly connected player
-  socket.emit('currentPlayers', Array.from(connectedPlayers.values()));
-
-  // Broadcast new player to all other connected clients
-  socket.broadcast.emit('playerJoined', newPlayer);
-
-  // Handle player movement update
   socket.on('playerMove', (data: { x: number; y: number }) => {
     const player = connectedPlayers.get(socket.id);
     if (player) {
@@ -78,12 +274,10 @@ io.on('connection', (socket: Socket) => {
     }
   });
 
-  // Handle player attack
   socket.on('playerAttack', (data: { x: number; y: number; damage: number }) => {
     socket.broadcast.emit('playerAttacked', { id: socket.id, x: data.x, y: data.y, damage: data.damage });
   });
 
-  // Handle player disconnect
   socket.on('disconnect', () => {
     console.log(`🚪 Jugador desconectado: ${socket.id}`);
     connectedPlayers.delete(socket.id);
@@ -91,13 +285,24 @@ io.on('connection', (socket: Socket) => {
   });
 });
 
-// Start Server & Connect MongoDB (optional fallback if offline)
+// ----------------------------------------------------
+// SERVIDOR HTTP LISTEN
+// ----------------------------------------------------
 httpServer.listen(PORT, () => {
-  console.log(`=========================================`);
+  console.log(`=======================================================`);
   console.log(`🌌 Servidor de Juego AtNight activo en puerto ${PORT}`);
-  console.log(`=========================================`);
+  console.log(`📁 Modo Local: Almacenamiento JSON listo en server/data/players.json`);
+  console.log(`=======================================================`);
 
+  // Intentar conectar con MongoDB local/remoto (si existe)
   mongoose.connect(MONGODB_URI)
-    .then(() => console.log('🍃 Conectado a MongoDB (Base de datos AtNight)'))
-    .catch(err => console.log('ℹ️ Operando con almacenamiento local/memoria (MongoDB no detectado en local)'));
+    .then(() => {
+      isMongoConnected = true;
+      console.log('🍃 Conectado exitosamente a MongoDB (Base de datos AtNight)');
+    })
+    .catch(() => {
+      isMongoConnected = false;
+      console.log('ℹ️ Operando en MODO DESARROLLO LOCAL con archivos JSON (MongoDB no activo).');
+    });
 });
+

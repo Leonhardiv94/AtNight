@@ -2800,6 +2800,27 @@
       }
     }
 
+    // Engine de Transparencia Alpha HD para Sprites Hand-Painted (Opción 3)
+    let swordsmanHDTransparentCanvas = null;
+    const swordsmanHDImg = new Image();
+    swordsmanHDImg.src = '/assets/swordsman_hd_base.jpg';
+    swordsmanHDImg.onload = () => {
+      const cvs = document.createElement('canvas');
+      cvs.width = swordsmanHDImg.naturalWidth;
+      cvs.height = swordsmanHDImg.naturalHeight;
+      const cctx = cvs.getContext('2d');
+      cctx.drawImage(swordsmanHDImg, 0, 0);
+      const imgData = cctx.getImageData(0, 0, cvs.width, cvs.height);
+      const data = imgData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i] > 235 && data[i + 1] > 235 && data[i + 2] > 235) {
+          data[i + 3] = 0; // Transparencia Alpha 100% para remover fondos blancos
+        }
+      }
+      cctx.putImageData(imgData, 0, 0);
+      swordsmanHDTransparentCanvas = cvs;
+    };
+
     function startCharPreviewAnimation() {
       const canvas = document.getElementById('char-preview-canvas');
       if (!canvas) return;
@@ -2852,6 +2873,20 @@
         ctx.beginPath();
         ctx.ellipse(0, 15, 25, 10, 0, 0, Math.PI * 2);
         ctx.fill();
+
+        // 2. RENDEREAR PERSONAJE HD HAND-PAINTED TRANSPARENTE (OPCIÓN 3: ESTILO DOFUS / WAKFU)
+        if (clsId === 'espadachin' && !isFemale && swordsmanHDTransparentCanvas) {
+          ctx.save();
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+          ctx.shadowBlur = 10;
+          ctx.shadowOffsetY = 6;
+          // Dibujar la ilustración HD Hand-Painted transparente en el pedestal sin cuadros blancos
+          ctx.drawImage(swordsmanHDTransparentCanvas, -55, -145 + breathY, 110, 160);
+          ctx.restore();
+          ctx.restore();
+          charPreviewFrameId = requestAnimationFrame(render);
+          return;
+        }
 
         // 2. DIBUJAR PERSONAJE MASCULINO / FEMENINO EN EL PEDESTAL (2D/2.5D ANIMADO NOBLE)
         const px = 0;

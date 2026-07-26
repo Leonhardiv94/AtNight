@@ -992,6 +992,7 @@ export class GameScene extends Phaser.Scene {
   private gainXp(amount: number) {
     this.playerXp += amount;
 
+    let leveledUp = false;
     while (this.playerLevel < 50) {
       const req = this.getXpRequiredForLevel(this.playerLevel);
       if (this.playerXp >= req) {
@@ -1002,12 +1003,31 @@ export class GameScene extends Phaser.Scene {
         this.playerMaxMana += 1;
         this.playerMana = this.playerMaxMana;
         this.playerAttackPower += 8;
+        leveledUp = true;
 
-        this.showFloatingText(this.player.x, this.player.y - 50, `¡NIVEL ALCANZADO! LV. ${this.playerLevel}`, '#00f2fe');
+        // Otorgar +5 Puntos de Características por cada nivel ganado
+        if (typeof window !== 'undefined' && (window as any).characterStats) {
+          const stats = (window as any).characterStats;
+          stats.level = this.playerLevel;
+          stats.availablePoints += 5;
+          if ((window as any).updateCaracteristicasUI) {
+            (window as any).updateCaracteristicasUI();
+          }
+        }
+
+        this.showFloatingText(this.player.x, this.player.y - 50, `¡NIVEL ALCANZADO! LV. ${this.playerLevel} (+5 Puntos)`, '#00f2fe');
       } else {
         break;
       }
     }
+
+    if (leveledUp && typeof window !== 'undefined' && (window as any).characterStats) {
+      (window as any).characterStats.level = this.playerLevel;
+      if ((window as any).updateCaracteristicasUI) {
+        (window as any).updateCaracteristicasUI();
+      }
+    }
+
     this.updateHud();
   }
 

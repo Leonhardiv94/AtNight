@@ -587,6 +587,193 @@
       height: 320px;
     }
 
+    /* Modal Ventana de Características (Panel rectangular, esquinas rectos sin redondear) */
+    .caracteristicas-modal-window {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 540px;
+      max-width: 95vw;
+      background: rgba(13, 17, 23, 0.96);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      border-radius: 0 !important; /* Esquinas rectos completamente sin redondear */
+      padding: 1.2rem;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      z-index: 60;
+      display: none;
+      flex-direction: column;
+    }
+
+    .caracteristicas-modal-window.active {
+      display: flex;
+    }
+
+    .char-header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .char-level-badge {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0f172a;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+
+    .stats-section-box {
+      background: rgba(17, 24, 39, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0 !important;
+      padding: 0.8rem;
+    }
+
+    .stats-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .stats-header-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #fbbf24;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .stat-points-available {
+      font-size: 0.75rem;
+      color: #cbd5e1;
+    }
+
+    .elements-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .element-row-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0;
+      padding: 0.45rem 0.8rem;
+      transition: background 0.2s ease;
+    }
+
+    .element-row-item:hover {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    .element-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .element-icon {
+      font-size: 1.1rem;
+    }
+
+    .element-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .element-val-box {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .element-val-text {
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .equip-bonus {
+      color: #38bdf8; /* Formato (0) aportado por equipo */
+    }
+
+    .base-allocated {
+      color: #fbbf24; /* Formato +0 aportado por puntos */
+      margin-left: 2px;
+    }
+
+    .add-stat-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 0 !important; /* Cuadrado sin redondear */
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: 1px solid #34d399;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    }
+
+    .add-stat-btn:hover {
+      background: linear-gradient(135deg, #34d399, #10b981);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
+      transform: scale(1.08);
+    }
+
+    .add-stat-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .special-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .special-stat-card {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 0;
+      padding: 0.5rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .special-stat-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .special-stat-val {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #a855f7; /* Tono violeta especial */
+    }
+
     .gestion-btn-item:hover .gestion-circle-btn {
       border-color: #34d399;
       box-shadow: 0 0 16px rgba(52, 211, 153, 0.8), inset 0 0 12px rgba(255, 255, 255, 0.2);
@@ -1258,6 +1445,141 @@
     </div>
   </div>
 
+  <!-- Modal Ventana de Características (Panel rectangular, esquinas rectos sin redondear) -->
+  <div class="caracteristicas-modal-window interactive" id="caracteristicas-modal">
+    <div class="modal-header">
+      <div class="char-header-title-box">
+        <span class="modal-title" id="caracteristicas-name-val">👤 Héroe</span>
+        <span class="char-level-badge" id="caracteristicas-level-badge">Nivel 1</span>
+      </div>
+      <button class="modal-close" onclick="toggleCaracteristicasModal()">&times;</button>
+    </div>
+
+    <div class="caracteristicas-modal-body">
+      <!-- SECCIÓN 1: ELEMENTOS (Puntos de Características Disponibles + Botones +) -->
+      <div class="stats-section-box">
+        <div class="stats-section-header">
+          <span class="stats-header-title">🔥 ELEMENTOS</span>
+          <span class="stat-points-available">Puntos Disponibles: <strong id="caracteristicas-points-val" style="color: #fbbf24; font-size: 0.9rem;">0</strong></span>
+        </div>
+
+        <div class="elements-grid">
+          <!-- 1. Vitalidad -->
+          <div class="element-row-item">
+            <div class="element-info">
+              <span class="element-icon">❤️</span>
+              <span class="element-name">Vitalidad</span>
+            </div>
+            <div class="element-val-box">
+              <span class="element-val-text"><span class="equip-bonus" id="stat-equip-vitalidad">(0)</span><span class="base-allocated" id="stat-base-vitalidad">+0</span></span>
+              <button class="add-stat-btn" id="btn-add-vitalidad" title="Añadir 1 punto a Vitalidad" onclick="addStatPoint('vitalidad')">+</button>
+            </div>
+          </div>
+
+          <!-- 2. Sabiduría -->
+          <div class="element-row-item">
+            <div class="element-info">
+              <span class="element-icon">📖</span>
+              <span class="element-name">Sabiduría</span>
+            </div>
+            <div class="element-val-box">
+              <span class="element-val-text"><span class="equip-bonus" id="stat-equip-sabiduria">(0)</span><span class="base-allocated" id="stat-base-sabiduria">+0</span></span>
+              <button class="add-stat-btn" id="btn-add-sabiduria" title="Añadir 1 punto a Sabiduría" onclick="addStatPoint('sabiduria')">+</button>
+            </div>
+          </div>
+
+          <!-- 3. Aire -->
+          <div class="element-row-item">
+            <div class="element-info">
+              <span class="element-icon">🌪️</span>
+              <span class="element-name">Aire</span>
+            </div>
+            <div class="element-val-box">
+              <span class="element-val-text"><span class="equip-bonus" id="stat-equip-aire">(0)</span><span class="base-allocated" id="stat-base-aire">+0</span></span>
+              <button class="add-stat-btn" id="btn-add-aire" title="Añadir 1 punto a Aire" onclick="addStatPoint('aire')">+</button>
+            </div>
+          </div>
+
+          <!-- 4. Tierra -->
+          <div class="element-row-item">
+            <div class="element-info">
+              <span class="element-icon">🪨</span>
+              <span class="element-name">Tierra</span>
+            </div>
+            <div class="element-val-box">
+              <span class="element-val-text"><span class="equip-bonus" id="stat-equip-tierra">(0)</span><span class="base-allocated" id="stat-base-tierra">+0</span></span>
+              <button class="add-stat-btn" id="btn-add-tierra" title="Añadir 1 punto a Tierra" onclick="addStatPoint('tierra')">+</button>
+            </div>
+          </div>
+
+          <!-- 5. Fuego -->
+          <div class="element-row-item">
+            <div class="element-info">
+              <span class="element-icon">🔥</span>
+              <span class="element-name">Fuego</span>
+            </div>
+            <div class="element-val-box">
+              <span class="element-val-text"><span class="equip-bonus" id="stat-equip-fuego">(0)</span><span class="base-allocated" id="stat-base-fuego">+0</span></span>
+              <button class="add-stat-btn" id="btn-add-fuego" title="Añadir 1 punto a Fuego" onclick="addStatPoint('fuego')">+</button>
+            </div>
+          </div>
+
+          <!-- 6. Agua -->
+          <div class="element-row-item">
+            <div class="element-info">
+              <span class="element-icon">💧</span>
+              <span class="element-name">Agua</span>
+            </div>
+            <div class="element-val-box">
+              <span class="element-val-text"><span class="equip-bonus" id="stat-equip-agua">(0)</span><span class="base-allocated" id="stat-base-agua">+0</span></span>
+              <button class="add-stat-btn" id="btn-add-agua" title="Añadir 1 punto a Agua" onclick="addStatPoint('agua')">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: CARACTERÍSTICAS ESPECIALES (Solamente suben con equipo, inician en 0) -->
+      <div class="stats-section-box" style="margin-top: 0.8rem;">
+        <div class="stats-section-header">
+          <span class="stats-header-title">✨ CARACTERÍSTICAS ESPECIALES</span>
+          <span style="font-size: 0.65rem; color: #94a3b8;">(Suben solo con equipo)</span>
+        </div>
+
+        <div class="special-stats-grid">
+          <!-- 1. Tasa de Maná -->
+          <div class="special-stat-card">
+            <span class="special-stat-label">⚡ Tasa de Maná</span>
+            <span class="special-stat-val" id="spec-val-tasa-mana">0</span>
+          </div>
+
+          <!-- 2. Maná Total -->
+          <div class="special-stat-card">
+            <span class="special-stat-label">🔮 Maná Total</span>
+            <span class="special-stat-val" id="spec-val-mana-total">0</span>
+          </div>
+
+          <!-- 3. Velocidad -->
+          <div class="special-stat-card">
+            <span class="special-stat-label">🏃 Velocidad</span>
+            <span class="special-stat-val" id="spec-val-velocidad">0</span>
+          </div>
+
+          <!-- 4. Defensa -->
+          <div class="special-stat-card">
+            <span class="special-stat-label">🛡️ Defensa</span>
+            <span class="special-stat-val" id="spec-val-defensa">0</span>
+          </div>
+
+          <!-- 5. Ataque -->
+          <div class="special-stat-card">
+            <span class="special-stat-label">⚔️ Ataque</span>
+            <span class="special-stat-val" id="spec-val-ataque">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Inventory Modal Window -->
   <div class="game-modal interactive" id="inventory-modal">
     <div class="modal-header">
@@ -1274,6 +1596,28 @@
   <script type="module" src="/src/main.ts"></script>
 
   <script>
+    // Estado Global del Personaje & Características
+    window.characterStats = {
+      name: "Héroe de la Noche",
+      level: 1,
+      availablePoints: 0,
+      elements: {
+        vitalidad: { equip: 0, base: 0 },
+        sabiduria: { equip: 0, base: 0 },
+        aire: { equip: 0, base: 0 },
+        tierra: { equip: 0, base: 0 },
+        fuego: { equip: 0, base: 0 },
+        agua: { equip: 0, base: 0 }
+      },
+      specials: {
+        tasaMana: 0,
+        manaTotal: 0,
+        velocidad: 0,
+        defensa: 0,
+        ataque: 0
+      }
+    };
+
     function toggleInventory() {
       const modal = document.getElementById('inventory-modal');
       if (modal) modal.classList.toggle('active');
@@ -1289,7 +1633,84 @@
       }
     }
 
+    function toggleCaracteristicasModal() {
+      const modal = document.getElementById('caracteristicas-modal');
+      if (modal) {
+        const isActive = modal.classList.toggle('active');
+        if (isActive) {
+          updateCaracteristicasUI();
+        }
+      }
+    }
+
+    function updateCaracteristicasUI() {
+      const stats = window.characterStats;
+
+      // Sincronizar nivel con la escena si está activa
+      if (window.gameInstance && window.gameInstance.scene) {
+        const gameScene = window.gameInstance.scene.getScene('GameScene');
+        if (gameScene && gameScene.playerLevel) {
+          stats.level = gameScene.playerLevel;
+        }
+      }
+
+      const levelBadge = document.getElementById('caracteristicas-level-badge');
+      if (levelBadge) levelBadge.innerText = `Nivel ${stats.level}`;
+
+      const nameVal = document.getElementById('caracteristicas-name-val');
+      if (nameVal) nameVal.innerText = `👤 ${stats.name}`;
+
+      const pointsVal = document.getElementById('caracteristicas-points-val');
+      if (pointsVal) pointsVal.innerText = stats.availablePoints;
+
+      // Actualizar Elementos con formato (0)+0
+      const elems = ['vitalidad', 'sabiduria', 'aire', 'tierra', 'fuego', 'agua'];
+      elems.forEach(el => {
+        const equipEl = document.getElementById(`stat-equip-${el}`);
+        const baseEl = document.getElementById(`stat-base-${el}`);
+        const btnAdd = document.getElementById(`btn-add-${el}`);
+        if (equipEl) equipEl.innerText = `(${stats.elements[el].equip})`;
+        if (baseEl) baseEl.innerText = `+${stats.elements[el].base}`;
+        if (btnAdd) {
+          btnAdd.disabled = stats.availablePoints <= 0;
+        }
+      });
+
+      // Actualizar Características Especiales (Inician en 0, suben solo con equipo)
+      const specTasa = document.getElementById('spec-val-tasa-mana');
+      if (specTasa) specTasa.innerText = stats.specials.tasaMana;
+      const specMana = document.getElementById('spec-val-mana-total');
+      if (specMana) specMana.innerText = stats.specials.manaTotal;
+      const specVel = document.getElementById('spec-val-velocidad');
+      if (specVel) specVel.innerText = stats.specials.velocidad;
+      const specDef = document.getElementById('spec-val-defensa');
+      if (specDef) specDef.innerText = stats.specials.defensa;
+      const specAtk = document.getElementById('spec-val-ataque');
+      if (specAtk) specAtk.innerText = stats.specials.ataque;
+    }
+    window.updateCaracteristicasUI = updateCaracteristicasUI;
+
+    function addStatPoint(elementKey) {
+      if (window.characterStats.availablePoints > 0 && window.characterStats.elements[elementKey]) {
+        window.characterStats.availablePoints--;
+        window.characterStats.elements[elementKey].base++;
+        updateCaracteristicasUI();
+
+        if (window.gameInstance && window.gameInstance.scene) {
+          const gameScene = window.gameInstance.scene.getScene('GameScene');
+          if (gameScene && gameScene.player) {
+            const capName = elementKey.charAt(0).toUpperCase() + elementKey.slice(1);
+            gameScene.showFloatingText(gameScene.player.x, gameScene.player.y - 45, `+1 ${capName}!`, '#fbbf24');
+          }
+        }
+      }
+    }
+
     function openGestionModal(type) {
+      if (type === 'caracteristicas') {
+        toggleCaracteristicasModal();
+        return;
+      }
       if (type === 'equipo') {
         toggleEquipoModal();
         return;

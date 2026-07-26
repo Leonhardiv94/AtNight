@@ -337,18 +337,24 @@ app.post('/api/player/delete', async (req, res) => {
   }
 
   const cleanName = characterName.trim();
+  const normalizeStr = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-  // Buscar coincidencia sin importar mayúsculas/minúsculas
-  const foundKey = Object.keys(localPlayersDb).find(k => k.toLowerCase() === cleanName.toLowerCase());
-  if (foundKey) {
-    delete localPlayersDb[foundKey];
+  // Buscar coincidencia insensible a mayúsculas y tildes (Ej: HéroeAtNight vs HeroeAtNight)
+  const targetNorm = normalizeStr(cleanName);
+  const matchingKeys = Object.keys(localPlayersDb).filter(k => normalizeStr(k) === targetNorm);
+
+  matchingKeys.forEach(k => {
+    delete localPlayersDb[k];
+  });
+
+  if (matchingKeys.length > 0) {
     saveLocalDb();
-    console.log(`🗑️ Personaje "${foundKey}" eliminado exitosamente de la base de datos local.`);
+    console.log(`🗑️ Personaje(s) "${matchingKeys.join(', ')}" eliminado(s) exitosamente de la base de datos local.`);
   }
 
   if (isMongoConnected) {
     try {
-      await MongoPlayer.deleteMany({ characterName: new RegExp(`^${cleanName}$`, 'i') });
+      await MongoPlayer.deleteMany({ characterName: new RegExp(`^${cleanName.replace(/e/gi, '[eé]')}$`, 'i') });
     } catch (err) {
       console.error('Error eliminando personaje en Mongo:', err);
     }
@@ -386,8 +392,12 @@ app.post('/api/player/create', async (req, res) => {
   const cleanName = characterName.trim();
   const cleanEmail = ownerEmail.trim().toLowerCase();
 
-  // Validar si el nombre de personaje ya existe
-  if (localPlayersDb[cleanName]) {
+  // Validar si el nombre de personaje ya existe (Insensible a tildes/mayúsculas)
+  const normalizeStr = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const targetNorm = normalizeStr(cleanName);
+  const exists = Object.keys(localPlayersDb).some(k => normalizeStr(k) === targetNorm);
+
+  if (exists) {
     return res.status(400).json({ success: false, message: `El nombre "${cleanName}" ya existe. Por favor escoge un nombre diferente.` });
   }
 
@@ -450,78 +460,63 @@ app.get('/api/status', (req, res) => {
 
 // 2. Cargar personaje por nombre
 app.get('/api/player/:characterName', async (req, res) => {
+  loadLocalDb();
   const name = req.params.characterName;
+  const normalizeStr = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const targetNorm = normalizeStr(name);
 
   if (isMongoConnected) {
     try {
-      const doc = await MongoPlayer.findOne({ characterName: name });
+      const doc = await MongoPlayer.findOne({ characterName: new RegExp(`^${name.replace(/e/gi, '[eé]')}$`, 'i') });
       if (doc) return res.json({ success: true, player: doc });
     } catch (err) {
       console.error('Error buscando personaje en MongoDB:', err);
     }
   }
 
-  // Fallback a Base de datos local
-  const localDoc = localPlayersDb[name];
-  if (localDoc) {
-    return res.json({ success: true, player: localDoc });
+  // Buscar en la base de datos local JSON sin re-crear personajes fantasma
+  const foundKey = Object.keys(localPlayersDb).find(k => normalizeStr(k) === targetNorm);
+  if (foundKey && localPlayersDb[foundKey]) {
+    return res.json({ success: true, player: localPlayersDb[foundKey] });
   }
 
-  // Crear personaje inicial si es nuevo
-  const defaultPlayer: PlayerRecord = {
-    characterName: name,
-    level: 1,
-    xp: 0,
-    availablePoints: 0,
-    elements: {
-      vitalidad: { equip: 0, base: 0 },
-      sabiduria: { equip: 0, base: 0 },
-      aire: { equip: 0, base: 0 },
-      tierra: { equip: 0, base: 0 },
-      fuego: { equip: 0, base: 0 },
-      agua: { equip: 0, base: 0 }
-    },
-    specials: {
-      tasaMana: 0,
-      manaTotal: 0,
-      velocidad: 0,
-      defensa: 0,
-      ataque: 0
-    },
-    hp: 100,
-    maxHp: 100,
-    mana: 10,
-    maxMana: 10,
-    inventory: [],
-    lastPosition: { x: 0, y: 0 },
-    updatedAt: new Date().toISOString()
-  };
-
-  localPlayersDb[name] = defaultPlayer;
-  saveLocalDb();
-  return res.json({ success: true, player: defaultPlayer, isNew: true });
+  return res.status(404).json({ success: false, message: 'Personaje no encontrado' });
 });
 
-// 3. Guardar estado del personaje
+// 3. Guardar estado del personaje manteniendo clase, sexo, colores y progresos intactos
 app.post('/api/player/save', async (req, res) => {
-  const playerData: PlayerRecord = req.body;
+  const playerData: Partial<PlayerRecord> = req.body;
 
   if (!playerData || !playerData.characterName) {
     return res.status(400).json({ success: false, message: 'Datos de personaje inválidos' });
   }
 
-  playerData.updatedAt = new Date().toISOString();
+  const name = playerData.characterName;
+  const normalizeStr = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const foundKey = Object.keys(localPlayersDb).find(k => normalizeStr(k) === normalizeStr(name)) || name;
 
-  // Guardar en BD Local JSON
-  localPlayersDb[playerData.characterName] = playerData;
+  const existing = localPlayersDb[foundKey] || {};
+  const mergedPlayer: PlayerRecord = {
+    ...existing,
+    ...playerData,
+    characterName: existing.characterName || name,
+    characterClass: playerData.characterClass || existing.characterClass || 'espadachin',
+    gender: playerData.gender || existing.gender || 'masculino',
+    skinColor: playerData.skinColor || existing.skinColor || '#f5c6a5',
+    hairColor: playerData.hairColor || existing.hairColor || '#451a03',
+    outfitColor: playerData.outfitColor || existing.outfitColor || '#1d4ed8',
+    ownerEmail: playerData.ownerEmail || existing.ownerEmail || '',
+    updatedAt: new Date().toISOString()
+  } as PlayerRecord;
+
+  localPlayersDb[foundKey] = mergedPlayer;
   saveLocalDb();
 
-  // Si Mongo está conectado, sincronizar también
   if (isMongoConnected) {
     try {
       await MongoPlayer.findOneAndUpdate(
-        { characterName: playerData.characterName },
-        playerData,
+        { characterName: foundKey },
+        mergedPlayer,
         { upsert: true, new: true }
       );
     } catch (err) {
@@ -529,7 +524,7 @@ app.post('/api/player/save', async (req, res) => {
     }
   }
 
-  return res.json({ success: true, message: 'Progreso guardado correctamente en servidor local', timestamp: playerData.updatedAt });
+  return res.json({ success: true, message: 'Progreso y personalización guardados correctamente', timestamp: mergedPlayer.updatedAt });
 });
 
 // ----------------------------------------------------

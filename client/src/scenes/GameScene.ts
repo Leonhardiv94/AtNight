@@ -374,8 +374,17 @@ export class GameScene extends Phaser.Scene {
   public async savePlayerToServer() {
     try {
       const stats = (typeof window !== 'undefined' && (window as any).characterStats) ? (window as any).characterStats : {};
+      const activeUser = (typeof window !== 'undefined' && (window as any).activeUser) ? (window as any).activeUser : null;
+
       const payload = {
+        ...(this.currentCharacterData || {}),
         characterName: this.currentCharacterName,
+        ownerEmail: activeUser ? activeUser.email : (this.currentCharacterData?.ownerEmail || ''),
+        characterClass: this.currentCharacterData?.characterClass || 'espadachin',
+        gender: this.currentCharacterData?.gender || 'masculino',
+        skinColor: this.currentCharacterData?.skinColor || '#f5c6a5',
+        hairColor: this.currentCharacterData?.hairColor || '#451a03',
+        outfitColor: this.currentCharacterData?.outfitColor || '#1d4ed8',
         level: this.playerLevel,
         xp: this.playerXp,
         availablePoints: stats.availablePoints || 0,

@@ -176,10 +176,199 @@ export class GameScene extends Phaser.Scene {
   }
 
   private applyCharacterAppearance(p: any) {
-    if (!this.player) return;
+    if (!this.player || !p) return;
+    const name = p.characterName || this.currentCharacterName;
     const cls = p.characterClass || 'espadachin';
     const gender = p.gender || 'masculino';
-    console.log(`🎨 Aplicando apariencia visual del personaje: ${p.characterName} (${cls}, ${gender})`);
+
+    console.log(`🎨 Generando textura y apariencia dinámica para: ${name} (${cls}, ${gender})`);
+
+    this.generateCustomPlayerTextures(p);
+
+    // Actualizar textura del jugador en pantalla al instante
+    const defaultFrame = `char-${name}-down-0`;
+    if (this.textures.exists(defaultFrame)) {
+      this.player.setTexture(defaultFrame);
+      this.player.play(`char-${name}-idle-down`, true);
+    }
+  }
+
+  private generateCustomPlayerTextures(p: any) {
+    const name = p.characterName || this.currentCharacterName;
+    const cls = p.characterClass || 'espadachin';
+    const gender = p.gender || 'masculino';
+    const skinHex = parseInt((p.skinColor || '#f5c6a5').replace('#', ''), 16);
+    const hairHex = parseInt((p.hairColor || '#451a03').replace('#', ''), 16);
+
+    let baseOutfit = '#1d4ed8';
+    if (cls === 'arquero') baseOutfit = '#16a34a';
+    else if (cls === 'mago') baseOutfit = '#7e22ce';
+    else if (cls === 'amigo_sol') baseOutfit = '#ea580c';
+    else if (cls === 'amigo_luna') baseOutfit = '#0284c7';
+
+    const outfitHex = parseInt((p.outfitColor && p.outfitColor !== '#0284c7' ? p.outfitColor : baseOutfit).replace('#', ''), 16);
+    const isFemale = gender === 'femenino';
+
+    const directions = ['down', 'up', 'right', 'left', 'down-right', 'down-left', 'up-right', 'up-left'];
+    const graphics = this.make.graphics({ x: 0, y: 0 });
+
+    directions.forEach(dir => {
+      for (let frame = 0; frame < 4; frame++) {
+        const texKey = `char-${name}-${dir}-${frame}`;
+        if (this.textures.exists(texKey)) {
+          this.textures.remove(texKey);
+        }
+        graphics.clear();
+
+        let legStep = 0;
+        let armPendulumX = 0;
+        let armPendulumY = 0;
+
+        if (frame === 1) {
+          legStep = -7;
+          armPendulumX = 8;
+          armPendulumY = -2;
+        } else if (frame === 2) {
+          legStep = 0;
+          armPendulumX = 0;
+          armPendulumY = 1;
+        } else if (frame === 3) {
+          legStep = 7;
+          armPendulumX = -8;
+          armPendulumY = 2;
+        }
+
+        // Sombra Base Proyectada
+        graphics.fillStyle(0x000000, 0.35);
+        graphics.fillEllipse(32, 104, 46, 14);
+
+        const isSide = dir.includes('left') || dir.includes('right');
+        const isLeft = dir.includes('left');
+
+        // Piernas y Calzado
+        if (isSide) {
+          const backX = 32 - (isLeft ? -legStep : legStep);
+          const frontX = 32 + (isLeft ? -legStep : legStep);
+          graphics.fillStyle(0x5c2c16, 1);
+          graphics.fillEllipse(backX, 68, 10, 20);
+          graphics.fillEllipse(frontX, 68, 11, 20);
+          graphics.fillStyle(0x292524, 1);
+          graphics.fillRect(frontX - 5, 84, 10, 8);
+          graphics.fillRect(backX - 4, 84, 8, 8);
+        } else {
+          const leftX = 22;
+          const rightX = 42;
+          const leftY = 66 + legStep;
+          const rightY = 66 - legStep;
+          graphics.fillStyle(0x5c2c16, 1);
+          graphics.fillEllipse(leftX, leftY, 11, 18);
+          graphics.fillEllipse(rightX, rightY, 11, 18);
+          graphics.fillStyle(0x292524, 1);
+          graphics.fillRect(leftX - 5, leftY + 18, 10, 10);
+          graphics.fillRect(rightX - 5, rightY + 18, 10, 10);
+        }
+
+        // Torso según Clase y Sexo
+        graphics.fillStyle(outfitHex, 1);
+        if (isFemale) {
+          graphics.fillTriangle(32, 36, 18, 64, 46, 64);
+        } else {
+          graphics.fillRect(18, 36, 28, 28);
+        }
+
+        // Distintivo Visual según Clase de Personaje (5 Clases)
+        if (cls === 'espadachin') {
+          graphics.fillStyle(0xfbbf24, 1);
+          graphics.fillCircle(32, 44, 4.5);
+          graphics.fillStyle(0x78350f, 1);
+          graphics.fillRect(13, 34, 7, 12);
+          graphics.fillRect(44, 34, 7, 12);
+        } else if (cls === 'arquero') {
+          graphics.fillStyle(0x78350f, 1);
+          graphics.fillRect(20, 38, 24, 4);
+          graphics.fillRect(38, 36, 6, 24);
+        } else if (cls === 'mago') {
+          graphics.fillStyle(0xc084fc, 1);
+          graphics.fillCircle(32, 44, 5);
+          graphics.fillRect(30, 48, 4, 16);
+        } else if (cls === 'amigo_sol') {
+          graphics.fillStyle(0xfbbf24, 1);
+          graphics.fillCircle(32, 44, 6);
+        } else if (cls === 'amigo_luna') {
+          graphics.fillStyle(0xe2e8f0, 1);
+          graphics.fillCircle(32, 44, 6);
+        }
+
+        // Brazos Desarmados
+        graphics.fillStyle(skinHex, 1);
+        if (isSide) {
+          const armX = (isLeft ? 28 : 36) + (isLeft ? -armPendulumX : armPendulumX);
+          graphics.fillEllipse(armX, 52, 8, 14);
+          graphics.fillStyle(outfitHex, 1);
+          graphics.fillRect(armX - 4, 46, 8, 6);
+        } else {
+          graphics.fillEllipse(12, 52 + armPendulumY, 7, 14);
+          graphics.fillEllipse(52, 52 - armPendulumY, 7, 14);
+          graphics.fillStyle(outfitHex, 1);
+          graphics.fillRect(9, 48 + armPendulumY, 7, 6);
+          graphics.fillRect(49, 48 - armPendulumY, 7, 6);
+        }
+
+        // Cabeza & Rostro
+        graphics.fillStyle(skinHex, 1);
+        graphics.fillEllipse(32, 22, 26, 24);
+
+        if (dir === 'down' || dir.includes('down')) {
+          graphics.fillStyle(0x27140a, 1);
+          graphics.fillRect(23, 21, 6, 2); graphics.fillRect(35, 21, 6, 2);
+          graphics.fillStyle(0x0f172a, 1);
+          graphics.fillRect(24, 24, 4, 4); graphics.fillRect(36, 24, 4, 4);
+          graphics.fillStyle(0xffffff, 1);
+          graphics.fillRect(25, 24, 2, 2); graphics.fillRect(37, 24, 2, 2);
+        }
+
+        // Cabello según color seleccionado
+        graphics.fillStyle(hairHex, 1);
+        if (isFemale) {
+          graphics.fillEllipse(32, 16, 26, 14);
+          graphics.fillRect(18, 16, 6, 26);
+          graphics.fillRect(40, 16, 6, 26);
+        } else {
+          graphics.fillEllipse(32, 16, 24, 12);
+          graphics.fillRect(20, 15, 12, 5);
+        }
+
+        graphics.generateTexture(texKey, 64, 112);
+      }
+    });
+
+    // Registrar animaciones personalizadas
+    directions.forEach(d => {
+      const walkKey = `char-${name}-walk-${d}`;
+      const idleKey = `char-${name}-idle-${d}`;
+
+      if (this.anims.exists(walkKey)) this.anims.remove(walkKey);
+      if (this.anims.exists(idleKey)) this.anims.remove(idleKey);
+
+      this.anims.create({
+        key: walkKey,
+        frames: [
+          { key: `char-${name}-${d}-1` },
+          { key: `char-${name}-${d}-2` },
+          { key: `char-${name}-${d}-3` },
+          { key: `char-${name}-${d}-0` }
+        ],
+        frameRate: 9,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: idleKey,
+        frames: [{ key: `char-${name}-${d}-0` }],
+        frameRate: 1,
+        repeat: -1
+      });
+    });
   }
 
   public async savePlayerToServer() {
@@ -627,10 +816,14 @@ export class GameScene extends Phaser.Scene {
       else if (angleDeg >= -67.5 && angleDeg < -22.5) currentDir = 'up-right';
 
       this.lastDirection = currentDir;
-      this.player.play(`hero-walk-${currentDir}`, true);
+      const walkKey = `char-${this.currentCharacterName}-walk-${currentDir}`;
+      const fallbackWalkKey = `hero-walk-${currentDir}`;
+      this.player.play(this.anims.exists(walkKey) ? walkKey : fallbackWalkKey, true);
     } else {
       // Idle Stance / Reposo en las 8 direcciones
-      this.player.play(`hero-idle-${this.lastDirection}`, true);
+      const idleKey = `char-${this.currentCharacterName}-idle-${this.lastDirection}`;
+      const fallbackIdleKey = `hero-idle-${this.lastDirection}`;
+      this.player.play(this.anims.exists(idleKey) ? idleKey : fallbackIdleKey, true);
     }
   }
 

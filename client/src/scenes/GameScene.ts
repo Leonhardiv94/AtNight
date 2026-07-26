@@ -129,13 +129,21 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
-  public async loadSavedCharacter() {
+  private currentCharacterName: string = 'HéroeAtNight';
+  private currentCharacterData: any = null;
+
+  public async loadSavedCharacter(charName?: string) {
+    if (charName) {
+      this.currentCharacterName = charName;
+    }
+
     try {
-      const res = await fetch('http://localhost:3002/api/player/HéroeAtNight');
+      const res = await fetch(`http://localhost:3002/api/player/${encodeURIComponent(this.currentCharacterName)}`);
       if (!res.ok) return;
       const data = await res.json();
       if (data.success && data.player) {
         const p = data.player;
+        this.currentCharacterData = p;
         this.playerLevel = p.level || 1;
         this.playerXp = p.xp || 0;
         this.playerHp = p.hp || 100;
@@ -145,7 +153,7 @@ export class GameScene extends Phaser.Scene {
 
         if (typeof window !== 'undefined' && (window as any).characterStats) {
           const stats = (window as any).characterStats;
-          stats.name = p.characterName || 'Héroe de la Noche';
+          stats.name = p.characterName || this.currentCharacterName;
           stats.level = this.playerLevel;
           stats.availablePoints = p.availablePoints || 0;
           if (p.elements) stats.elements = p.elements;
@@ -154,11 +162,15 @@ export class GameScene extends Phaser.Scene {
             (window as any).updateCaracteristicasUI();
           }
         }
+
+        const hudName = document.getElementById('hud-player-name');
+        if (hudName) hudName.innerText = p.characterName || this.currentCharacterName;
+
         this.updateHud();
-        console.log('✅ Personaje cargado desde el servidor local:', p.characterName);
+        console.log('✅ Personaje seleccionado cargado desde el servidor:', p.characterName, p.characterClass);
       }
     } catch (err) {
-      console.log('ℹ️ Servidor local no disponible, operando en cliente.');
+      console.log('ℹ️ Operando en cliente local para el personaje:', this.currentCharacterName);
     }
   }
 
@@ -166,7 +178,7 @@ export class GameScene extends Phaser.Scene {
     try {
       const stats = (typeof window !== 'undefined' && (window as any).characterStats) ? (window as any).characterStats : {};
       const payload = {
-        characterName: 'HéroeAtNight',
+        characterName: this.currentCharacterName,
         level: this.playerLevel,
         xp: this.playerXp,
         availablePoints: stats.availablePoints || 0,

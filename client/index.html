@@ -2795,7 +2795,7 @@
       if (window.gameInstance && window.gameInstance.scene) {
         const gameScene = window.gameInstance.scene.getScene('GameScene');
         if (gameScene && gameScene.loadSavedCharacter) {
-          gameScene.loadSavedCharacter();
+          gameScene.loadSavedCharacter(characterName);
         }
       }
     }

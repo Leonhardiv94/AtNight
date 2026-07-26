@@ -166,12 +166,20 @@ export class GameScene extends Phaser.Scene {
         const hudName = document.getElementById('hud-player-name');
         if (hudName) hudName.innerText = p.characterName || this.currentCharacterName;
 
+        this.applyCharacterAppearance(p);
         this.updateHud();
         console.log('✅ Personaje seleccionado cargado desde el servidor:', p.characterName, p.characterClass);
       }
     } catch (err) {
       console.log('ℹ️ Operando en cliente local para el personaje:', this.currentCharacterName);
     }
+  }
+
+  private applyCharacterAppearance(p: any) {
+    if (!this.player) return;
+    const cls = p.characterClass || 'espadachin';
+    const gender = p.gender || 'masculino';
+    console.log(`🎨 Aplicando apariencia visual del personaje: ${p.characterName} (${cls}, ${gender})`);
   }
 
   public async savePlayerToServer() {

@@ -527,12 +527,14 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 10, 17, rightArmAngle, 0x78350f);
     }
 
-    // 6. Cabeza y Orejas Elfas
+    // 6. Cabeza y Orejas Elfas (Visibles ÚNICAMENTE en Vista Frontal y Posterior)
     graphics.fillStyle(skinHex, 1);
     graphics.fillEllipse(32, 17, 17, 19);
 
-    graphics.fillTriangle(20, 16, 14, 11, 22, 20);
-    graphics.fillTriangle(44, 16, 50, 11, 42, 20);
+    if (dir === 'down' || dir === 'up') {
+      graphics.fillTriangle(20, 16, 14, 11, 22, 20);
+      graphics.fillTriangle(44, 16, 50, 11, 42, 20);
+    }
 
     if (dir === 'down' || dir.includes('down')) {
       graphics.fillStyle(0x27140a, 1);
@@ -730,12 +732,14 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 10, 17, rightArmAngle, 0x78350f);
     }
 
-    // 6. Cabeza y Orejas Elfas Estilizadas (Copiadas idénticas de la arquera)
+    // 6. Cabeza y Orejas Elfas Estilizadas (Visibles ÚNICAMENTE en Vista Frontal y Posterior)
     graphics.fillStyle(skinHex, 1);
     graphics.fillEllipse(32, 17, 17, 19);
 
-    graphics.fillTriangle(20, 16, 14, 11, 22, 20); // Oreja Elfa Izquierda
-    graphics.fillTriangle(44, 16, 50, 11, 42, 20); // Oreja Elfa Derecha
+    if (dir === 'down' || dir === 'up') {
+      graphics.fillTriangle(20, 16, 14, 11, 22, 20); // Oreja Elfa Izquierda
+      graphics.fillTriangle(44, 16, 50, 11, 42, 20); // Oreja Elfa Derecha
+    }
 
     // Rostro Expresivo y Fino
     if (dir === 'down' || dir.includes('down')) {

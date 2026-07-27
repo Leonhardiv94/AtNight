@@ -489,21 +489,8 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(0xfbbf24, 1);
     graphics.fillRect(25, 41, 14, 3);
 
-    // 3. Carcaj de Flechas
-    graphics.fillStyle(0x5c2c16, 1);
-    graphics.fillRect(38, 16, 6, 26);
-    graphics.fillStyle(0xfbbf24, 1);
-    graphics.fillRect(39, 8, 2, 8);
-    graphics.fillRect(41, 6, 2, 10);
-
-    graphics.fillStyle(0x451a03, 1);
-    graphics.beginPath();
-    graphics.moveTo(24, 30);
-    graphics.lineTo(40, 44);
-    graphics.lineTo(38, 46);
-    graphics.lineTo(22, 32);
-    graphics.closePath();
-    graphics.fillPath();
+    // 3. Carcaj de Flechas Distintivo Elfo y Tirante Cruzado (Invertido en Espalda)
+    this.drawElvenQuiverAndStrap(graphics, dir);
 
     // 4. Cuello Anclado
     graphics.fillStyle(skinHex, 1);
@@ -691,22 +678,8 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(0xfbbf24, 1);
     graphics.fillRect(25, 41, 14, 3);
 
-    // 3. Carcaj de Flechas en la Espalda
-    graphics.fillStyle(0x5c2c16, 1);
-    graphics.fillRect(38, 16, 6, 26);
-    graphics.fillStyle(0xfbbf24, 1);
-    graphics.fillRect(39, 8, 2, 8);
-    graphics.fillRect(41, 6, 2, 10);
-
-    // Tirante Cruzado Táctico
-    graphics.fillStyle(0x451a03, 1);
-    graphics.beginPath();
-    graphics.moveTo(24, 30);
-    graphics.lineTo(40, 44);
-    graphics.lineTo(38, 46);
-    graphics.lineTo(22, 32);
-    graphics.closePath();
-    graphics.fillPath();
+    // 3. Carcaj de Flechas Distintivo Elfo y Tirante Cruzado (Invertido en Espalda)
+    this.drawElvenQuiverAndStrap(graphics, dir);
 
     // 4. Cuello Anclado Conectando Torso y Cabeza
     graphics.fillStyle(skinHex, 1);
@@ -792,6 +765,71 @@ export class GameScene extends Phaser.Scene {
       graphics.lineTo(28, 20);
       graphics.closePath();
       graphics.fillPath();
+    }
+  }
+
+  // Helper para renderizar el Carcaj de Flechas Elfo y Tirante Cruzado (Frontal o Invertido en Espalda)
+  private drawElvenQuiverAndStrap(
+    graphics: Phaser.GameObjects.Graphics,
+    dir: string
+  ) {
+    const isBack = dir === 'up' || dir.includes('up');
+
+    if (isBack) {
+      // VISTA DE ESPALDA (El carcaj y el tirante invertido se muestran al frente sobre la túnica/corset)
+      // 1. Carcaj Principal de Cuero sobre la Espalda (Centrado a la derecha)
+      graphics.fillStyle(0x5c2c16, 1);
+      graphics.fillRect(36, 16, 8, 28); // Cuerpo del Carcaj de Cuero
+      graphics.fillStyle(0x78350f, 1);
+      graphics.fillRect(35, 15, 10, 3);  // Borde superior de cuero reforzado
+
+      // 3 Flechas con Plumas Doradas sobresaliendo del Carcaj
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(37, 7, 2, 9);
+      graphics.fillRect(39, 5, 2, 11);
+      graphics.fillRect(41, 8, 2, 8);
+
+      // Plumas Doradas de Flechas
+      graphics.fillStyle(0xfde047, 1);
+      graphics.fillTriangle(37, 7, 35, 10, 37, 10);
+      graphics.fillTriangle(39, 5, 37, 8, 39, 8);
+      graphics.fillTriangle(41, 8, 39, 11, 41, 11);
+
+      // 2. Tirante Invertido Cruzado en la Espalda (De Hombro Derecho x=40 a Cadera Izquierda x=24)
+      graphics.fillStyle(0x451a03, 1);
+      graphics.beginPath();
+      graphics.moveTo(40, 28);
+      graphics.lineTo(24, 44);
+      graphics.lineTo(22, 46);
+      graphics.lineTo(38, 30);
+      graphics.closePath();
+      graphics.fillPath();
+
+      // Hebilla Dorada del Tirante en la Espalda
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(30, 35, 4, 4);
+    } else {
+      // VISTA FRONTAL / LATERAL:
+      // Carcaj asomándose por detrás del hombro derecho
+      graphics.fillStyle(0x5c2c16, 1);
+      graphics.fillRect(38, 16, 6, 26);
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(39, 8, 2, 8);
+      graphics.fillRect(41, 6, 2, 10);
+
+      // Tirante Cruzado Frontal (De Hombro Izquierdo x=24 a Cadera Derecha x=40)
+      graphics.fillStyle(0x451a03, 1);
+      graphics.beginPath();
+      graphics.moveTo(24, 30);
+      graphics.lineTo(40, 44);
+      graphics.lineTo(38, 46);
+      graphics.lineTo(22, 32);
+      graphics.closePath();
+      graphics.fillPath();
+
+      // Hebilla Dorada en el Pecho
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(30, 36, 4, 4);
     }
   }
 

@@ -1447,37 +1447,28 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(27, 18, 1.5, 1.5); graphics.fillRect(36, 18, 1.5, 1.5);
     }
 
-    // 6. Cabello Puntiagudo Spiky (Anime / Fantasy Warrior Hair) en 8 Direcciones
+    // 6. Cabello Parado Hacia Arriba Mochado de Tajo como una Meseta (Flat Top Plateau Cut)
     graphics.fillStyle(hairHex, 1);
 
-    // Base del cabello
-    graphics.fillEllipse(32, 13, 22, 11);
-
-    if (dir === 'down' || dir.includes('down')) {
-      // FRONTAL: Mechones puntiagudos levantados hacia arriba y flequillo spiky
-      graphics.fillTriangle(22, 12, 18, 4, 26, 10);
-      graphics.fillTriangle(27, 10, 26, 1, 31, 9);
-      graphics.fillTriangle(31, 9, 34, 1, 37, 10);
-      graphics.fillTriangle(37, 10, 44, 4, 41, 12);
-      // Flequillo spiky
-      graphics.fillTriangle(24, 12, 27, 17, 29, 12);
-      graphics.fillTriangle(33, 12, 35, 17, 38, 12);
-    } else if (dir === 'up' || dir.includes('up')) {
-      // POSTERIOR: Mechones spiky despeinados en la coronilla y nuca limpia
-      graphics.fillTriangle(24, 12, 20, 3, 28, 9);
-      graphics.fillTriangle(29, 9, 32, 1, 35, 9);
-      graphics.fillTriangle(36, 9, 42, 3, 39, 12);
-      graphics.fillRect(25, 14, 14, 6);
-    } else if (isLeft) {
-      // IZQUIERDA: Spikes inclinados hacia la izquierda
-      graphics.fillTriangle(26, 11, 18, 4, 30, 9);
-      graphics.fillTriangle(30, 9, 25, 2, 35, 8);
-      graphics.fillTriangle(35, 8, 32, 3, 40, 10);
+    if (isFrontOrBack) {
+      // FRONTAL Y POSTERIOR: Bloque rectangular vertical elevado y cortado recto en meseta arriba
+      graphics.fillRect(22, 4, 20, 11); // Meseta principal
+      graphics.fillRect(23, 2, 18, 2);  // Plano superior horizontal mochado de tajo
+      // Patillas masculinas limpias
+      graphics.fillRect(21, 10, 2, 6);
+      graphics.fillRect(41, 10, 2, 6);
+    } else if (isPureSide) {
+      // PERFIL PURO: Meseta inclinada limpiamente
+      const px = isLeft ? 23 : 25;
+      graphics.fillRect(px, 4, 16, 11);
+      graphics.fillRect(px + 1, 2, 14, 2);
+      graphics.fillRect(isLeft ? 22 : 38, 10, 2, 6); // Patilla
     } else {
-      // DERECHA: Spikes inclinados hacia la derecha
-      graphics.fillTriangle(38, 11, 46, 4, 34, 9);
-      graphics.fillTriangle(34, 9, 39, 2, 29, 8);
-      graphics.fillTriangle(29, 8, 32, 3, 24, 10);
+      // VISTAS DIAGONALES: Meseta en perspectiva 3D
+      const px = isLeft ? 22 : 24;
+      graphics.fillRect(px, 4, 18, 11);
+      graphics.fillRect(px + 1, 2, 16, 2);
+      graphics.fillRect(isLeft ? 21 : 40, 10, 2, 6); // Patilla
     }
   }
 

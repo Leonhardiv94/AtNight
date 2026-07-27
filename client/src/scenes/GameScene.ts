@@ -865,8 +865,8 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 11, 29, frontAngle, 0x451a03);
       this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 29, 33, frontAngle, 0x1c1917);
     } else {
-      const leftHipX = 25;
-      const rightHipX = 39;
+      const leftHipX = 26;
+      const rightHipX = 38;
 
       this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 15, leftLegAngle, skinHex);
       this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 11, leftLegEndH - 4, leftLegAngle, 0x451a03);

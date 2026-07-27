@@ -807,8 +807,8 @@ export class GameScene extends Phaser.Scene {
 
     let leftLegAngle = 0;
     let rightLegAngle = 0;
-    let leftLegEndH = 34; // Estatura atlética un poco más baja que elfo (34px)
-    let rightLegEndH = 34;
+    let leftLegEndH = 31; // Estatura recortada 3px (31px en lugar de 34px)
+    let rightLegEndH = 31;
 
     let leftArmAngle = 0;
     let rightArmAngle = 0;
@@ -817,13 +817,13 @@ export class GameScene extends Phaser.Scene {
 
     if (isFrontOrBack) {
       if (frame === 1) {
-        leftLegEndH = 36;
-        rightLegEndH = 30;
+        leftLegEndH = 33;
+        rightLegEndH = 27;
         leftArmHMod = -2;
         rightArmHMod = 2;
       } else if (frame === 3) {
-        leftLegEndH = 30;
-        rightLegEndH = 36;
+        leftLegEndH = 27;
+        rightLegEndH = 33;
         leftArmHMod = 2;
         rightArmHMod = -2;
       }
@@ -841,12 +841,12 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Sombra Base Proyectada
+    // Sombra Base Proyectada Anclada 3px más arriba (Asentada perfectamente sin flotar)
     graphics.fillStyle(0x000000, 0.35);
-    graphics.fillEllipse(32, 86, 38, 10);
+    graphics.fillEllipse(32, 83, 38, 10);
 
-    // 1. Piernas Fornidas y Pólainas de Cuero (Piel visible hasta h=18, bota recortada desde h=14)
-    const legW = 6; // Ligeramente más fornida/definida que la arquera (6px)
+    // 1. Piernas Fornidas 3px más cortas (Piel hasta h=15, bota h=11 a h=29, suela h=29 a h=33)
+    const legW = 6;
     const hipY = 48;
 
     if (isSide) {
@@ -855,23 +855,23 @@ export class GameScene extends Phaser.Scene {
       const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
       const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
 
-      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 18, backAngle, skinHex);
-      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 14, 32, backAngle, 0x451a03); // Bota de cuero
-      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 32, 36, backAngle, 0x1c1917); // Suela acero
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 15, backAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 11, 29, backAngle, 0x451a03); // Bota de cuero
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 29, 33, backAngle, 0x1c1917); // Suela acero
 
-      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 18, frontAngle, skinHex);
-      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 14, 32, frontAngle, 0x451a03);
-      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 32, 36, frontAngle, 0x1c1917);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 15, frontAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 11, 29, frontAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 29, 33, frontAngle, 0x1c1917);
     } else {
       const leftHipX = 25;
       const rightHipX = 39;
 
-      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 18, leftLegAngle, skinHex);
-      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 14, leftLegEndH - 4, leftLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 15, leftLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 11, leftLegEndH - 4, leftLegAngle, 0x451a03);
       this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x1c1917);
 
-      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 18, rightLegAngle, skinHex);
-      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 14, rightLegEndH - 4, rightLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 15, rightLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 11, rightLegEndH - 4, rightLegAngle, 0x451a03);
       this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917);
     }
 
@@ -972,13 +972,15 @@ export class GameScene extends Phaser.Scene {
     graphics.fillCircle(20, 27, 4);
     graphics.fillCircle(44, 27, 4);
 
-    // 7. Cabeza Humana con Orejas Normales
+    // 7. Cabeza Humana con Orejas Pequeñas Pegadas (SOLO en vistas Frontal y Posterior)
     graphics.fillStyle(skinHex, 1);
     graphics.fillEllipse(32, 17, 18, 20);
 
-    // Orejas Normales Humanas (Redondas, NO elfas!)
-    graphics.fillCircle(20, 18, 2.5);
-    graphics.fillCircle(44, 18, 2.5);
+    // Orejas Normales Humanas Pequeñas y Pegadas a la Cabeza (Visibles ÚNICAMENTE en Vista Frontal y Posterior)
+    if (isFrontOrBack) {
+      graphics.fillCircle(22.5, 18, 1.8);
+      graphics.fillCircle(41.5, 18, 1.8);
+    }
 
     // Rostro Noble e Intenso de Guerrera
     if (dir === 'down' || dir.includes('down')) {

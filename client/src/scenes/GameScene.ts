@@ -272,6 +272,42 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  private drawRotatedLimbSegment(
+    graphics: Phaser.GameObjects.Graphics,
+    px: number,
+    py: number,
+    w: number,
+    startH: number,
+    endH: number,
+    angleRad: number,
+    color: number
+  ) {
+    const cos = Math.cos(angleRad);
+    const sin = Math.sin(angleRad);
+    const halfW = w / 2;
+
+    const x0 = px + (-halfW * cos - startH * sin);
+    const y0 = py + (-halfW * sin + startH * cos);
+
+    const x1 = px + (halfW * cos - startH * sin);
+    const y1 = py + (halfW * sin + startH * cos);
+
+    const x2 = px + (halfW * cos - endH * sin);
+    const y2 = py + (halfW * sin + endH * cos);
+
+    const x3 = px + (-halfW * cos - endH * sin);
+    const y3 = py + (-halfW * sin + endH * cos);
+
+    graphics.fillStyle(color, 1);
+    graphics.beginPath();
+    graphics.moveTo(x0, y0);
+    graphics.lineTo(x1, y1);
+    graphics.lineTo(x2, y2);
+    graphics.lineTo(x3, y3);
+    graphics.closePath();
+    graphics.fillPath();
+  }
+
   private generateCustomPlayerTextures(p: any) {
     const name = p.characterName || this.currentCharacterName;
     const cls = p.characterClass || 'espadachin';
@@ -299,22 +335,27 @@ export class GameScene extends Phaser.Scene {
         }
         graphics.clear();
 
-        let legStep = 0;
-        let armPendulumX = 0;
-        let armPendulumY = 0;
+        // Ángulos de Rotación de ArticulacionesSuperiores (Pivote superior: Hombros y Caderas)
+        let leftLegAngle = 0;
+        let rightLegAngle = 0;
+        let leftArmAngle = 0;
+        let rightArmAngle = 0;
 
         if (frame === 1) {
-          legStep = -7;
-          armPendulumX = 8;
-          armPendulumY = -2;
+          leftLegAngle = -0.22;  // Rotación hacia adelante desde la cadera (-12.5°)
+          rightLegAngle = 0.22;   // Rotación hacia atrás desde la cadera (+12.5°)
+          leftArmAngle = 0.25;    // Rotación hacia adelante desde el hombro (+14.3°)
+          rightArmAngle = -0.25;  // Rotación hacia atrás desde el hombro (-14.3°)
         } else if (frame === 2) {
-          legStep = 0;
-          armPendulumX = 0;
-          armPendulumY = 1;
+          leftLegAngle = 0;
+          rightLegAngle = 0;
+          leftArmAngle = 0;
+          rightArmAngle = 0;
         } else if (frame === 3) {
-          legStep = 7;
-          armPendulumX = -8;
-          armPendulumY = 2;
+          leftLegAngle = 0.22;
+          rightLegAngle = -0.22;
+          leftArmAngle = -0.25;
+          rightArmAngle = 0.25;
         }
 
         // Sombra Base Proyectada directamente bajo los pies (y=92)
@@ -324,41 +365,38 @@ export class GameScene extends Phaser.Scene {
         const isSide = dir.includes('left') || dir.includes('right');
         const isLeft = dir.includes('left');
 
-        // 1. Piernas y Botas (Juntas y Proporcionadas: centro leftX=27, rightX=37, soles en y=92)
+        // 1. Piernas y Botas (Rotadas sobre la Articulación Superior de la Cadera: y=48)
+        const legW = isFemale ? 5 : 8;
+        const hipY = 48; // Punto fijo de rotación superior
+
         if (isSide) {
-          const backX = 32 - (isLeft ? -legStep : legStep);
-          const frontX = 32 + (isLeft ? -legStep : legStep);
-          const legW = isFemale ? 5 : 8;
+          const backHipX = 32;
+          const frontHipX = 32;
+          const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
+          const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
 
-          graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(backX - legW / 2, 54, legW, 18);
-          graphics.fillRect(frontX - legW / 2, 54, legW, 18);
+          // Pierna Trasera
+          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 16, backAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 12, 34, backAngle, 0x451a03); // Bota
+          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 34, 38, backAngle, 0x1c1917); // Suela
 
-          graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero
-          graphics.fillRect(frontX - (legW + 2) / 2, 66, legW + 2, 22);
-          graphics.fillRect(backX - (legW + 1) / 2, 66, legW + 1, 22);
-
-          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas en la sombra (y=88..92)
-          graphics.fillRect(frontX - (legW + 4) / 2, 88, legW + 4, 4);
-          graphics.fillRect(backX - (legW + 3) / 2, 88, legW + 3, 4);
+          // Pierna Delantera
+          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 16, frontAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 12, 34, frontAngle, 0x451a03); // Bota
+          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 34, 38, frontAngle, 0x1c1917); // Suela
         } else {
-          const leftX = isFemale ? 27 : 24; // Piernas juntas y naturales
-          const rightX = isFemale ? 37 : 40;
-          const leftY = 54 + legStep;
-          const rightY = 54 - legStep;
-          const legW = isFemale ? 5 : 8;
+          const leftHipX = isFemale ? 27 : 24;  // Caderas estilizadas juntas
+          const rightHipX = isFemale ? 37 : 40;
 
-          graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(leftX - legW / 2, leftY, legW, 16);
-          graphics.fillRect(rightX - legW / 2, rightY, legW, 16);
+          // Pierna Izquierda (Pivote en leftHipX, hipY)
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 16, leftLegAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 12, 34, leftLegAngle, 0x451a03); // Bota Altas de Cazadora
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, 34, 38, leftLegAngle, 0x1c1917); // Suela
 
-          graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero de Cazadora
-          graphics.fillRect(leftX - (legW + 2) / 2, leftY + 12, legW + 2, 22);
-          graphics.fillRect(rightX - (legW + 2) / 2, rightY + 12, legW + 2, 22);
-
-          graphics.fillStyle(0x1c1917, 1); // Suelas asentadas en la sombra (y=88..92)
-          graphics.fillRect(leftX - (legW + 3) / 2, leftY + 34, legW + 3, 4);
-          graphics.fillRect(rightX - (legW + 3) / 2, rightY + 34, legW + 3, 4);
+          // Pierna Derecha (Pivote en rightHipX, hipY)
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 16, rightLegAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 12, 34, rightLegAngle, 0x451a03); // Bota Altas de Cazadora
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, 34, 38, rightLegAngle, 0x1c1917); // Suela
         }
 
         // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Estilizada)
@@ -425,21 +463,26 @@ export class GameScene extends Phaser.Scene {
         graphics.fillStyle(skinHex, 1);
         graphics.fillRect(29, 21, 6, 8);
 
-        // 5. Brazos Anclados a los Hombros en Silueta Femenina (x=16 y x=41)
-        graphics.fillStyle(skinHex, 1);
+        // 5. Brazos Rotados sobre la Articulación Superior del Hombro (Pivote y=28)
+        const armW = isFemale ? 5 : 7;
+        const shoulderY = 28;
+
         if (isSide) {
-          const armX = (isLeft ? 28 : 36) + (isLeft ? -armPendulumX : armPendulumX);
-          const armW = isFemale ? 5 : 8;
-          graphics.fillRect(armX - armW / 2, 28, armW, 20); // Brazo continuo sin huecos
-          graphics.fillStyle(0x78350f, 1); // Guardabrazos de Cuero
-          graphics.fillRect(armX - (armW + 1) / 2, 38, armW + 1, 7);
+          const armX = 32;
+          const armAngle = isLeft ? -leftArmAngle : leftArmAngle;
+          this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 20, armAngle, skinHex);
+          this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 10, 17, armAngle, 0x78350f); // Guardabrazos
         } else {
-          const armW = isFemale ? 5 : 7;
-          graphics.fillRect(16, 28 + armPendulumY, armW, 20); // Brazo izquierdo continuo
-          graphics.fillRect(41, 28 - armPendulumY, armW, 20); // Brazo derecho continuo
-          graphics.fillStyle(0x78350f, 1); // Guardabrazos de Arquera
-          graphics.fillRect(15, 38 + armPendulumY, armW + 2, 7);
-          graphics.fillRect(40, 38 - armPendulumY, armW + 2, 7);
+          const leftShoulderX = 16;
+          const rightShoulderX = 41;
+
+          // Brazo Izquierdo (Pivote superior en leftShoulderX, shoulderY)
+          this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, 0, 20, leftArmAngle, skinHex);
+          this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW + 1, 10, 17, leftArmAngle, 0x78350f);
+
+          // Brazo Derecho (Pivote superior en rightShoulderX, shoulderY)
+          this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, 20, rightArmAngle, skinHex);
+          this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 10, 17, rightArmAngle, 0x78350f);
         }
 
         // 6. Cabeza y Orejas Elfas Estilizadas de Arquera

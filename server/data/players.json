@@ -52,7 +52,7 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-27T01:28:39.771Z"
+    "updatedAt": "2026-07-27T01:59:46.231Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -60,8 +60,8 @@
     "characterClass": "arquero",
     "gender": "masculino",
     "skinColor": "#fed7aa",
-    "hairColor": "#ea580c",
-    "outfitColor": "#0284c7",
+    "hairColor": "#fde047",
+    "outfitColor": "#9333ea",
     "level": 1,
     "xp": 0,
     "availablePoints": 0,
@@ -107,6 +107,6 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-27T01:56:36.191Z"
+    "updatedAt": "2026-07-27T02:02:17.667Z"
   }
 }

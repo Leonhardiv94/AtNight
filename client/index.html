@@ -2948,12 +2948,20 @@
       characters.forEach(c => {
         const classObj = CHARACTER_CLASSES.find(cl => cl.id === c.characterClass) || CHARACTER_CLASSES[0];
         const genderIcon = c.gender === 'femenino' ? '♀' : '♂';
+        const outfitHex = c.outfitColor || '#0284c7';
         const card = document.createElement('div');
         card.className = 'char-card';
+        card.style.display = 'flex';
+        card.style.alignItems = 'center';
+        card.style.justifyContent = 'space-between';
+        card.style.padding = '0.75rem 1rem';
         card.innerHTML = `
-          <div>
-            <div style="font-weight: 800; font-size: 1rem; color: #ffffff;">${c.characterName} <span style="font-size: 0.8rem; color: #fbbf24;">(${genderIcon})</span></div>
-            <div style="font-size: 0.78rem; color: #94a3b8;">${classObj.name} | Nivel ${c.level || 1}</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 22px; height: 22px; border-radius: 50%; background: ${outfitHex}; border: 2px solid #ffffff; box-shadow: 0 0 10px ${outfitHex};" title="Color de Atuendo: ${outfitHex}"></div>
+            <div>
+              <div style="font-weight: 800; font-size: 1rem; color: #ffffff;">${c.characterName} <span style="font-size: 0.8rem; color: #fbbf24;">(${genderIcon})</span></div>
+              <div style="font-size: 0.78rem; color: #94a3b8;">${classObj.name} | Nivel ${c.level || 1}</div>
+            </div>
           </div>
           <div style="display: flex; align-items: center; gap: 8px;">
             <button type="button" class="auth-submit-btn" style="width: auto; height: 38px; padding: 0 1rem; margin: 0; font-size: 0.82rem; display: inline-flex; align-items: center; justify-content: center;" onclick="selectAndEnterGame('${c.characterName}')">ENTRAR AL JUEGO</button>

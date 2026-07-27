@@ -3339,7 +3339,7 @@
         ctx.fillRect(px - 5, py - 37, 2, 2);
         ctx.fillRect(px + 3, py - 37, 2, 2);
 
-        // J. Cabello Corto Elfo / Largo Femenino
+        // J. Cabello Corto Elfo / Spiky Espadachín / Largo Femenino
         ctx.fillStyle = hairColor;
         if (isFemale) {
           ctx.beginPath();
@@ -3347,6 +3347,16 @@
           ctx.fill();
           ctx.fillRect(px - 15, py - 37, 5, 30);
           ctx.fillRect(px + 10, py - 37, 5, 30);
+        } else if (clsId === 'espadachin') {
+          // Cabello Puntiagudo Spiky para el Espadachín Masculino
+          ctx.beginPath();
+          ctx.arc(px, py - 38, 14, Math.PI * 0.8, Math.PI * 2.2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(px - 10, py - 46); ctx.lineTo(px - 14, py - 56); ctx.lineTo(px - 4, py - 48);
+          ctx.moveTo(px - 4, py - 48); ctx.lineTo(px, py - 60); ctx.lineTo(px + 4, py - 48);
+          ctx.moveTo(px + 4, py - 48); ctx.lineTo(px + 14, py - 56); ctx.lineTo(px + 10, py - 46);
+          ctx.fill();
         } else {
           ctx.beginPath();
           ctx.arc(px, py - 38, 15, Math.PI * 0.85, Math.PI * 2.15);

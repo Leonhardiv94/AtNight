@@ -3226,14 +3226,66 @@
 
         // Faldita / Corsel de Cazadora en Personaje Femenino (py+14 a py+26)
         if (isFemale) {
-          ctx.fillStyle = '#78350f';
-          ctx.beginPath();
-          ctx.moveTo(px - 11, py + 14);
-          ctx.lineTo(px - 14, py + 24);
-          ctx.lineTo(px + 14, py + 24);
-          ctx.lineTo(px + 11, py + 14);
-          ctx.closePath();
-          ctx.fill();
+          if (clsId === 'espadachin') {
+            // Cota de malla en el torso
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(px - 11, py - 18, 22, 34);
+
+            // Coraza de cuero sobre la malla
+            ctx.fillStyle = tunicColor;
+            ctx.beginPath();
+            ctx.moveTo(px - 13, py - 18);
+            ctx.lineTo(px - 10, py + 16);
+            ctx.lineTo(px + 10, py + 16);
+            ctx.lineTo(px + 13, py - 18);
+            ctx.closePath();
+            ctx.fill();
+
+            // Copas de Acero esculpidas en los Senos de la Guerrera
+            ctx.fillStyle = '#cbd5e1';
+            ctx.beginPath();
+            ctx.arc(px - 6, py - 4, 6, 0, Math.PI * 2);
+            ctx.arc(px + 6, py - 4, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(px - 7, py - 6, 2, 0, Math.PI * 2);
+            ctx.arc(px + 5, py - 6, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Falda de tiras de cuero tácticas (Pteruges) más largas sin pasar las rodillas
+            ctx.fillStyle = '#451a03';
+            ctx.beginPath();
+            ctx.moveTo(px - 12, py + 14);
+            ctx.lineTo(px - 16, py + 34);
+            ctx.lineTo(px + 16, py + 34);
+            ctx.lineTo(px + 12, py + 14);
+            ctx.closePath();
+            ctx.fill();
+
+            // Tiras individuales de cuero
+            ctx.fillStyle = '#78350f';
+            ctx.fillRect(px - 14, py + 16, 5, 17);
+            ctx.fillRect(px - 7, py + 16, 5, 18);
+            ctx.fillRect(px, py + 16, 5, 18);
+            ctx.fillRect(px + 7, py + 16, 5, 17);
+
+            // Herrajes de latón
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(px - 13, py + 31, 3, 2);
+            ctx.fillRect(px - 6, py + 32, 3, 2);
+            ctx.fillRect(px + 1, py + 32, 3, 2);
+            ctx.fillRect(px + 8, py + 31, 3, 2);
+          } else {
+            ctx.fillStyle = '#78350f';
+            ctx.beginPath();
+            ctx.moveTo(px - 11, py + 14);
+            ctx.lineTo(px - 14, py + 24);
+            ctx.lineTo(px + 14, py + 24);
+            ctx.lineTo(px + 11, py + 14);
+            ctx.closePath();
+            ctx.fill();
+          }
         }
 
         // E. Cinturón de Cuero Táctico con Hebilla Dorada

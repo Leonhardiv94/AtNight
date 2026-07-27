@@ -341,6 +341,9 @@ export class GameScene extends Phaser.Scene {
         } else if (cls === 'arquero' && !isFemale) {
           // RENDERIZADOR DEDICADO EXCLUSIVO PARA EL ARQUERO MASCULINO (ELFO MANGA Y PANTALÓN LARGO)
           this.drawMaleArcherCharacter(graphics, skinHex, hairHex, outfitHex, dir, frame);
+        } else if (cls === 'espadachin' && isFemale) {
+          // RENDERIZADOR DEDICADO EXCLUSIVO PARA LA GUERRERA FEMENINA (ESPADACHÍN)
+          this.drawFemaleWarriorCharacter(graphics, skinHex, hairHex, outfitHex, dir, frame);
         } else {
           // Renderizador base modular para otras combinaciones futuras
           this.drawGenericCharacter(graphics, skinHex, hairHex, outfitHex, cls, isFemale, dir, frame);
@@ -784,6 +787,255 @@ export class GameScene extends Phaser.Scene {
     // 8. Carcaj en Vista Posterior: Se dibuja SOBRE la cabeza y la espalda en vista trasera
     if (dir.includes('up')) {
       this.drawElvenQuiverAndStrap(graphics, dir);
+    }
+  }
+
+  // =========================================================================
+  // ⚔️ RENDERIZADOR BLINDADO DEDICADO DE LA GUERRERA FEMENINA (ESPADACHÍN)
+  // =========================================================================
+  private drawFemaleWarriorCharacter(
+    graphics: Phaser.GameObjects.Graphics,
+    skinHex: number,
+    hairHex: number,
+    outfitHex: number,
+    dir: string,
+    frame: number
+  ) {
+    const isFrontOrBack = dir === 'down' || dir === 'up';
+    const isSide = dir.includes('left') || dir.includes('right');
+    const isLeft = dir.includes('left');
+
+    let leftLegAngle = 0;
+    let rightLegAngle = 0;
+    let leftLegEndH = 34; // Estatura atlética un poco más baja que elfo (34px)
+    let rightLegEndH = 34;
+
+    let leftArmAngle = 0;
+    let rightArmAngle = 0;
+    let leftArmHMod = 0;
+    let rightArmHMod = 0;
+
+    if (isFrontOrBack) {
+      if (frame === 1) {
+        leftLegEndH = 36;
+        rightLegEndH = 30;
+        leftArmHMod = -2;
+        rightArmHMod = 2;
+      } else if (frame === 3) {
+        leftLegEndH = 30;
+        rightLegEndH = 36;
+        leftArmHMod = 2;
+        rightArmHMod = -2;
+      }
+    } else {
+      if (frame === 1) {
+        leftLegAngle = -0.24;
+        rightLegAngle = 0.24;
+        leftArmAngle = 0.26;
+        rightArmAngle = -0.26;
+      } else if (frame === 3) {
+        leftLegAngle = 0.24;
+        rightLegAngle = -0.24;
+        leftArmAngle = -0.26;
+        rightArmAngle = 0.26;
+      }
+    }
+
+    // Sombra Base Proyectada
+    graphics.fillStyle(0x000000, 0.35);
+    graphics.fillEllipse(32, 86, 38, 10);
+
+    // 1. Piernas Fornidas y Pólainas de Cuero (Piel visible hasta h=18, bota recortada desde h=14)
+    const legW = 6; // Ligeramente más fornida/definida que la arquera (6px)
+    const hipY = 48;
+
+    if (isSide) {
+      const backHipX = 32;
+      const frontHipX = 32;
+      const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
+      const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
+
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 18, backAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 14, 32, backAngle, 0x451a03); // Bota de cuero
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 32, 36, backAngle, 0x1c1917); // Suela acero
+
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 18, frontAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 14, 32, frontAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 32, 36, frontAngle, 0x1c1917);
+    } else {
+      const leftHipX = 25;
+      const rightHipX = 39;
+
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 18, leftLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 14, leftLegEndH - 4, leftLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x1c1917);
+
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 18, rightLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 14, rightLegEndH - 4, rightLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917);
+    }
+
+    // 2. Coraza de Cuero Fornida + Cota de Malla en Pecho y Espalda
+    // Cota de Malla Plateada (Base bajo la armadura)
+    graphics.fillStyle(0x94a3b8, 1);
+    graphics.fillRect(22, 28, 20, 16); // Malla en Torso
+
+    // Textura de eslabones de cota de malla en gris acero
+    graphics.fillStyle(0x64748b, 1);
+    graphics.fillRect(24, 30, 2, 2); graphics.fillRect(28, 30, 2, 2); graphics.fillRect(32, 30, 2, 2); graphics.fillRect(36, 30, 2, 2);
+    graphics.fillRect(26, 33, 2, 2); graphics.fillRect(30, 33, 2, 2); graphics.fillRect(34, 33, 2, 2); graphics.fillRect(38, 33, 2, 2);
+
+    // Coraza de Cuero Táctico (OutfitHex o Cuero 0x78350f)
+    graphics.fillStyle(outfitHex, 1);
+    graphics.beginPath();
+    graphics.moveTo(22, 28);
+    graphics.lineTo(25, 42); // Cintura curva definida pero fuerte (14px)
+    graphics.lineTo(39, 42);
+    graphics.lineTo(42, 28);
+    graphics.closePath();
+    graphics.fillPath();
+
+    if (!dir.includes('up')) {
+      // 3. Copas de Acero Esculpidas en los Senos (Metálicas Reforzadas)
+      graphics.fillStyle(0xcbd5e1, 1);
+      graphics.fillCircle(27, 33, 5.5); // Copa Izquierda
+      graphics.fillCircle(37, 33, 5.5); // Copa Derecha
+
+      // Brillo Metálico Esculpido en las Copas de Acero
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillCircle(26, 31, 2);
+      graphics.fillCircle(36, 31, 2);
+    } else {
+      // Placa de Espaldar de Acero en la Espalda
+      graphics.fillStyle(0xcbd5e1, 1);
+      graphics.fillRect(26, 30, 12, 10);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillRect(27, 31, 10, 2);
+    }
+
+    // 4. Falda de Tiras de Cuero Tácticas (Gladiator Pteruges) - Más larga sin pasar rodillas (y=42 a y=64)
+    graphics.fillStyle(0x451a03, 1);
+    graphics.beginPath();
+    graphics.moveTo(24, 42);
+    graphics.lineTo(19, 64);
+    graphics.lineTo(45, 64);
+    graphics.lineTo(40, 42);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // Tiras Individuales Cortadas de Cuero (Pteruges)
+    graphics.fillStyle(0x78350f, 1);
+    graphics.fillRect(21, 44, 4, 18);
+    graphics.fillRect(27, 44, 4, 19);
+    graphics.fillRect(33, 44, 4, 19);
+    graphics.fillRect(39, 44, 4, 18);
+
+    // Herrajes de Latón Dorado en las tiras
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(22, 60, 2, 2); graphics.fillRect(28, 61, 2, 2); graphics.fillRect(34, 61, 2, 2); graphics.fillRect(40, 60, 2, 2);
+
+    // Cinturón Guerrero Dorado con Hebilla
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(24, 41, 16, 3);
+    graphics.fillStyle(0xffffff, 1);
+    graphics.fillRect(30, 40, 4, 5);
+
+    // 5. Cuello Anclado Conectando Torso y Cabeza
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillRect(29, 21, 6, 8);
+
+    // 6. Brazos Atléticos con Hombreas / Guardabrazos de Acero (Pivote shoulderY = 28)
+    const armW = 5;
+    const shoulderY = 28;
+
+    if (isSide) {
+      const armX = 32;
+      const armAngle = isLeft ? -leftArmAngle : leftArmAngle;
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 18, armAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 8, 16, armAngle, 0x94a3b8); // Guardabrazos de acero
+    } else {
+      const leftShoulderX = 20;
+      const rightShoulderX = 44;
+
+      const armLeftEndH = 18 + leftArmHMod;
+      const armRightEndH = 18 + rightArmHMod;
+
+      this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, 0, armLeftEndH, leftArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW + 1, 8, 16, leftArmAngle, 0x94a3b8); // Acero
+
+      this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, armRightEndH, rightArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 8, 16, rightArmAngle, 0x94a3b8); // Acero
+    }
+
+    // Hombreras de Acero en los Hombros
+    graphics.fillStyle(0xcbd5e1, 1);
+    graphics.fillCircle(20, 27, 4);
+    graphics.fillCircle(44, 27, 4);
+
+    // 7. Cabeza Humana con Orejas Normales
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillEllipse(32, 17, 18, 20);
+
+    // Orejas Normales Humanas (Redondas, NO elfas!)
+    graphics.fillCircle(20, 18, 2.5);
+    graphics.fillCircle(44, 18, 2.5);
+
+    // Rostro Noble e Intenso de Guerrera
+    if (dir === 'down' || dir.includes('down')) {
+      graphics.fillStyle(0x27140a, 1);
+      graphics.fillRect(25, 15, 4, 1.8); graphics.fillRect(35, 15, 4, 1.8); // Cejas marcadas de guerrera
+      graphics.fillStyle(0x0f172a, 1);
+      graphics.fillRect(26, 18, 3, 3.5); graphics.fillRect(35, 18, 3, 3.5);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillRect(27, 18, 1.5, 1.5); graphics.fillRect(36, 18, 1.5, 1.5);
+    }
+
+    // 8. Cabello Trenzado 3D Dinámico según la Orientación
+    graphics.fillStyle(hairHex, 1);
+    graphics.fillEllipse(32, 12, 22, 11);
+
+    if (dir === 'up' || dir === 'up-left' || dir === 'up-right') {
+      // ESPALDA: Trenza guerrera gruesa cayendo por el centro de la espalda
+      graphics.fillRect(30, 16, 4, 28);
+      // Eslabones de la trenza
+      graphics.fillStyle(0x27140a, 0.4);
+      graphics.fillCircle(32, 20, 2.5); graphics.fillCircle(32, 26, 2.5); graphics.fillCircle(32, 32, 2.5); graphics.fillCircle(32, 38, 2.5);
+      // Cuenta de oro de la trenza
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(30, 42, 4, 3);
+    } else if (dir === 'right' || dir === 'down-right') {
+      // DERECHA: Trenza sobre el hombro izquierdo inclinada
+      graphics.beginPath();
+      graphics.moveTo(22, 14);
+      graphics.lineTo(26, 14);
+      graphics.lineTo(32, 34);
+      graphics.lineTo(28, 34);
+      graphics.closePath();
+      graphics.fillPath();
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(28, 33, 4, 3);
+    } else if (dir === 'left' || dir === 'down-left') {
+      // IZQUIERDA: Trenza sobre el hombro derecho inclinada
+      graphics.beginPath();
+      graphics.moveTo(42, 14);
+      graphics.lineTo(38, 14);
+      graphics.lineTo(32, 34);
+      graphics.lineTo(36, 34);
+      graphics.closePath();
+      graphics.fillPath();
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(32, 33, 4, 3);
+    } else {
+      // FRONTAL: Trenza de guerrera cayendo por el frente sobre un lado del pecho
+      graphics.beginPath();
+      graphics.moveTo(22, 14);
+      graphics.lineTo(26, 14);
+      graphics.lineTo(28, 36);
+      graphics.lineTo(24, 36);
+      graphics.closePath();
+      graphics.fillPath();
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(24, 35, 4, 3);
     }
   }
 

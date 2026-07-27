@@ -248,18 +248,27 @@ export class GameScene extends Phaser.Scene {
   private applyCharacterAppearance(p: any) {
     if (!this.player || !p) return;
     const name = p.characterName || this.currentCharacterName;
-    const cls = p.characterClass || 'espadachin';
-    const gender = p.gender || 'masculino';
+    const cls = p.characterClass || 'arquero';
+    const gender = p.gender || 'femenino';
 
     console.log(`🎨 Generando textura y apariencia dinámica para: ${name} (${cls}, ${gender})`);
+
+    try {
+      if (this.player.anims) this.player.anims.stop();
+    } catch (_e) {}
 
     this.generateCustomPlayerTextures(p);
 
     // Actualizar textura del jugador en pantalla al instante
     const defaultFrame = `char-${name}-down-0`;
+    const idleKey = `char-${name}-idle-down`;
     if (this.textures.exists(defaultFrame)) {
       this.player.setTexture(defaultFrame);
-      this.player.play(`char-${name}-idle-down`, true);
+      if (this.anims.exists(idleKey)) {
+        try {
+          this.player.play(idleKey, true);
+        } catch (_e) {}
+      }
     }
   }
 
@@ -355,11 +364,11 @@ export class GameScene extends Phaser.Scene {
           graphics.fillStyle(outfitHex, 1);
           graphics.beginPath();
           graphics.moveTo(18, 34);
-          graphics.quadraticCurveTo(20, 42, 22, 50); // Cintura Curva Izquierda
+          graphics.lineTo(22, 50); // Cintura ceñida
           graphics.lineTo(42, 50); // Base de la Cintura
-          graphics.quadraticCurveTo(44, 42, 46, 34); // Cintura Curva Derecha
+          graphics.lineTo(46, 34); // Torso alto
           graphics.closePath();
-          graphics.fill();
+          graphics.fillPath();
 
           // Escote / Pechera Femenina
           graphics.fillStyle(skinHex, 1);
@@ -373,7 +382,7 @@ export class GameScene extends Phaser.Scene {
           graphics.lineTo(50, 60);
           graphics.lineTo(44, 48);
           graphics.closePath();
-          graphics.fill();
+          graphics.fillPath();
 
           // Cinturón Táctico Dorado
           graphics.fillStyle(0xfbbf24, 1);
@@ -400,7 +409,7 @@ export class GameScene extends Phaser.Scene {
           graphics.lineTo(42, 53);
           graphics.lineTo(18, 39);
           graphics.closePath();
-          graphics.fill();
+          graphics.fillPath();
         } else if (cls === 'espadachin') {
           graphics.fillStyle(0xfbbf24, 1);
           graphics.fillCircle(32, 44, 4.5);
@@ -460,27 +469,16 @@ export class GameScene extends Phaser.Scene {
         }
 
         graphics.generateTexture(texKey, 64, 112);
-
-        // Generar también para la clave de reserva 'hero-' para garantizar compatibilidad total
-        const fallbackTexKey = `hero-${dir}-${frame}`;
-        if (this.textures.exists(fallbackTexKey)) {
-          this.textures.remove(fallbackTexKey);
-        }
-        graphics.generateTexture(fallbackTexKey, 64, 112);
       }
     });
 
-    // Registrar animaciones personalizadas para ambas claves (char- y hero-)
+    // Registrar animaciones personalizadas para la clave char-
     directions.forEach(d => {
       const walkKey = `char-${name}-walk-${d}`;
       const idleKey = `char-${name}-idle-${d}`;
-      const fallbackWalkKey = `hero-walk-${d}`;
-      const fallbackIdleKey = `hero-idle-${d}`;
 
       if (this.anims.exists(walkKey)) this.anims.remove(walkKey);
       if (this.anims.exists(idleKey)) this.anims.remove(idleKey);
-      if (this.anims.exists(fallbackWalkKey)) this.anims.remove(fallbackWalkKey);
-      if (this.anims.exists(fallbackIdleKey)) this.anims.remove(fallbackIdleKey);
 
       this.anims.create({
         key: walkKey,
@@ -500,30 +498,11 @@ export class GameScene extends Phaser.Scene {
         frameRate: 1,
         repeat: -1
       });
-
-      this.anims.create({
-        key: fallbackWalkKey,
-        frames: [
-          { key: `hero-${d}-1` },
-          { key: `hero-${d}-2` },
-          { key: `hero-${d}-3` },
-          { key: `hero-${d}-0` }
-        ],
-        frameRate: 9,
-        repeat: -1
-      });
-
-      this.anims.create({
-        key: fallbackIdleKey,
-        frames: [{ key: `hero-${d}-0` }],
-        frameRate: 1,
-        repeat: -1
-      });
     });
   }
 
   public async savePlayerToServer() {
-    if (!this.currentCharacterName || this.currentCharacterName === 'HéroeAtNight') return;
+    if (!this.currentCharacterName) return;
     try {
       const stats = (typeof window !== 'undefined' && (window as any).characterStats) ? (window as any).characterStats : {};
       const activeUser = (typeof window !== 'undefined' && (window as any).activeUser) ? (window as any).activeUser : null;
@@ -532,11 +511,11 @@ export class GameScene extends Phaser.Scene {
         ...(this.currentCharacterData || {}),
         characterName: this.currentCharacterName,
         ownerEmail: activeUser ? activeUser.email : (this.currentCharacterData?.ownerEmail || ''),
-        characterClass: this.currentCharacterData?.characterClass || 'espadachin',
-        gender: this.currentCharacterData?.gender || 'masculino',
+        characterClass: this.currentCharacterData?.characterClass || 'arquero',
+        gender: this.currentCharacterData?.gender || 'femenino',
         skinColor: this.currentCharacterData?.skinColor || '#f5c6a5',
         hairColor: this.currentCharacterData?.hairColor || '#451a03',
-        outfitColor: this.currentCharacterData?.outfitColor || '#1d4ed8',
+        outfitColor: this.currentCharacterData?.outfitColor || '#16a34a',
         level: this.playerLevel,
         xp: this.playerXp,
         availablePoints: stats.availablePoints || 0,
@@ -669,39 +648,33 @@ export class GameScene extends Phaser.Scene {
   private lastDirection: string = 'down';
 
   private createPlayer() {
-    const dirs = ['down', 'up', 'right', 'left', 'down-right', 'down-left', 'up-right', 'up-left'];
-    dirs.forEach(d => {
-      if (!this.anims.exists(`hero-walk-${d}`)) {
-        this.anims.create({
-          key: `hero-walk-${d}`,
-          frames: [
-            { key: `hero-${d}-1` },
-            { key: `hero-${d}-2` },
-            { key: `hero-${d}-3` },
-            { key: `hero-${d}-0` }
-          ],
-          frameRate: 9,
-          repeat: -1
-        });
-      }
-      if (!this.anims.exists(`hero-idle-${d}`)) {
-        this.anims.create({
-          key: `hero-idle-${d}`,
-          frames: [
-            { key: `hero-${d}-0` }
-          ],
-          frameRate: 1,
-          repeat: -1
-        });
-      }
-    });
+    const activeData = this.currentCharacterData || (function() {
+      try {
+        const raw = localStorage.getItem('atnight_active_char_data');
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    })() || {
+      characterName: this.currentCharacterName || 'Leonhard1',
+      characterClass: 'arquero',
+      gender: 'femenino',
+      skinColor: '#f5c6a5',
+      hairColor: '#451a03',
+      outfitColor: '#16a34a'
+    };
 
-    this.player = this.physics.add.sprite(this.islandCenterIsoX, this.islandCenterIsoY, 'hero-down-0');
+    this.currentCharacterName = activeData.characterName || 'Leonhard1';
+    this.currentCharacterData = activeData;
+
+    this.generateCustomPlayerTextures(activeData);
+
+    const initialFrame = `char-${this.currentCharacterName}-down-0`;
+    this.player = this.physics.add.sprite(this.islandCenterIsoX, this.islandCenterIsoY, initialFrame);
     this.player.setOrigin(0.5, 0.85);
     this.player.setCollideWorldBounds(false);
     this.player.body?.setSize(32, 24);
     this.player.body?.setOffset(16, 78);
     this.player.setDepth(this.islandCenterIsoY);
+    this.player.play(`char-${this.currentCharacterName}-idle-down`, true);
   }
 
   private getPolloLevelData(level: number) {
@@ -978,20 +951,14 @@ export class GameScene extends Phaser.Scene {
 
       this.lastDirection = currentDir;
       const walkKey = `char-${this.currentCharacterName}-walk-${currentDir}`;
-      const fallbackWalkKey = `hero-walk-${currentDir}`;
-      try {
-        this.player.play(this.anims.exists(walkKey) ? walkKey : fallbackWalkKey, true);
-      } catch (e) {
-        this.player.play(fallbackWalkKey, true);
+      if (this.anims.exists(walkKey)) {
+        this.player.play(walkKey, true);
       }
     } else {
       // Idle Stance / Reposo en las 8 direcciones
       const idleKey = `char-${this.currentCharacterName}-idle-${this.lastDirection}`;
-      const fallbackIdleKey = `hero-idle-${this.lastDirection}`;
-      try {
-        this.player.play(this.anims.exists(idleKey) ? idleKey : fallbackIdleKey, true);
-      } catch (e) {
-        this.player.play(fallbackIdleKey, true);
+      if (this.anims.exists(idleKey)) {
+        this.player.play(idleKey, true);
       }
     }
   }

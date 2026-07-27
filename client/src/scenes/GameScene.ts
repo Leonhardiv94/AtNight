@@ -926,60 +926,59 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(30, 40, 4, 5);
 
     } else if (isDiagonal) {
-      // VISTAS DIAGONALES (arriba/abajo a derecha/izquierda): +10px MÁS GRUESO QUE EL PERFIL (Ancho = 27px: x=18.5 a x=45.5)
+      // VISTAS DIAGONALES (arriba/abajo a derecha/izquierda): Reducido 7px (Ancho estilizado = 20px: x=22 a x=42)
       graphics.fillStyle(0x94a3b8, 1);
-      graphics.fillRect(18.5, 28, 27, 16);
+      graphics.fillRect(22, 28, 20, 16);
 
       graphics.fillStyle(0x64748b, 1);
-      graphics.fillRect(20, 30, 2, 2); graphics.fillRect(25, 30, 2, 2); graphics.fillRect(30, 30, 2, 2); graphics.fillRect(35, 30, 2, 2); graphics.fillRect(40, 30, 2, 2);
-      graphics.fillRect(22, 33, 2, 2); graphics.fillRect(27, 33, 2, 2); graphics.fillRect(32, 33, 2, 2); graphics.fillRect(37, 33, 2, 2); graphics.fillRect(42, 33, 2, 2);
+      graphics.fillRect(24, 30, 2, 2); graphics.fillRect(28, 30, 2, 2); graphics.fillRect(32, 30, 2, 2); graphics.fillRect(36, 30, 2, 2); graphics.fillRect(40, 30, 2, 2);
+      graphics.fillRect(26, 33, 2, 2); graphics.fillRect(30, 33, 2, 2); graphics.fillRect(34, 33, 2, 2); graphics.fillRect(38, 33, 2, 2);
 
       graphics.fillStyle(outfitHex, 1);
       graphics.beginPath();
-      graphics.moveTo(18.5, 28);
-      graphics.lineTo(21, 42); // Cintura fuerte en diagonal 22px
-      graphics.lineTo(43, 42);
-      graphics.lineTo(45.5, 28);
+      graphics.moveTo(22, 28);
+      graphics.lineTo(24, 42); // Cintura curva 16px en diagonal
+      graphics.lineTo(40, 42);
+      graphics.lineTo(42, 28);
       graphics.closePath();
       graphics.fillPath();
 
       if (!dir.includes('up')) {
-        // 2 Copas esculpidas en perspectiva diagonal
+        // 2 Copas esculpidas en perspectiva diagonal ajustada
         graphics.fillStyle(0xcbd5e1, 1);
-        graphics.fillCircle(25, 33, 5.2);
-        graphics.fillCircle(38, 33, 5.2);
+        graphics.fillCircle(27, 33, 4.8);
+        graphics.fillCircle(37, 33, 4.8);
         graphics.fillStyle(0xffffff, 1);
-        graphics.fillCircle(24, 31, 1.8);
-        graphics.fillCircle(37, 31, 1.8);
+        graphics.fillCircle(26, 31, 1.6);
+        graphics.fillCircle(36, 31, 1.6);
       } else {
         graphics.fillStyle(0xcbd5e1, 1);
-        graphics.fillRect(23, 30, 18, 10);
+        graphics.fillRect(25, 30, 14, 10);
         graphics.fillStyle(0xffffff, 1);
-        graphics.fillRect(24, 31, 16, 2);
+        graphics.fillRect(26, 31, 12, 2);
       }
 
-      // Falda en vistas diagonales
+      // Falda en vistas diagonales estilizada
       graphics.fillStyle(0x451a03, 1);
       graphics.beginPath();
-      graphics.moveTo(20, 42);
-      graphics.lineTo(16, 63);
-      graphics.lineTo(48, 63);
-      graphics.lineTo(44, 42);
+      graphics.moveTo(22, 42);
+      graphics.lineTo(18, 63);
+      graphics.lineTo(46, 63);
+      graphics.lineTo(42, 42);
       graphics.closePath();
       graphics.fillPath();
 
       graphics.fillStyle(0x78350f, 1);
-      graphics.fillRect(18, 44, 4, 18);
-      graphics.fillRect(24, 44, 4, 19);
-      graphics.fillRect(30, 44, 4, 19);
-      graphics.fillRect(36, 44, 4, 19);
-      graphics.fillRect(42, 44, 4, 18);
+      graphics.fillRect(20, 44, 4, 18);
+      graphics.fillRect(26, 44, 4, 19);
+      graphics.fillRect(32, 44, 4, 19);
+      graphics.fillRect(38, 44, 4, 18);
 
       graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(19, 60, 2, 2); graphics.fillRect(25, 61, 2, 2); graphics.fillRect(31, 61, 2, 2); graphics.fillRect(37, 61, 2, 2); graphics.fillRect(43, 60, 2, 2);
+      graphics.fillRect(21, 60, 2, 2); graphics.fillRect(27, 61, 2, 2); graphics.fillRect(33, 61, 2, 2); graphics.fillRect(39, 60, 2, 2);
 
       graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(21, 41, 22, 3);
+      graphics.fillRect(22, 41, 20, 3);
       graphics.fillStyle(0xffffff, 1);
       graphics.fillRect(30, 40, 4, 5);
 

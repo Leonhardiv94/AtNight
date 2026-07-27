@@ -492,8 +492,10 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(0xfbbf24, 1);
     graphics.fillRect(25, 41, 14, 3);
 
-    // 3. Carcaj de Flechas Distintivo Elfo y Tirante Cruzado (Invertido en Espalda)
-    this.drawElvenQuiverAndStrap(graphics, dir);
+    // 3. Carcaj de Flechas en Vistas Frontal/Lateral
+    if (!dir.includes('up')) {
+      this.drawElvenQuiverAndStrap(graphics, dir);
+    }
 
     // 4. Cuello Anclado
     graphics.fillStyle(skinHex, 1);
@@ -564,6 +566,11 @@ export class GameScene extends Phaser.Scene {
     } else {
       graphics.fillRect(18, 12, 5, 24);
       graphics.fillRect(39, 12, 5, 24);
+    }
+
+    // 8. Carcaj en Vista Posterior: Se dibuja SOBRE la cabeza y la espalda en vista trasera
+    if (dir.includes('up')) {
+      this.drawElvenQuiverAndStrap(graphics, dir);
     }
   }
 
@@ -683,8 +690,10 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(0xfbbf24, 1);
     graphics.fillRect(25, 41, 14, 3);
 
-    // 3. Carcaj de Flechas Distintivo Elfo y Tirante Cruzado (Invertido en Espalda)
-    this.drawElvenQuiverAndStrap(graphics, dir);
+    // 3. Carcaj de Flechas en Vistas Frontal/Lateral
+    if (!dir.includes('up')) {
+      this.drawElvenQuiverAndStrap(graphics, dir);
+    }
 
     // 4. Cuello Anclado Conectando Torso y Cabeza
     graphics.fillStyle(skinHex, 1);
@@ -770,6 +779,11 @@ export class GameScene extends Phaser.Scene {
       graphics.lineTo(28, 20);
       graphics.closePath();
       graphics.fillPath();
+    }
+
+    // 8. Carcaj en Vista Posterior: Se dibuja SOBRE la cabeza y la espalda en vista trasera
+    if (dir.includes('up')) {
+      this.drawElvenQuiverAndStrap(graphics, dir);
     }
   }
 

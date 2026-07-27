@@ -335,37 +335,57 @@ export class GameScene extends Phaser.Scene {
         }
         graphics.clear();
 
-        // Ángulos de Rotación de ArticulacionesSuperiores (Pivote superior: Hombros y Caderas)
-        let leftLegAngle = 0;
-        let rightLegAngle = 0;
-        let leftArmAngle = 0;
-        let rightArmAngle = 0;
-
-        if (frame === 1) {
-          leftLegAngle = -0.22;  // Rotación hacia adelante desde la cadera (-12.5°)
-          rightLegAngle = 0.22;   // Rotación hacia atrás desde la cadera (+12.5°)
-          leftArmAngle = 0.25;    // Rotación hacia adelante desde el hombro (+14.3°)
-          rightArmAngle = -0.25;  // Rotación hacia atrás desde el hombro (-14.3°)
-        } else if (frame === 2) {
-          leftLegAngle = 0;
-          rightLegAngle = 0;
-          leftArmAngle = 0;
-          rightArmAngle = 0;
-        } else if (frame === 3) {
-          leftLegAngle = 0.22;
-          rightLegAngle = -0.22;
-          leftArmAngle = -0.25;
-          rightArmAngle = 0.25;
-        }
-
-        // Sombra Base Proyectada directamente bajo los pies (y=92)
-        graphics.fillStyle(0x000000, 0.35);
-        graphics.fillEllipse(32, 92, isFemale ? 34 : 42, 10);
-
+        // Distinción entre Perspectiva Frontal/Posterior (Foreshortening) y Perspectiva Lateral (Rotación de Pivote)
+        const isFrontOrBack = dir === 'down' || dir === 'up';
         const isSide = dir.includes('left') || dir.includes('right');
         const isLeft = dir.includes('left');
 
-        // 1. Piernas y Botas (Rotadas sobre la Articulación Superior de la Cadera: y=48)
+        let leftLegAngle = 0;
+        let rightLegAngle = 0;
+        let leftLegEndH = 36;
+        let rightLegEndH = 36;
+
+        let leftArmAngle = 0;
+        let rightArmAngle = 0;
+        let leftArmHMod = 0;
+        let rightArmHMod = 0;
+
+        if (isFrontOrBack) {
+          // VISTA FRONTAL / POSTERIOR (down / up):
+          // Ángulo = 0 (Sin rotación lateral tipo tijera para que no se abran las piernas).
+          // Se aplica Foreshortening (acortamiento vertical por perspectiva):
+          if (frame === 1) {
+            leftLegEndH = 38;    // Pierna que da el paso se extiende ligeramente
+            rightLegEndH = 32;   // Pierna trasera se acorta por perspectiva
+            leftArmHMod = -2;
+            rightArmHMod = 2;
+          } else if (frame === 3) {
+            leftLegEndH = 32;    // Pierna trasera se acorta
+            rightLegEndH = 38;   // Pierna delantera se extiende
+            leftArmHMod = 2;
+            rightArmHMod = -2;
+          }
+        } else {
+          // VISTAS LATERALES Y DIAGONALES:
+          // Rotación limpia sobre el pivote de la articulación superior
+          if (frame === 1) {
+            leftLegAngle = -0.25;
+            rightLegAngle = 0.25;
+            leftArmAngle = 0.28;
+            rightArmAngle = -0.28;
+          } else if (frame === 3) {
+            leftLegAngle = 0.25;
+            rightLegAngle = -0.25;
+            leftArmAngle = -0.28;
+            rightArmAngle = 0.28;
+          }
+        }
+
+        // Sombra Base Proyectada directamente bajo los pies (y=86)
+        graphics.fillStyle(0x000000, 0.35);
+        graphics.fillEllipse(32, 86, isFemale ? 34 : 42, 10);
+
+        // 1. Piernas y Botas (Articuladas desde la Cadera: hipY = 48)
         const legW = isFemale ? 5 : 8;
         const hipY = 48; // Punto fijo de rotación superior
 
@@ -385,18 +405,18 @@ export class GameScene extends Phaser.Scene {
           this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 12, 34, frontAngle, 0x451a03); // Bota
           this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 34, 38, frontAngle, 0x1c1917); // Suela
         } else {
-          const leftHipX = isFemale ? 27 : 24;  // Caderas estilizadas juntas
-          const rightHipX = isFemale ? 37 : 40;
+          const leftHipX = isFemale ? 26 : 24;  // Caderas adheridas y estilizadas
+          const rightHipX = isFemale ? 38 : 40;
 
           // Pierna Izquierda (Pivote en leftHipX, hipY)
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 16, leftLegAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 12, 34, leftLegAngle, 0x451a03); // Bota Altas de Cazadora
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, 34, 38, leftLegAngle, 0x1c1917); // Suela
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 14, leftLegAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 10, leftLegEndH - 4, leftLegAngle, 0x451a03); // Bota Cazadora
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x1c1917); // Suela
 
           // Pierna Derecha (Pivote en rightHipX, hipY)
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 16, rightLegAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 12, 34, rightLegAngle, 0x451a03); // Bota Altas de Cazadora
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, 34, 38, rightLegAngle, 0x1c1917); // Suela
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 14, rightLegAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 10, rightLegEndH - 4, rightLegAngle, 0x451a03); // Bota Cazadora
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917); // Suela
         }
 
         // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Estilizada)
@@ -463,7 +483,7 @@ export class GameScene extends Phaser.Scene {
         graphics.fillStyle(skinHex, 1);
         graphics.fillRect(29, 21, 6, 8);
 
-        // 5. Brazos Rotados sobre la Articulación Superior del Hombro (Pivote y=28)
+        // 5. Brazos Adheridos al Torso y Rotados sobre los Hombros (Pivote y=28, sin huecos flotantes)
         const armW = isFemale ? 5 : 7;
         const shoulderY = 28;
 
@@ -473,15 +493,18 @@ export class GameScene extends Phaser.Scene {
           this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 20, armAngle, skinHex);
           this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 10, 17, armAngle, 0x78350f); // Guardabrazos
         } else {
-          const leftShoulderX = 16;
-          const rightShoulderX = 41;
+          const leftShoulderX = isFemale ? 21 : 18;  // Adherido directamente al corset (x=24)
+          const rightShoulderX = isFemale ? 43 : 46; // Adherido directamente al corset (x=40)
+
+          const armLeftEndH = 20 + leftArmHMod;
+          const armRightEndH = 20 + rightArmHMod;
 
           // Brazo Izquierdo (Pivote superior en leftShoulderX, shoulderY)
-          this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, 0, 20, leftArmAngle, skinHex);
+          this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, 0, armLeftEndH, leftArmAngle, skinHex);
           this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW + 1, 10, 17, leftArmAngle, 0x78350f);
 
           // Brazo Derecho (Pivote superior en rightShoulderX, shoulderY)
-          this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, 20, rightArmAngle, skinHex);
+          this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, armRightEndH, rightArmAngle, skinHex);
           this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 10, 17, rightArmAngle, 0x78350f);
         }
 
@@ -743,10 +766,10 @@ export class GameScene extends Phaser.Scene {
 
     const initialFrame = `char-${this.currentCharacterName}-down-0`;
     this.player = this.physics.add.sprite(this.islandCenterIsoX, this.islandCenterIsoY, initialFrame);
-    this.player.setOrigin(0.5, 0.82);
+    this.player.setOrigin(0.5, 0.77);
     this.player.setCollideWorldBounds(false);
-    this.player.body?.setSize(28, 20);
-    this.player.body?.setOffset(18, 70);
+    this.player.body?.setSize(26, 18);
+    this.player.body?.setOffset(19, 66);
     this.player.setDepth(this.islandCenterIsoY);
     this.player.play(`char-${this.currentCharacterName}-idle-down`, true);
   }

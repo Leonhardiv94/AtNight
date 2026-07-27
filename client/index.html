@@ -3181,40 +3181,31 @@
         const px = 0;
         const py = -50 + breathY;
 
-        // A. Piernas Musculosas & Pantalones (Pantalón de Cuero Marrón #78350f)
-        ctx.fillStyle = '#5c2c16';
-        ctx.fillRect(px - (isFemale ? 9 : 12), py + 20, 8, 26);
-        ctx.fillRect(px + (isFemale ? 1 : 4), py + 20, 8, 26);
+        // A. Piernas Conectadas & Botas Altas (Sin huecos ni partes flotantes)
+        ctx.fillStyle = isFemale ? skinColor : '#5c2c16';
+        ctx.fillRect(px - (isFemale ? 8 : 12), py + 18, 7, 24);
+        ctx.fillRect(px + (isFemale ? 1 : 5), py + 18, 7, 24);
 
-        // B. Botas Altas de Combate con Dobladillo y Cordones
-        ctx.fillStyle = '#292524';
-        ctx.fillRect(px - (isFemale ? 10 : 13), py + 40, 10, 16);
-        ctx.fillRect(px + (isFemale ? 0 : 3), py + 40, 10, 16);
+        // Botas Altas de Cuero de Cazadora
+        ctx.fillStyle = '#451a03';
+        ctx.fillRect(px - (isFemale ? 9 : 13), py + 36, 9, 20);
+        ctx.fillRect(px + (isFemale ? 0 : 4), py + 36, 9, 20);
 
-        // Dobladillos de la bota
-        ctx.fillStyle = '#44403c';
-        ctx.fillRect(px - (isFemale ? 11 : 14), py + 38, 12, 4);
-        ctx.fillRect(px + (isFemale ? -1 : 2), py + 38, 12, 4);
+        // Dobladillos de cuero
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(px - (isFemale ? 10 : 14), py + 34, 11, 4);
+        ctx.fillRect(px + (isFemale ? -1 : 3), py + 34, 11, 4);
 
-        // Cordones de las botas
-        ctx.strokeStyle = '#a8a29e';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(px - (isFemale ? 6 : 8), py + 42); ctx.lineTo(px - (isFemale ? 6 : 8), py + 52);
-        ctx.moveTo(px + (isFemale ? 5 : 8), py + 42); ctx.lineTo(px + (isFemale ? 5 : 8), py + 52);
-        ctx.stroke();
-
-        // C. Torso: Túnica Medieval Noble Bordada (Con contornos orgánicos suaves)
+        // C. Torso: Corset Femenino Estilizado con Escote y Cintura Curva
         const tunicColor = (clsId === 'espadachin' && outfitColor === '#0284c7') ? '#1d4ed8' : outfitColor;
         ctx.fillStyle = tunicColor;
         ctx.beginPath();
         if (isFemale) {
-          ctx.moveTo(px - 12, py - 18);
-          ctx.quadraticCurveTo(px - 14, py, px - 15, py + 26);
-          ctx.lineTo(px + 15, py + 26);
-          ctx.quadraticCurveTo(px + 14, py, px + 12, py - 18);
+          ctx.moveTo(px - 13, py - 18);
+          ctx.quadraticCurveTo(px - 10, py, px - 11, py + 16); // Cintura curva estilizada
+          ctx.lineTo(px + 11, py + 16);
+          ctx.quadraticCurveTo(px + 10, py, px + 13, py - 18);
         } else {
-          // Hombros V-Taper Masculino
           ctx.moveTo(px - 18, py - 20);
           ctx.quadraticCurveTo(px - 16, py, px - 13, py + 26);
           ctx.lineTo(px + 13, py + 26);
@@ -3223,58 +3214,46 @@
         ctx.closePath();
         ctx.fill();
 
-        // Bordados de Plata/Gris en el Cuello y Falda de la Túnica
-        ctx.strokeStyle = '#e2e8f0';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(px - (isFemale ? 14 : 12), py + 25);
-        ctx.lineTo(px + (isFemale ? 14 : 12), py + 25);
-        ctx.moveTo(px, py - 12);
-        ctx.lineTo(px, py + 25);
-        ctx.stroke();
+        // Faldita / Corsel de Cazadora en Personaje Femenino (py+14 a py+26)
+        if (isFemale) {
+          ctx.fillStyle = '#78350f';
+          ctx.beginPath();
+          ctx.moveTo(px - 11, py + 14);
+          ctx.lineTo(px - 14, py + 24);
+          ctx.lineTo(px + 14, py + 24);
+          ctx.lineTo(px + 11, py + 14);
+          ctx.closePath();
+          ctx.fill();
+        }
 
-        // D. Hombreras de Cuero Curvadas con Hebillas de Bronce
-        ctx.fillStyle = '#78350f';
-        ctx.beginPath();
-        ctx.ellipse(px - (isFemale ? 14 : 19), py - 16, isFemale ? 5 : 7, 8, -Math.PI * 0.1, 0, Math.PI * 2);
-        ctx.ellipse(px + (isFemale ? 14 : 19), py - 16, isFemale ? 5 : 7, 8, Math.PI * 0.1, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(px - (isFemale ? 15 : 20), py - 17, 3, 3);
-        ctx.fillRect(px + (isFemale ? 12 : 17), py - 17, 3, 3);
-
-        // E. Cinturón de Cuero Marrón con Hebilla de León Dorado
+        // E. Cinturón de Cuero Táctico con Hebilla Dorada
         ctx.fillStyle = '#451a03';
-        ctx.fillRect(px - (isFemale ? 13 : 14), py + 10, isFemale ? 26 : 28, 6);
-        ctx.fillRect(px + 2, py + 16, 4, 10);
+        ctx.fillRect(px - (isFemale ? 12 : 14), py + 10, isFemale ? 24 : 28, 5);
         ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(px - 4, py + 9, 8, 8);
-        ctx.fillStyle = '#d97706';
-        ctx.fillRect(px - 2, py + 11, 4, 4);
+        ctx.fillRect(px - 4, py + 9, 8, 7);
 
-        // F. Escudo Heraldico del León Dorado en el Pecho
-        ctx.fillStyle = '#1e3a8a';
-        ctx.beginPath();
-        ctx.moveTo(px - 6, py - 12); ctx.lineTo(px + 6, py - 12); ctx.lineTo(px + 6, py - 4); ctx.lineTo(px, py); ctx.lineTo(px - 6, py - 4);
-        ctx.closePath();
-        ctx.fill();
-        ctx.fillStyle = '#fbbf24';
-        ctx.beginPath(); ctx.arc(px, py - 7, 2.8, 0, Math.PI * 2); ctx.fill();
-
-        // G. Cuello y Cabeza (Anatómica)
+        // G. Cuello Conectado Anatómico
         ctx.fillStyle = skinColor;
-        ctx.fillRect(px - 4, py - 24, 8, 6); // Cuello
+        ctx.fillRect(px - 4, py - 24, 8, 7); // Cuello anclado al torso
         ctx.beginPath();
         ctx.ellipse(px, py - 34, isFemale ? 12 : 14, isFemale ? 14 : 16, 0, 0, Math.PI * 2); // Cabeza
         ctx.fill();
 
-        // H. Orejas
-        ctx.beginPath();
-        ctx.arc(px - (isFemale ? 12 : 14), py - 34, 3, 0, Math.PI * 2);
-        ctx.arc(px + (isFemale ? 12 : 14), py - 34, 3, 0, Math.PI * 2);
-        ctx.fill();
+        // H. Orejas Elfas para la Arquera Femenina
+        ctx.fillStyle = skinColor;
+        if (clsId === 'arquero' && isFemale) {
+          ctx.beginPath();
+          ctx.moveTo(px - 12, py - 34); ctx.lineTo(px - 20, py - 40); ctx.lineTo(px - 12, py - 28);
+          ctx.moveTo(px + 12, py - 34); ctx.lineTo(px + 20, py - 40); ctx.lineTo(px + 12, py - 28);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(px - (isFemale ? 12 : 14), py - 34, 3, 0, Math.PI * 2);
+          ctx.arc(px + (isFemale ? 12 : 14), py - 34, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
 
-        // I. Rostro Noble: Cejas, Ojos Expresivos & Brillo
+        // I. Rostro Noble: Cejas y Ojos Expresivos
         ctx.fillStyle = '#27140a';
         ctx.fillRect(px - 7, py - 40, 5, 2);
         ctx.fillRect(px + 2, py - 40, 5, 2);
@@ -3285,42 +3264,50 @@
         ctx.fillRect(px - 5, py - 37, 2, 2);
         ctx.fillRect(px + 3, py - 37, 2, 2);
 
-        // J. Cabello Peinado Noble
+        // J. Cabello Largo Fluyendo sobre Hombros
         ctx.fillStyle = hairColor;
         if (isFemale) {
           ctx.beginPath();
           ctx.arc(px, py - 38, 14, Math.PI, Math.PI * 2.3);
           ctx.fill();
-          ctx.fillRect(px - 14, py - 37, 5, 28);
-          ctx.fillRect(px + 9, py - 37, 5, 28);
+          ctx.fillRect(px - 15, py - 37, 5, 30);
+          ctx.fillRect(px + 10, py - 37, 5, 30);
         } else {
           ctx.beginPath();
           ctx.arc(px, py - 38, 15, Math.PI * 0.85, Math.PI * 2.15);
           ctx.fill();
-          ctx.beginPath();
-          ctx.moveTo(px - 12, py - 44);
-          ctx.lineTo(px + 4, py - 36);
-          ctx.lineTo(px - 8, py - 32);
-          ctx.closePath();
-          ctx.fill();
         }
 
-        // K. Brazos Desarmados (Manos en los lados)
+        // K. Brazos Conectados en los Hombros
         ctx.fillStyle = skinColor;
         ctx.beginPath();
-        ctx.arc(px - (isFemale ? 14 : 17), py + 16, 4.5, 0, Math.PI * 2);
-        ctx.arc(px + (isFemale ? 14 : 17), py + 16, 4.5, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(px - (isFemale ? 15 : 18), py - 18, 5, 24); // Brazo izquierdo continuo
+        ctx.fillRect(px + (isFemale ? 10 : 13), py - 18, 5, 24); // Brazo derecho continuo
+        ctx.fillStyle = '#78350f'; // Guardabrazos
+        ctx.fillRect(px - (isFemale ? 16 : 19), py, 6, 8);
+        ctx.fillRect(px + (isFemale ? 9 : 12), py, 6, 8);
 
         // 3. ARMAS Y ACCESORIOS SEGÚN LA CLASE DE PERSONAJE ⚔️🏹🔮☀️🌙
         if (clsId === 'arquero') {
+          // Arco Recurvo Táctico y Cuerda Dorada
           ctx.strokeStyle = '#78350f';
-          ctx.lineWidth = 3.5;
+          ctx.lineWidth = 4;
           ctx.beginPath();
-          ctx.arc(px + 16, py, 22, -Math.PI * 0.4, Math.PI * 0.4);
+          ctx.arc(px + 16, py - 2, 24, -Math.PI * 0.45, Math.PI * 0.45);
           ctx.stroke();
+          ctx.strokeStyle = '#fde047'; // Cuerda de arco dorada
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(px + 28, py - 22);
+          ctx.lineTo(px + 28, py + 18);
+          ctx.stroke();
+
+          // Carcaj en la Espalda con Flechas con Plumas Doradas
           ctx.fillStyle = '#451a03';
-          ctx.fillRect(px - 14, py - 20, 6, 25);
+          ctx.fillRect(px - 18, py - 26, 7, 28);
+          ctx.fillStyle = '#fbbf24';
+          ctx.fillRect(px - 17, py - 34, 2, 8);
+          ctx.fillRect(px - 14, py - 36, 2, 10);
         } else if (clsId === 'mago') {
           ctx.fillStyle = '#78350f';
           ctx.fillRect(px + 14, py - 35, 4, 60);

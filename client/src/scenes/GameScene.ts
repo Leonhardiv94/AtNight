@@ -298,99 +298,150 @@ export class GameScene extends Phaser.Scene {
 
         // Sombra Base Proyectada
         graphics.fillStyle(0x000000, 0.35);
-        graphics.fillEllipse(32, 104, 46, 14);
+        graphics.fillEllipse(32, 100, 44, 14);
 
         const isSide = dir.includes('left') || dir.includes('right');
         const isLeft = dir.includes('left');
 
-        // Piernas y Calzado
+        // 1. Piernas Conectadas y Botas de Cazadora (Sin huecos ni partes flotantes)
         if (isSide) {
           const backX = 32 - (isLeft ? -legStep : legStep);
           const frontX = 32 + (isLeft ? -legStep : legStep);
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillEllipse(backX, 68, 10, 20);
-          graphics.fillEllipse(frontX, 68, 11, 20);
-          graphics.fillStyle(0x292524, 1);
-          graphics.fillRect(frontX - 5, 84, 10, 8);
-          graphics.fillRect(backX - 4, 84, 8, 8);
+          graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
+          graphics.fillRect(backX - 4, 52, 8, 20);
+          graphics.fillRect(frontX - 4, 52, 8, 20);
+
+          graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero
+          graphics.fillRect(frontX - 5, 68, 10, 20);
+          graphics.fillRect(backX - 4, 68, 9, 20);
+
+          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas
+          graphics.fillRect(frontX - 6, 88, 12, 4);
+          graphics.fillRect(backX - 5, 88, 10, 4);
         } else {
           const leftX = 22;
           const rightX = 42;
-          const leftY = 66 + legStep;
-          const rightY = 66 - legStep;
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillEllipse(leftX, leftY, 11, 18);
-          graphics.fillEllipse(rightX, rightY, 11, 18);
-          graphics.fillStyle(0x292524, 1);
-          graphics.fillRect(leftX - 5, leftY + 18, 10, 10);
-          graphics.fillRect(rightX - 5, rightY + 18, 10, 10);
+          const leftY = 52 + legStep;
+          const rightY = 52 - legStep;
+
+          graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
+          graphics.fillRect(leftX - 4, leftY, 8, 18);
+          graphics.fillRect(rightX - 4, rightY, 8, 18);
+
+          graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero
+          graphics.fillRect(leftX - 5, leftY + 12, 10, 20);
+          graphics.fillRect(rightX - 5, rightY + 12, 10, 20);
+
+          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas
+          graphics.fillRect(leftX - 6, leftY + 30, 12, 4);
+          graphics.fillRect(rightX - 6, rightY + 30, 12, 4);
         }
 
-        // Torso según Clase y Sexo
-        graphics.fillStyle(outfitHex, 1);
+        // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Estilizada)
         if (isFemale) {
-          graphics.fillTriangle(32, 36, 18, 64, 46, 64);
+          // Corset Ceñido con Pechera Arqueada & Cintura de Avispa (y=34 a y=50)
+          graphics.fillStyle(outfitHex, 1);
+          graphics.beginPath();
+          graphics.moveTo(18, 34);
+          graphics.quadraticCurveTo(20, 42, 22, 50); // Cintura Curva Izquierda
+          graphics.lineTo(42, 50); // Base de la Cintura
+          graphics.quadraticCurveTo(44, 42, 46, 34); // Cintura Curva Derecha
+          graphics.closePath();
+          graphics.fill();
+
+          // Escote / Pechera Femenina
+          graphics.fillStyle(skinHex, 1);
+          graphics.fillTriangle(32, 40, 24, 34, 40, 34);
+
+          // Faldita / Corsel de Cazadora de Cuero (y=48 a y=60)
+          graphics.fillStyle(0x78350f, 1);
+          graphics.beginPath();
+          graphics.moveTo(20, 48);
+          graphics.lineTo(14, 60);
+          graphics.lineTo(50, 60);
+          graphics.lineTo(44, 48);
+          graphics.closePath();
+          graphics.fill();
+
+          // Cinturón Táctico Dorado
+          graphics.fillStyle(0xfbbf24, 1);
+          graphics.fillRect(20, 48, 24, 3);
         } else {
+          graphics.fillStyle(outfitHex, 1);
           graphics.fillRect(18, 36, 28, 28);
         }
 
-        // Distintivo Visual según Clase de Personaje (5 Clases)
-        if (cls === 'espadachin') {
+        // 3. Carcaj en la Espalda y Tirantes para la Arquera Femenina (cls === 'arquero')
+        if (cls === 'arquero') {
+          // Carcaj de Cuero de Arquera con Flechas con Plumas Doradas
+          graphics.fillStyle(0x5c2c16, 1);
+          graphics.fillRect(39, 22, 7, 28);
+          graphics.fillStyle(0xfbbf24, 1);
+          graphics.fillRect(40, 14, 2, 8); // Flecha 1
+          graphics.fillRect(43, 12, 2, 10); // Flecha 2
+
+          // Tirante cruzado de cuero táctico
+          graphics.fillStyle(0x451a03, 1);
+          graphics.beginPath();
+          graphics.moveTo(20, 36);
+          graphics.lineTo(44, 50);
+          graphics.lineTo(42, 53);
+          graphics.lineTo(18, 39);
+          graphics.closePath();
+          graphics.fill();
+        } else if (cls === 'espadachin') {
           graphics.fillStyle(0xfbbf24, 1);
           graphics.fillCircle(32, 44, 4.5);
-          graphics.fillStyle(0x78350f, 1);
-          graphics.fillRect(13, 34, 7, 12);
-          graphics.fillRect(44, 34, 7, 12);
-        } else if (cls === 'arquero') {
-          graphics.fillStyle(0x78350f, 1);
-          graphics.fillRect(20, 38, 24, 4);
-          graphics.fillRect(38, 36, 6, 24);
         } else if (cls === 'mago') {
           graphics.fillStyle(0xc084fc, 1);
           graphics.fillCircle(32, 44, 5);
-          graphics.fillRect(30, 48, 4, 16);
-        } else if (cls === 'amigo_sol') {
-          graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillCircle(32, 44, 6);
-        } else if (cls === 'amigo_luna') {
-          graphics.fillStyle(0xe2e8f0, 1);
-          graphics.fillCircle(32, 44, 6);
         }
 
-        // Brazos Desarmados
+        // 4. Cuello Anclado Conectando Torso y Cabeza
+        graphics.fillStyle(skinHex, 1);
+        graphics.fillRect(28, 26, 8, 10);
+
+        // 5. Brazos Anclados a los Hombros (y=34)
         graphics.fillStyle(skinHex, 1);
         if (isSide) {
           const armX = (isLeft ? 28 : 36) + (isLeft ? -armPendulumX : armPendulumX);
-          graphics.fillEllipse(armX, 52, 8, 14);
-          graphics.fillStyle(outfitHex, 1);
-          graphics.fillRect(armX - 4, 46, 8, 6);
+          graphics.fillRect(armX - 4, 34, 8, 20); // Brazo continuo sin huecos
+          graphics.fillStyle(0x78350f, 1); // Guardabrazos de Cuero
+          graphics.fillRect(armX - 4, 44, 8, 8);
         } else {
-          graphics.fillEllipse(12, 52 + armPendulumY, 7, 14);
-          graphics.fillEllipse(52, 52 - armPendulumY, 7, 14);
-          graphics.fillStyle(outfitHex, 1);
-          graphics.fillRect(9, 48 + armPendulumY, 7, 6);
-          graphics.fillRect(49, 48 - armPendulumY, 7, 6);
+          graphics.fillRect(11, 34 + armPendulumY, 7, 20); // Brazo izquierdo conectado a hombro
+          graphics.fillRect(46, 34 - armPendulumY, 7, 20); // Brazo derecho conectado a hombro
+          graphics.fillStyle(0x78350f, 1); // Guardabrazos de Arquera
+          graphics.fillRect(10, 44 + armPendulumY, 9, 8);
+          graphics.fillRect(45, 46 - armPendulumY, 9, 8);
         }
 
-        // Cabeza & Rostro
+        // 6. Cabeza y Orejas Elfas de Arquera
         graphics.fillStyle(skinHex, 1);
-        graphics.fillEllipse(32, 22, 26, 24);
+        graphics.fillEllipse(32, 22, 24, 24);
 
+        if (cls === 'arquero') {
+          graphics.fillStyle(skinHex, 1);
+          graphics.fillTriangle(18, 20, 13, 14, 20, 24); // Oreja Elfa Izquierda
+          graphics.fillTriangle(46, 20, 51, 14, 44, 24); // Oreja Elfa Derecha
+        }
+
+        // Rostro con Pestañas
         if (dir === 'down' || dir.includes('down')) {
           graphics.fillStyle(0x27140a, 1);
-          graphics.fillRect(23, 21, 6, 2); graphics.fillRect(35, 21, 6, 2);
+          graphics.fillRect(23, 20, 6, 2); graphics.fillRect(35, 20, 6, 2);
           graphics.fillStyle(0x0f172a, 1);
-          graphics.fillRect(24, 24, 4, 4); graphics.fillRect(36, 24, 4, 4);
+          graphics.fillRect(24, 23, 4, 4); graphics.fillRect(36, 23, 4, 4);
           graphics.fillStyle(0xffffff, 1);
-          graphics.fillRect(25, 24, 2, 2); graphics.fillRect(37, 24, 2, 2);
+          graphics.fillRect(25, 23, 2, 2); graphics.fillRect(37, 23, 2, 2);
         }
 
-        // Cabello según color seleccionado
+        // 7. Melena Larga Fluyendo sobre Hombros
         graphics.fillStyle(hairHex, 1);
         if (isFemale) {
           graphics.fillEllipse(32, 16, 26, 14);
-          graphics.fillRect(18, 16, 6, 26);
-          graphics.fillRect(40, 16, 6, 26);
+          graphics.fillRect(15, 16, 6, 32); // Melena cayendo sobre los hombros
+          graphics.fillRect(43, 16, 6, 32);
         } else {
           graphics.fillEllipse(32, 16, 24, 12);
           graphics.fillRect(20, 15, 12, 5);

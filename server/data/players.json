@@ -7,13 +7,13 @@
     "skinColor": "#cbd5e1",
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
-    "level": 1,
-    "xp": 888,
+    "level": 2,
+    "xp": 115,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
         "equip": 0,
-        "base": 0
+        "base": 5
       },
       "sabiduria": {
         "equip": 0,
@@ -43,16 +43,16 @@
       "defensa": 0,
       "ataque": 0
     },
-    "hp": 100,
-    "maxHp": 100,
-    "mana": 10,
-    "maxMana": 10,
+    "hp": 125,
+    "maxHp": 125,
+    "mana": 11,
+    "maxMana": 11,
     "inventory": [
       {
         "id": "chicken_egg",
         "name": "Huevo de Pollo",
         "icon": "",
-        "count": 5,
+        "count": 6,
         "category": "recursos",
         "weight": 1
       },
@@ -60,7 +60,7 @@
         "id": "gold",
         "name": "Monedas de Oro",
         "icon": "",
-        "count": 557,
+        "count": 669,
         "category": "especiales",
         "weight": 0
       },
@@ -68,7 +68,7 @@
         "id": "chicken_feather",
         "name": "Pluma de Pollo",
         "icon": "",
-        "count": 4,
+        "count": 6,
         "category": "recursos",
         "weight": 1
       },
@@ -76,7 +76,7 @@
         "id": "chicken_eye",
         "name": "Ojo de Pollo",
         "icon": "",
-        "count": 2,
+        "count": 3,
         "category": "recursos",
         "weight": 1
       },
@@ -90,9 +90,9 @@
       }
     ],
     "lastPosition": {
-      "x": 0.624868096452909,
-      "y": 1638.5688666666665
+      "x": -163.40763333333516,
+      "y": 1525.7900666666505
     },
-    "updatedAt": "2026-07-26T23:46:51.303Z"
+    "updatedAt": "2026-07-27T00:00:05.071Z"
   }
 }

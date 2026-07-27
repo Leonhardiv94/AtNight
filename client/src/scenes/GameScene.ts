@@ -1221,12 +1221,12 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Sombra Base Proyectada (y = 83, sin flotar)
+    // Sombra Base Proyectada Robustos (y = 83, sin flotar)
     graphics.fillStyle(0x000000, 0.35);
-    graphics.fillEllipse(32, 83, 38, 10);
+    graphics.fillEllipse(32, 83, 42, 11);
 
-    // 1. Pantalones de Cuero de Guerrero (0x451a03 / outfitHex) + Botas de Cuero
-    const legW = 6;
+    // 1. Pantalones de Cuero de Guerrero Robustos (0x451a03 / outfitHex) + Botas de Cuero
+    const legW = 7;
     const hipY = 48;
 
     if (isSide) {
@@ -1235,7 +1235,7 @@ export class GameScene extends Phaser.Scene {
       const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
       const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
 
-      // Pantalones de cuero ajustados (h=0 a h=20)
+      // Pantalones de cuero ajustados y robustos (h=0 a h=20)
       this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 1, 0, 20, backAngle, 0x451a03);
       this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 16, 29, backAngle, 0x1c1917); // Bota de guerrero
       this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 29, 33, backAngle, 0x64748b); // Suela/Refuerzo de acero
@@ -1244,10 +1244,10 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 16, 29, frontAngle, 0x1c1917);
       this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 29, 33, frontAngle, 0x64748b);
     } else {
-      const leftHipX = 26;
-      const rightHipX = 38;
+      const leftHipX = 25;
+      const rightHipX = 39;
 
-      // Pantalones de cuero ajustados (h=0 a h=20)
+      // Pantalones de cuero ajustados robustos (h=0 a h=20)
       this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 1, 0, 18, leftLegAngle, 0x451a03);
       this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 14, leftLegEndH - 4, leftLegAngle, 0x1c1917);
       this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x64748b);
@@ -1257,130 +1257,130 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x64748b);
     }
 
-    // 2. Peto / Armadura de Pecho de Acero Grande (En vez de copas) + Cota de Malla
+    // 2. Peto / Armadura de Pecho de Acero Grande y Robusta + Cota de Malla
     if (isPureSide) {
-      // PERFIL PURO (17px)
+      // PERFIL PURO ROBUSTO (19px de profundidad: x=22.5 a x=41.5)
       graphics.fillStyle(0x94a3b8, 1);
-      graphics.fillRect(23.5, 28, 17, 16);
-
-      graphics.fillStyle(0x64748b, 1);
-      graphics.fillRect(25, 30, 2, 2); graphics.fillRect(29, 30, 2, 2); graphics.fillRect(33, 30, 2, 2); graphics.fillRect(37, 30, 2, 2);
-
-      graphics.fillStyle(outfitHex, 1);
-      graphics.beginPath();
-      graphics.moveTo(23.5, 28);
-      graphics.lineTo(25.5, 42);
-      graphics.lineTo(38.5, 42);
-      graphics.lineTo(40.5, 28);
-      graphics.closePath();
-      graphics.fillPath();
-
-      // Placa de Pecho Grande de Acero en perfil
-      graphics.fillStyle(0xcbd5e1, 1);
-      graphics.fillRect(isLeft ? 24 : 33, 30, 7, 10);
-      graphics.fillStyle(0xffffff, 1);
-      graphics.fillRect(isLeft ? 25 : 34, 31, 5, 2);
-
-      // Faldón corto táctico de cuero sobre pantalones
-      graphics.fillStyle(0x78350f, 1);
-      graphics.fillRect(25, 42, 14, 6);
-      graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(25, 41, 14, 3);
-      graphics.fillStyle(0xffffff, 1);
-      graphics.fillRect(30, 40, 4, 5);
-
-    } else if (isDiagonal) {
-      // VISTAS DIAGONALES (20px)
-      graphics.fillStyle(0x94a3b8, 1);
-      graphics.fillRect(22, 28, 20, 16);
+      graphics.fillRect(22.5, 28, 19, 16);
 
       graphics.fillStyle(0x64748b, 1);
       graphics.fillRect(24, 30, 2, 2); graphics.fillRect(28, 30, 2, 2); graphics.fillRect(32, 30, 2, 2); graphics.fillRect(36, 30, 2, 2); graphics.fillRect(40, 30, 2, 2);
 
       graphics.fillStyle(outfitHex, 1);
       graphics.beginPath();
-      graphics.moveTo(22, 28);
-      graphics.lineTo(24, 42);
-      graphics.lineTo(40, 42);
-      graphics.lineTo(42, 28);
+      graphics.moveTo(22.5, 28);
+      graphics.lineTo(24.5, 42);
+      graphics.lineTo(39.5, 42);
+      graphics.lineTo(41.5, 28);
       graphics.closePath();
       graphics.fillPath();
 
-      if (!dir.includes('up')) {
-        // Gran Placa de Peto de Acero de Guerrero en diagonal
-        graphics.fillStyle(0xcbd5e1, 1);
-        graphics.fillRect(24, 30, 16, 10);
-        graphics.fillStyle(0xe2e8f0, 1);
-        graphics.fillRect(25, 31, 14, 8);
-        graphics.fillStyle(0xffffff, 1);
-        graphics.fillRect(26, 31, 12, 2);
-      } else {
-        // Espaldar metálico en diagonal
-        graphics.fillStyle(0xcbd5e1, 1);
-        graphics.fillRect(25, 30, 14, 10);
-        graphics.fillStyle(0xffffff, 1);
-        graphics.fillRect(26, 31, 12, 2);
-      }
+      // Placa de Pecho Grande de Acero en perfil
+      graphics.fillStyle(0xcbd5e1, 1);
+      graphics.fillRect(isLeft ? 23 : 33, 30, 8, 10);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillRect(isLeft ? 24 : 34, 31, 6, 2);
 
-      // Faldón de túnica corta sobre pantalones de cuero
+      // Faldón corto táctico de cuero sobre pantalones
       graphics.fillStyle(0x78350f, 1);
-      graphics.fillRect(23, 42, 18, 6);
+      graphics.fillRect(24, 42, 16, 6);
       graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(22, 41, 20, 3);
+      graphics.fillRect(24, 41, 16, 3);
       graphics.fillStyle(0xffffff, 1);
       graphics.fillRect(30, 40, 4, 5);
 
-    } else {
-      // VISTA FRONTAL Y POSTERIOR (24px)
+    } else if (isDiagonal) {
+      // VISTAS DIAGONALES ROBUSTAS (23px de ancho: x=20.5 a x=43.5)
       graphics.fillStyle(0x94a3b8, 1);
-      graphics.fillRect(20, 28, 24, 16);
+      graphics.fillRect(20.5, 28, 23, 16);
 
       graphics.fillStyle(0x64748b, 1);
       graphics.fillRect(22, 30, 2, 2); graphics.fillRect(26, 30, 2, 2); graphics.fillRect(30, 30, 2, 2); graphics.fillRect(34, 30, 2, 2); graphics.fillRect(38, 30, 2, 2); graphics.fillRect(42, 30, 2, 2);
 
       graphics.fillStyle(outfitHex, 1);
       graphics.beginPath();
-      graphics.moveTo(20, 28);
-      graphics.lineTo(24, 42);
-      graphics.lineTo(40, 42);
-      graphics.lineTo(44, 28);
+      graphics.moveTo(20.5, 28);
+      graphics.lineTo(23, 42);
+      graphics.lineTo(41, 42);
+      graphics.lineTo(43.5, 28);
       graphics.closePath();
       graphics.fillPath();
 
       if (!dir.includes('up')) {
-        // Gran Placa de Peto de Acero Masculina Esculpida en Pecho (Frontal)
+        // Gran Placa de Peto de Acero de Guerrero Robusto en diagonal
         graphics.fillStyle(0xcbd5e1, 1);
-        graphics.fillRect(23, 30, 18, 10);
+        graphics.fillRect(22.5, 30, 19, 10);
         graphics.fillStyle(0xe2e8f0, 1);
-        graphics.fillRect(24, 31, 16, 8);
+        graphics.fillRect(23.5, 31, 17, 8);
         graphics.fillStyle(0xffffff, 1);
-        graphics.fillRect(25, 31, 14, 2);
+        graphics.fillRect(24.5, 31, 15, 2);
+      } else {
+        // Espaldar metálico en diagonal
+        graphics.fillStyle(0xcbd5e1, 1);
+        graphics.fillRect(23.5, 30, 17, 10);
+        graphics.fillStyle(0xffffff, 1);
+        graphics.fillRect(24.5, 31, 15, 2);
+      }
+
+      // Faldón de túnica corta sobre pantalones de cuero
+      graphics.fillStyle(0x78350f, 1);
+      graphics.fillRect(22, 42, 20, 6);
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(21, 41, 22, 3);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillRect(30, 40, 4, 5);
+
+    } else {
+      // VISTA FRONTAL Y POSTERIOR ROBUSTA (26px de ancho: x=19 a x=45)
+      graphics.fillStyle(0x94a3b8, 1);
+      graphics.fillRect(19, 28, 26, 16);
+
+      graphics.fillStyle(0x64748b, 1);
+      graphics.fillRect(21, 30, 2, 2); graphics.fillRect(25, 30, 2, 2); graphics.fillRect(29, 30, 2, 2); graphics.fillRect(33, 30, 2, 2); graphics.fillRect(37, 30, 2, 2); graphics.fillRect(41, 30, 2, 2);
+
+      graphics.fillStyle(outfitHex, 1);
+      graphics.beginPath();
+      graphics.moveTo(19, 28);
+      graphics.lineTo(23, 42);
+      graphics.lineTo(41, 42);
+      graphics.lineTo(45, 28);
+      graphics.closePath();
+      graphics.fillPath();
+
+      if (!dir.includes('up')) {
+        // Gran Placa de Peto de Acero Masculina Esculpida Robusta en Pecho (Frontal)
+        graphics.fillStyle(0xcbd5e1, 1);
+        graphics.fillRect(21, 30, 22, 10);
+        graphics.fillStyle(0xe2e8f0, 1);
+        graphics.fillRect(22, 31, 20, 8);
+        graphics.fillStyle(0xffffff, 1);
+        graphics.fillRect(23, 31, 18, 2);
         // Reborde/Bisel del peto
         graphics.fillStyle(0x64748b, 1);
-        graphics.fillRect(23, 39, 18, 1);
+        graphics.fillRect(21, 39, 22, 1);
       } else {
         // Placa de Espaldar de Acero de Guerrero (Posterior)
         graphics.fillStyle(0xcbd5e1, 1);
-        graphics.fillRect(25, 30, 14, 10);
+        graphics.fillRect(23, 30, 18, 10);
         graphics.fillStyle(0xffffff, 1);
-        graphics.fillRect(26, 31, 12, 2);
+        graphics.fillRect(24, 31, 16, 2);
       }
 
       // Faldón táctico corto de cuero sobre pantalones
       graphics.fillStyle(0x78350f, 1);
-      graphics.fillRect(22, 42, 20, 6);
+      graphics.fillRect(21, 42, 22, 6);
       graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(23, 41, 18, 3);
+      graphics.fillRect(21, 41, 22, 3);
       graphics.fillStyle(0xffffff, 1);
       graphics.fillRect(30, 40, 4, 5);
     }
 
-    // 3. Cuello Anclado Conectando Torso y Cabeza
+    // 3. Cuello Robusto Anclado Conectando Torso y Cabeza
     graphics.fillStyle(skinHex, 1);
-    graphics.fillRect(29, 21, 6, 8);
+    graphics.fillRect(28, 21, 8, 8);
 
-    // 4. Brazos Atléticos Masculinos con Guardabrazos de Acero (Pivote shoulderY = 28)
-    const armW = 5;
+    // 4. Brazos Musculosos Masculinos con Guardabrazos de Acero (Pivote shoulderY = 28)
+    const armW = 6;
     const shoulderY = 28;
 
     if (isPureSide) {
@@ -1389,27 +1389,27 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 18, armAngle, skinHex);
       this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 8, 16, armAngle, 0x94a3b8);
 
-      // Hombrera de Acero Masculina
+      // Hombrera de Acero Masculina Robusta
       graphics.fillStyle(0xcbd5e1, 1);
-      graphics.fillCircle(32, 27, 4.5);
+      graphics.fillCircle(32, 27, 5.2);
       graphics.fillStyle(0xffffff, 1);
-      graphics.fillCircle(31, 25.5, 1.5);
+      graphics.fillCircle(31, 25.5, 1.8);
     } else if (isDiagonal) {
-      const mainShoulderX = isLeft ? 24 : 40;
-      const subShoulderX = isLeft ? 42 : 22;
+      const mainShoulderX = isLeft ? 22 : 42;
+      const subShoulderX = isLeft ? 44 : 20;
       const armAngle = isLeft ? -leftArmAngle : leftArmAngle;
 
       this.drawRotatedLimbSegment(graphics, mainShoulderX, shoulderY, armW, 0, 18, armAngle, skinHex);
       this.drawRotatedLimbSegment(graphics, mainShoulderX, shoulderY, armW + 1, 8, 16, armAngle, 0x94a3b8);
 
       graphics.fillStyle(0xcbd5e1, 1);
-      graphics.fillCircle(mainShoulderX, 27, 4.5);
-      graphics.fillCircle(subShoulderX, 27, 3.5);
+      graphics.fillCircle(mainShoulderX, 27, 5.2);
+      graphics.fillCircle(subShoulderX, 27, 4);
       graphics.fillStyle(0xffffff, 1);
-      graphics.fillCircle(mainShoulderX - (isLeft ? 1 : -1), 25.5, 1.5);
+      graphics.fillCircle(mainShoulderX - (isLeft ? 1 : -1), 25.5, 1.8);
     } else {
-      const leftShoulderX = 20;
-      const rightShoulderX = 44;
+      const leftShoulderX = 18;
+      const rightShoulderX = 46;
 
       const armLeftEndH = 18 + leftArmHMod;
       const armRightEndH = 18 + rightArmHMod;
@@ -1421,11 +1421,11 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 8, 16, rightArmAngle, 0x94a3b8);
 
       graphics.fillStyle(0xcbd5e1, 1);
-      graphics.fillCircle(20, 27, 4.5);
-      graphics.fillCircle(44, 27, 4.5);
+      graphics.fillCircle(18, 27, 5.2);
+      graphics.fillCircle(46, 27, 5.2);
       graphics.fillStyle(0xffffff, 1);
-      graphics.fillCircle(19, 25.5, 1.5);
-      graphics.fillCircle(43, 25.5, 1.5);
+      graphics.fillCircle(17, 25.5, 1.8);
+      graphics.fillCircle(45, 25.5, 1.8);
     }
 
     // 5. Cabeza Humana con Orejas Pequeñas Pegadas (Visibles ÚNICAMENTE en Vista Frontal y Posterior)

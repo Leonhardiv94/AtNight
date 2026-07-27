@@ -317,48 +317,48 @@ export class GameScene extends Phaser.Scene {
           armPendulumY = 2;
         }
 
-        // Sombra Base Proyectada
+        // Sombra Base Proyectada directamente bajo los pies
         graphics.fillStyle(0x000000, 0.35);
-        graphics.fillEllipse(32, 100, isFemale ? 36 : 44, 14);
+        graphics.fillEllipse(32, 98, isFemale ? 36 : 44, 12);
 
         const isSide = dir.includes('left') || dir.includes('right');
         const isLeft = dir.includes('left');
 
-        // 1. Piernas y Botas (Silueta Estilizada según Sexo y Clase)
+        // 1. Piernas y Botas (Conectadas directamente al suelo sin brecha flotante)
         if (isSide) {
           const backX = 32 - (isLeft ? -legStep : legStep);
           const frontX = 32 + (isLeft ? -legStep : legStep);
           const legW = isFemale ? 5 : 8;
 
           graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(backX - legW / 2, 50, legW, 22);
-          graphics.fillRect(frontX - legW / 2, 50, legW, 22);
+          graphics.fillRect(backX - legW / 2, 48, legW, 26);
+          graphics.fillRect(frontX - legW / 2, 48, legW, 26);
 
           graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero
-          graphics.fillRect(frontX - (legW + 2) / 2, 66, legW + 2, 22);
-          graphics.fillRect(backX - (legW + 1) / 2, 66, legW + 1, 22);
+          graphics.fillRect(frontX - (legW + 2) / 2, 66, legW + 2, 30);
+          graphics.fillRect(backX - (legW + 1) / 2, 66, legW + 1, 30);
 
-          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas
-          graphics.fillRect(frontX - (legW + 4) / 2, 87, legW + 4, 4);
-          graphics.fillRect(backX - (legW + 3) / 2, 87, legW + 3, 4);
+          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas asentadas en la sombra (y=94..98)
+          graphics.fillRect(frontX - (legW + 4) / 2, 94, legW + 4, 4);
+          graphics.fillRect(backX - (legW + 3) / 2, 94, legW + 3, 4);
         } else {
           const leftX = isFemale ? 24 : 22;
           const rightX = isFemale ? 40 : 42;
-          const leftY = 50 + legStep;
-          const rightY = 50 - legStep;
+          const leftY = 48 + legStep;
+          const rightY = 48 - legStep;
           const legW = isFemale ? 5 : 8;
 
           graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(leftX - legW / 2, leftY, legW, 20);
-          graphics.fillRect(rightX - legW / 2, rightY, legW, 20);
+          graphics.fillRect(leftX - legW / 2, leftY, legW, 26);
+          graphics.fillRect(rightX - legW / 2, rightY, legW, 26);
 
           graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero de Cazadora
-          graphics.fillRect(leftX - (legW + 2) / 2, leftY + 14, legW + 2, 22);
-          graphics.fillRect(rightX - (legW + 2) / 2, rightY + 14, legW + 2, 22);
+          graphics.fillRect(leftX - (legW + 2) / 2, leftY + 18, legW + 2, 30);
+          graphics.fillRect(rightX - (legW + 2) / 2, rightY + 18, legW + 2, 30);
 
-          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas
-          graphics.fillRect(leftX - (legW + 3) / 2, leftY + 34, legW + 3, 4);
-          graphics.fillRect(rightX - (legW + 3) / 2, rightY + 34, legW + 3, 4);
+          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas asentadas en la sombra (y=94..98)
+          graphics.fillRect(leftX - (legW + 3) / 2, leftY + 44, legW + 3, 4);
+          graphics.fillRect(rightX - (legW + 3) / 2, rightY + 44, legW + 3, 4);
         }
 
         // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Fina y Alta)
@@ -674,10 +674,10 @@ export class GameScene extends Phaser.Scene {
 
     const initialFrame = `char-${this.currentCharacterName}-down-0`;
     this.player = this.physics.add.sprite(this.islandCenterIsoX, this.islandCenterIsoY, initialFrame);
-    this.player.setOrigin(0.5, 0.85);
+    this.player.setOrigin(0.5, 0.88);
     this.player.setCollideWorldBounds(false);
     this.player.body?.setSize(32, 24);
-    this.player.body?.setOffset(16, 78);
+    this.player.body?.setOffset(16, 74);
     this.player.setDepth(this.islandCenterIsoY);
     this.player.play(`char-${this.currentCharacterName}-idle-down`, true);
   }

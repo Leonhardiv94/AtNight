@@ -1,4 +1,59 @@
 {
+  "Leonhard94": {
+    "characterName": "Leonhard94",
+    "ownerEmail": "leonhardiv94@gmail.com",
+    "characterClass": "arquero",
+    "gender": "femenino",
+    "skinColor": "#fed7aa",
+    "hairColor": "#fde047",
+    "outfitColor": "#0284c7",
+    "level": 1,
+    "xp": 0,
+    "availablePoints": 0,
+    "elements": {
+      "vitalidad": {
+        "equip": 0,
+        "base": 0
+      },
+      "sabiduria": {
+        "equip": 0,
+        "base": 0
+      },
+      "aire": {
+        "equip": 0,
+        "base": 0
+      },
+      "tierra": {
+        "equip": 0,
+        "base": 0
+      },
+      "fuego": {
+        "equip": 0,
+        "base": 0
+      },
+      "agua": {
+        "equip": 0,
+        "base": 0
+      }
+    },
+    "specials": {
+      "tasaMana": 0,
+      "manaTotal": 0,
+      "velocidad": 0,
+      "defensa": 0,
+      "ataque": 0
+    },
+    "hp": 100,
+    "maxHp": 100,
+    "mana": 10,
+    "maxMana": 10,
+    "inventory": [],
+    "lastPosition": {
+      "x": 0,
+      "y": 1132
+    },
+    "updatedAt": "2026-07-27T00:35:55.300Z"
+  },
   "Leonhard1": {
     "characterName": "Leonhard1",
     "ownerEmail": "leonhardiv94@gmail.com",
@@ -93,16 +148,16 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-27T00:40:15.671Z"
+    "updatedAt": "2026-07-27T00:48:41.227Z"
   },
-  "Leonhard94": {
-    "characterName": "Leonhard94",
+  "Leonhard": {
+    "characterName": "Leonhard",
     "ownerEmail": "leonhardiv94@gmail.com",
     "characterClass": "arquero",
     "gender": "femenino",
     "skinColor": "#fed7aa",
     "hairColor": "#fde047",
-    "outfitColor": "#0284c7",
+    "outfitColor": "#dc2626",
     "level": 1,
     "xp": 0,
     "availablePoints": 0,
@@ -145,9 +200,9 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 0,
-      "y": 1132
+      "x": 59.01803333333265,
+      "y": 1072.2123333333454
     },
-    "updatedAt": "2026-07-27T00:35:55.300Z"
+    "updatedAt": "2026-07-27T01:02:03.200Z"
   }
 }

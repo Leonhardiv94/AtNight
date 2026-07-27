@@ -201,67 +201,34 @@ export class BootScene extends Phaser.Scene {
           const backX = 32 - (isLeft ? -legStep : legStep);
           const frontX = 32 + (isLeft ? -legStep : legStep);
 
-          // A. BACK LEG (Pantalón de Cuero Marrón #78350f)
           graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillEllipse(backX, 68, 10, 20);
-          graphics.fillStyle(0x292524, 1); // Bota de Cuero Oscuro
-          graphics.fillRect(backX - 4, 84, 8, 8);
-          graphics.fillRect(isLeft ? backX : backX - 6, 90, 6, 7);
-          graphics.fillRect(isLeft ? backX - 7 : backX - 1, 90, 8, 7);
+          graphics.fillRect(backX - 4, 52, 8, 20);
+          graphics.fillRect(frontX - 4, 52, 8, 20);
 
-          // B. FRONT LEG (Atláta Musculoso, Pantalón Marrón #78350f)
-          graphics.fillStyle(0x78350f, 1);
-          graphics.fillEllipse(frontX, 68, 11, 20);
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillCircle(frontX, 75, 4.5);
-
-          // Botas de Combate con Dobladillo y Cordones
           graphics.fillStyle(0x292524, 1);
-          graphics.fillRect(frontX - 5, 84, 10, 8);
-          graphics.fillStyle(0x44403c, 1); // Dobladillo
-          graphics.fillRect(frontX - 6, 83, 12, 3);
+          graphics.fillRect(frontX - 5, 68, 10, 20);
+          graphics.fillRect(backX - 4, 68, 9, 20);
 
-          // Talón y Suela
           graphics.fillStyle(0x1c1917, 1);
-          graphics.fillRect(isLeft ? frontX + 1 : frontX - 7, 90, 6, 7);
-          graphics.fillStyle(0x292524, 1);
-          graphics.fillRect(isLeft ? frontX - 7 : frontX - 1, 90, 8, 7);
-
-          // Cordones de las Botas
-          graphics.lineStyle(1, 0xa8a29e, 0.8);
-          graphics.beginPath();
-          graphics.moveTo(frontX - 2, 85); graphics.lineTo(frontX - 2, 92);
-          graphics.moveTo(frontX + 2, 85); graphics.lineTo(frontX + 2, 92);
-          graphics.strokePath();
-
+          graphics.fillRect(frontX - 6, 88, 12, 4);
+          graphics.fillRect(backX - 5, 88, 10, 4);
         } else {
-          // FRONT / BACK VIEW LEGS
           const leftX = 22;
           const rightX = 42;
-          const leftY = 66 + legStep;
-          const rightY = 66 - legStep;
-
-          graphics.fillStyle(0x78350f, 1);
-          graphics.fillEllipse(leftX, leftY, 11, 18);
-          graphics.fillEllipse(rightX, rightY, 11, 18);
+          const leftY = 52 + legStep;
+          const rightY = 52 - legStep;
 
           graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillEllipse(leftX, leftY + 9, 11, 6);
-          graphics.fillEllipse(rightX, rightY + 9, 11, 6);
+          graphics.fillRect(leftX - 4, leftY, 8, 18);
+          graphics.fillRect(rightX - 4, rightY, 8, 18);
 
           graphics.fillStyle(0x292524, 1);
-          graphics.fillRect(leftX - 5, leftY + 18, 10, 10);
-          graphics.fillRect(rightX - 5, rightY + 18, 10, 10);
+          graphics.fillRect(leftX - 5, leftY + 12, 10, 20);
+          graphics.fillRect(rightX - 5, rightY + 12, 10, 20);
 
-          graphics.fillStyle(0x44403c, 1);
-          graphics.fillRect(leftX - 6, leftY + 17, 12, 3);
-          graphics.fillRect(rightX - 6, rightY + 17, 12, 3);
-
-          graphics.lineStyle(1, 0xa8a29e, 0.8);
-          graphics.beginPath();
-          graphics.moveTo(leftX, leftY + 19); graphics.lineTo(leftX, leftY + 26);
-          graphics.moveTo(rightX, rightY + 19); graphics.lineTo(rightX, rightY + 26);
-          graphics.strokePath();
+          graphics.fillStyle(0x1c1917, 1);
+          graphics.fillRect(leftX - 6, leftY + 30, 12, 4);
+          graphics.fillRect(rightX - 6, rightY + 30, 12, 4);
         }
 
         // ----------------------------------------------------
@@ -371,30 +338,26 @@ export class BootScene extends Phaser.Scene {
           graphics.fillCircle(forearmX, 61, 4.5);
 
         } else {
-          // Vista Frontal / Trasera: Ambos brazos relajados a los lados
-          graphics.fillEllipse(12, 44, 7, 12);
-          graphics.fillEllipse(52, 44, 7, 12);
+          // Vista Frontal / Trasera: Ambos brazos anclados a los hombros
+          const leftArmY = armPendulumY;
+          const rightArmY = -armPendulumY;
 
-          const leftForearmY = 52 + armPendulumY;
-          const rightForearmY = 52 - armPendulumY;
+          graphics.fillRect(10, 34 + leftArmY, 7, 20); // Brazo izquierdo continuo
+          graphics.fillRect(47, 34 + rightArmY, 7, 20); // Brazo derecho continuo
 
-          graphics.fillEllipse(12, leftForearmY, 7, 14);
-          graphics.fillEllipse(52, rightForearmY, 7, 14);
-
-          graphics.fillStyle(0x1d4ed8, 1);
-          graphics.fillRect(9, leftForearmY - 4, 7, 6);
-          graphics.fillRect(49, rightForearmY - 4, 7, 6);
-
-          graphics.fillStyle(0xf5c6a5, 1);
-          graphics.fillCircle(12, leftForearmY + 7, 4.5);
-          graphics.fillCircle(52, rightForearmY + 7, 4.5);
+          graphics.fillStyle(0x78350f, 1);
+          graphics.fillRect(9, 44 + leftArmY, 9, 8);
+          graphics.fillRect(46, 44 + rightArmY, 9, 8);
         }
 
         // ----------------------------------------------------
-        // 4. CABEZA, PEINADO NOBLE & ROSTRO
+        // 4. CUELLO, CABEZA, PEINADO NOBLE & ROSTRO
         // ----------------------------------------------------
         graphics.fillStyle(0xf5c6a5, 1);
-        graphics.fillEllipse(32, 22, 26, 24); // Cabeza masculina limpia
+        graphics.fillRect(28, 26, 8, 10); // Cuello anclado al torso
+
+        graphics.fillStyle(0xf5c6a5, 1);
+        graphics.fillEllipse(32, 22, 24, 24); // Cabeza masculina limpia
         graphics.fillEllipse(32, 27, 22, 16);
 
         if (isSide) {

@@ -49,10 +49,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 0,
-      "y": 1132
+      "x": -11.444766666666673,
+      "y": 1296.5552333333371
     },
-    "updatedAt": "2026-07-27T01:59:46.231Z"
+    "updatedAt": "2026-07-27T02:39:00.794Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -104,10 +104,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": -106.74546666666659,
-      "y": 1390.0768666666686
+      "x": 0,
+      "y": 1132
     },
-    "updatedAt": "2026-07-27T02:38:11.459Z"
+    "updatedAt": "2026-07-27T02:39:47.855Z"
   },
   "Guerrera": {
     "characterName": "Guerrera",
@@ -159,9 +159,9 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 15.653669542041449,
-      "y": 1340.6412266346215
+      "x": 0,
+      "y": 1132
     },
-    "updatedAt": "2026-07-27T02:34:38.317Z"
+    "updatedAt": "2026-07-27T02:42:43.019Z"
   }
 }

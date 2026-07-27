@@ -781,26 +781,26 @@ export class GameScene extends Phaser.Scene {
     const isBack = dir === 'up' || dir.includes('up');
 
     if (isBack) {
-      // VISTA DE ESPALDA (Giro 180°: El hombro derecho del personaje se ubica a la IZQUIERDA de la pantalla):
-      // 1. Carcaj Principal de Cuero sobre la Espalda (Ubicado a la IZQUIERDA de la pantalla x=20..28)
+      // VISTA DE ESPALDA (Perspectiva 3D: El personaje nos da la espalda, el carcaj va montado SOBRE SU ESPALDA x=22..31):
+      // 1. Carcaj Principal de Cuero sobre el omóplato derecho (x=22..31)
       graphics.fillStyle(0x5c2c16, 1);
-      graphics.fillRect(20, 16, 8, 28); // Cuerpo del Carcaj de Cuero
+      graphics.fillRect(22, 16, 9, 28); // Cuerpo del Carcaj de Cuero sobre la túnica de la espalda
       graphics.fillStyle(0x78350f, 1);
-      graphics.fillRect(19, 15, 10, 3);  // Borde superior de cuero reforzado
+      graphics.fillRect(21, 15, 11, 3);  // Borde superior de cuero reforzado
 
-      // 3 Flechas con Plumas Doradas sobresaliendo del Carcaj (Lado Izquierdo)
+      // 3 Flechas con Plumas Doradas sobresaliendo del Carcaj (Sobre el hombro)
       graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(21, 7, 2, 9);
-      graphics.fillRect(23, 5, 2, 11);
-      graphics.fillRect(25, 8, 2, 8);
+      graphics.fillRect(23, 7, 2, 9);
+      graphics.fillRect(26, 5, 2, 11);
+      graphics.fillRect(29, 8, 2, 8);
 
       // Plumas Doradas de Flechas
       graphics.fillStyle(0xfde047, 1);
-      graphics.fillTriangle(21, 7, 19, 10, 21, 10);
-      graphics.fillTriangle(23, 5, 21, 8, 23, 8);
-      graphics.fillTriangle(25, 8, 23, 11, 25, 11);
+      graphics.fillTriangle(23, 7, 21, 10, 23, 10);
+      graphics.fillTriangle(26, 5, 24, 8, 26, 8);
+      graphics.fillTriangle(29, 8, 27, 11, 29, 11);
 
-      // 2. Tirante en la Espalda: Cruza desde el lado superior izquierdo (x=24) al lado inferior derecho (x=40)
+      // 2. Tirante en la Espalda: Cruza en la espalda desde Hombro Izquierdo (x=24) a Cadera Derecha (x=40)
       graphics.fillStyle(0x451a03, 1);
       graphics.beginPath();
       graphics.moveTo(24, 28);
@@ -810,7 +810,7 @@ export class GameScene extends Phaser.Scene {
       graphics.closePath();
       graphics.fillPath();
 
-      // SIN HEBILLA / PUNTO DORADO EN LA ESPALDA (Removido por especificación explícita)
+      // SIN HEBILLA / PUNTO DORADO EN LA ESPALDA
     } else {
       // VISTA FRONTAL / LATERAL:
       // Carcaj asomándose por detrás del hombro derecho (Lado Derecho de la pantalla x=38)

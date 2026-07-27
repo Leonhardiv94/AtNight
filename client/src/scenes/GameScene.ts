@@ -395,27 +395,27 @@ export class GameScene extends Phaser.Scene {
           const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
           const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
 
-          // Pierna Trasera
-          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 16, backAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 12, 34, backAngle, 0x451a03); // Bota
+          // Pierna Trasera (Piel visible hasta h=22, bota desde h=18)
+          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 22, backAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 18, 34, backAngle, 0x451a03); // Bota Recortada
           this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 34, 38, backAngle, 0x1c1917); // Suela
 
-          // Pierna Delantera
-          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 16, frontAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 12, 34, frontAngle, 0x451a03); // Bota
+          // Pierna Delantera (Piel visible hasta h=22, bota desde h=18)
+          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 22, frontAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 18, 34, frontAngle, 0x451a03); // Bota Recortada
           this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 34, 38, frontAngle, 0x1c1917); // Suela
         } else {
           const leftHipX = isFemale ? 26 : 24;  // Caderas adheridas y estilizadas
           const rightHipX = isFemale ? 38 : 40;
 
-          // Pierna Izquierda (Pivote en leftHipX, hipY)
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 14, leftLegAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 10, leftLegEndH - 4, leftLegAngle, 0x451a03); // Bota Cazadora
+          // Pierna Izquierda (Piel visible hasta h=22, bota estilizada recortada desde h=18)
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 22, leftLegAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 18, leftLegEndH - 4, leftLegAngle, 0x451a03); // Bota Recortada
           this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x1c1917); // Suela
 
-          // Pierna Derecha (Pivote en rightHipX, hipY)
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 14, rightLegAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 10, rightLegEndH - 4, rightLegAngle, 0x451a03); // Bota Cazadora
+          // Pierna Derecha (Piel visible hasta h=22, bota estilizada recortada desde h=18)
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 22, rightLegAngle, isFemale ? skinHex : 0x5c2c16);
+          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 18, rightLegEndH - 4, rightLegAngle, 0x451a03); // Bota Recortada
           this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917); // Suela
         }
 

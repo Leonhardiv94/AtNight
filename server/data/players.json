@@ -49,10 +49,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 0,
-      "y": 1132
+      "x": 17.78003333333312,
+      "y": 1245.699300000008
     },
-    "updatedAt": "2026-07-27T01:18:46.880Z"
+    "updatedAt": "2026-07-27T01:20:33.149Z"
   },
   "Leonhard": {
     "characterName": "Leonhard",

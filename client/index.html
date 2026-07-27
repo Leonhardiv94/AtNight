@@ -3183,7 +3183,8 @@
         const py = -50 + breathY;
 
         // A. Piernas Conectadas & Botas Altas (Sin huecos ni partes flotantes)
-        ctx.fillStyle = isFemale ? skinColor : '#5c2c16';
+        const legColor = (clsId === 'arquero' && !isFemale) ? outfitColor : (isFemale ? skinColor : '#5c2c16');
+        ctx.fillStyle = legColor;
         ctx.fillRect(px - (isFemale ? 8 : 12), py + 18, 7, 24);
         ctx.fillRect(px + (isFemale ? 1 : 5), py + 18, 7, 24);
 
@@ -3197,8 +3198,8 @@
         ctx.fillRect(px - (isFemale ? 10 : 14), py + 34, 11, 4);
         ctx.fillRect(px + (isFemale ? -1 : 3), py + 34, 11, 4);
 
-        // C. Torso: Corset Femenino Estilizado con Escote y Cintura Curva
-        const tunicColor = (clsId === 'espadachin' && outfitColor === '#0284c7') ? '#1d4ed8' : outfitColor;
+        // C. Torso: Corset / Túnica Elfa
+        const tunicColor = outfitColor;
         ctx.fillStyle = tunicColor;
         ctx.beginPath();
         if (isFemale) {
@@ -3240,9 +3241,9 @@
         ctx.ellipse(px, py - 34, isFemale ? 12 : 14, isFemale ? 14 : 16, 0, 0, Math.PI * 2); // Cabeza
         ctx.fill();
 
-        // H. Orejas Elfas para la Arquera Femenina
+        // H. Orejas Elfas para la Clase Arquero (Hombre y Mujer)
         ctx.fillStyle = skinColor;
-        if (clsId === 'arquero' && isFemale) {
+        if (clsId === 'arquero') {
           ctx.beginPath();
           ctx.moveTo(px - 12, py - 34); ctx.lineTo(px - 20, py - 40); ctx.lineTo(px - 12, py - 28);
           ctx.moveTo(px + 12, py - 34); ctx.lineTo(px + 20, py - 40); ctx.lineTo(px + 12, py - 28);
@@ -3265,7 +3266,7 @@
         ctx.fillRect(px - 5, py - 37, 2, 2);
         ctx.fillRect(px + 3, py - 37, 2, 2);
 
-        // J. Cabello Largo Fluyendo sobre Hombros
+        // J. Cabello Corto Elfo / Largo Femenino
         ctx.fillStyle = hairColor;
         if (isFemale) {
           ctx.beginPath();
@@ -3279,14 +3280,18 @@
           ctx.fill();
         }
 
-        // K. Brazos Conectados en los Hombros
-        ctx.fillStyle = skinColor;
+        // K. Brazos Conectados en los Hombros (Manga larga para arquero masculino)
+        const armColor = (clsId === 'arquero' && !isFemale) ? outfitColor : skinColor;
+        ctx.fillStyle = armColor;
         ctx.beginPath();
-        ctx.fillRect(px - (isFemale ? 15 : 18), py - 18, 5, 24); // Brazo izquierdo continuo
-        ctx.fillRect(px + (isFemale ? 10 : 13), py - 18, 5, 24); // Brazo derecho continuo
+        ctx.fillRect(px - (isFemale ? 15 : 18), py - 18, 5, 20); // Brazo izquierdo continuo
+        ctx.fillRect(px + (isFemale ? 10 : 13), py - 18, 5, 20); // Brazo derecho continuo
+        ctx.fillStyle = skinColor;
+        ctx.fillRect(px - (isFemale ? 15 : 18), py + 2, 5, 4);   // Manos
+        ctx.fillRect(px + (isFemale ? 10 : 13), py + 2, 5, 4);
         ctx.fillStyle = '#78350f'; // Guardabrazos
-        ctx.fillRect(px - (isFemale ? 16 : 19), py, 6, 8);
-        ctx.fillRect(px + (isFemale ? 9 : 12), py, 6, 8);
+        ctx.fillRect(px - (isFemale ? 16 : 19), py - 6, 6, 8);
+        ctx.fillRect(px + (isFemale ? 9 : 12), py - 6, 6, 8);
 
         // 3. ARMAS Y ACCESORIOS SEGÚN LA CLASE DE PERSONAJE ⚔️🏹🔮☀️🌙
         if (clsId === 'arquero') {

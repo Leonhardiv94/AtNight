@@ -321,7 +321,7 @@ export class GameScene extends Phaser.Scene {
     else if (cls === 'amigo_sol') baseOutfit = '#ea580c';
     else if (cls === 'amigo_luna') baseOutfit = '#0284c7';
 
-    const outfitHex = parseInt((p.outfitColor && p.outfitColor !== '#0284c7' ? p.outfitColor : baseOutfit).replace('#', ''), 16);
+    const outfitHex = parseInt((p.outfitColor || baseOutfit).replace('#', ''), 16);
     const isFemale = gender === 'femenino';
 
     const directions = ['down', 'up', 'right', 'left', 'down-right', 'down-left', 'up-right', 'up-left'];
@@ -338,6 +338,9 @@ export class GameScene extends Phaser.Scene {
         if (cls === 'arquero' && isFemale) {
           // RENDERIZADOR DEDICADO EXCLUSIVO PARA LA ARQUERA FEMENINA (PROTAGONISTA)
           this.drawFemaleArcherCharacter(graphics, skinHex, hairHex, outfitHex, dir, frame);
+        } else if (cls === 'arquero' && !isFemale) {
+          // RENDERIZADOR DEDICADO EXCLUSIVO PARA EL ARQUERO MASCULINO (ELFO MANGA Y PANTALÓN LARGO)
+          this.drawMaleArcherCharacter(graphics, skinHex, hairHex, outfitHex, dir, frame);
         } else {
           // Renderizador base modular para otras combinaciones futuras
           this.drawGenericCharacter(graphics, skinHex, hairHex, outfitHex, cls, isFemale, dir, frame);
@@ -571,6 +574,224 @@ export class GameScene extends Phaser.Scene {
     } else {
       graphics.fillRect(18, 12, 5, 24);
       graphics.fillRect(39, 12, 5, 24);
+    }
+  }
+
+  // =========================================================================
+  // 🧝‍♂️ RENDERIZADOR BLINDADO DEDICADO DEL ARQUERO MASCULINO (ELFO DE MANGA Y PANTALÓN LARGO)
+  // =========================================================================
+  private drawMaleArcherCharacter(
+    graphics: Phaser.GameObjects.Graphics,
+    skinHex: number,
+    hairHex: number,
+    outfitHex: number,
+    dir: string,
+    frame: number
+  ) {
+    const isFrontOrBack = dir === 'down' || dir === 'up';
+    const isSide = dir.includes('left') || dir.includes('right');
+    const isLeft = dir.includes('left');
+
+    let leftLegAngle = 0;
+    let rightLegAngle = 0;
+    let leftLegEndH = 36;
+    let rightLegEndH = 36;
+
+    let leftArmAngle = 0;
+    let rightArmAngle = 0;
+    let leftArmHMod = 0;
+    let rightArmHMod = 0;
+
+    if (isFrontOrBack) {
+      if (frame === 1) {
+        leftLegEndH = 38;
+        rightLegEndH = 32;
+        leftArmHMod = -2;
+        rightArmHMod = 2;
+      } else if (frame === 3) {
+        leftLegEndH = 32;
+        rightLegEndH = 38;
+        leftArmHMod = 2;
+        rightArmHMod = -2;
+      }
+    } else {
+      if (frame === 1) {
+        leftLegAngle = -0.25;
+        rightLegAngle = 0.25;
+        leftArmAngle = 0.28;
+        rightArmAngle = -0.28;
+      } else if (frame === 3) {
+        leftLegAngle = 0.25;
+        rightLegAngle = -0.25;
+        leftArmAngle = -0.28;
+        rightArmAngle = 0.28;
+      }
+    }
+
+    // Sombra Base Proyectada
+    graphics.fillStyle(0x000000, 0.35);
+    graphics.fillEllipse(32, 86, 36, 10);
+
+    // 1. Pantalones Largos y Botas del Elfo (Mismo color de ropa outfitHex para pantalones)
+    const legW = 5;
+    const hipY = 48;
+
+    if (isSide) {
+      const backHipX = 32;
+      const frontHipX = 32;
+      const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
+      const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
+
+      // Pantalón largo de elfo (outfitHex) + Bota recortada (0x451a03) + Suela (0x1c1917)
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 22, backAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 18, 34, backAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 34, 38, backAngle, 0x1c1917);
+
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 22, frontAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 18, 34, frontAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 34, 38, frontAngle, 0x1c1917);
+    } else {
+      const leftHipX = 26;
+      const rightHipX = 38;
+
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 22, leftLegAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 18, leftLegEndH - 4, leftLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x1c1917);
+
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 22, rightLegAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 18, rightLegEndH - 4, rightLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917);
+    }
+
+    // 2. Túnica Elfa de Manga Larga (Mismo grosor y altura estilizada)
+    graphics.fillStyle(outfitHex, 1);
+    graphics.beginPath();
+    graphics.moveTo(24, 28);
+    graphics.lineTo(26, 42);
+    graphics.lineTo(38, 42);
+    graphics.lineTo(40, 28);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // Pechera/Cuello de Túnica Elfa Noble
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillTriangle(32, 33, 28, 28, 36, 28);
+
+    // Faldón de Túnica Elfa Masculina (Mismo color outfitHex)
+    graphics.fillStyle(outfitHex, 1);
+    graphics.beginPath();
+    graphics.moveTo(25, 42);
+    graphics.lineTo(22, 54);
+    graphics.lineTo(42, 54);
+    graphics.lineTo(39, 42);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // Cinturón Táctico Dorado de Arquero
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(25, 41, 14, 3);
+
+    // 3. Carcaj de Flechas en la Espalda
+    graphics.fillStyle(0x5c2c16, 1);
+    graphics.fillRect(38, 16, 6, 26);
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(39, 8, 2, 8);
+    graphics.fillRect(41, 6, 2, 10);
+
+    // Tirante Cruzado Táctico
+    graphics.fillStyle(0x451a03, 1);
+    graphics.beginPath();
+    graphics.moveTo(24, 30);
+    graphics.lineTo(40, 44);
+    graphics.lineTo(38, 46);
+    graphics.lineTo(22, 32);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // 4. Cuello Anclado Conectando Torso y Cabeza
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillRect(29, 21, 6, 8);
+
+    // 5. Brazos de Manga Larga (Mismo color outfitHex) + Guardabrazos de Cuero
+    const armW = 5;
+    const shoulderY = 28;
+
+    if (isSide) {
+      const armX = 32;
+      const armAngle = isLeft ? -leftArmAngle : leftArmAngle;
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 16, armAngle, outfitHex); // Manga larga
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 16, 20, armAngle, skinHex);   // Mano
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 10, 17, armAngle, 0x78350f); // Guardabrazos
+    } else {
+      const leftShoulderX = 21;
+      const rightShoulderX = 43;
+
+      const armLeftEndH = 20 + leftArmHMod;
+      const armRightEndH = 20 + rightArmHMod;
+
+      // Brazo Izquierdo (Manga larga outfitHex)
+      this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, 0, armLeftEndH - 4, leftArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, armLeftEndH - 4, armLeftEndH, leftArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW + 1, 10, 17, leftArmAngle, 0x78350f);
+
+      // Brazo Derecho (Manga larga outfitHex)
+      this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, armRightEndH - 4, rightArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, armRightEndH - 4, armRightEndH, rightArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 10, 17, rightArmAngle, 0x78350f);
+    }
+
+    // 6. Cabeza y Orejas Elfas Estilizadas (Copiadas idénticas de la arquera)
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillEllipse(32, 17, 17, 19);
+
+    graphics.fillTriangle(20, 16, 14, 11, 22, 20); // Oreja Elfa Izquierda
+    graphics.fillTriangle(44, 16, 50, 11, 42, 20); // Oreja Elfa Derecha
+
+    // Rostro Expresivo y Fino
+    if (dir === 'down' || dir.includes('down')) {
+      graphics.fillStyle(0x27140a, 1);
+      graphics.fillRect(25, 16, 4, 1.5); graphics.fillRect(35, 16, 4, 1.5);
+      graphics.fillStyle(0x0f172a, 1);
+      graphics.fillRect(26, 18, 3, 3.5); graphics.fillRect(35, 18, 3, 3.5);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillRect(27, 18, 1.5, 1.5); graphics.fillRect(36, 18, 1.5, 1.5);
+    }
+
+    // 7. Cabello Corto Elfo Dinámico según la Orientación (8 Direcciones)
+    graphics.fillStyle(hairHex, 1);
+    if (dir === 'up' || dir === 'up-left' || dir === 'up-right') {
+      // VISTA POSTERIOR (Corte elfo limpio en la nuca)
+      graphics.fillEllipse(32, 14, 20, 12);
+      graphics.fillRect(24, 14, 16, 8);
+    } else if (dir === 'right' || dir === 'down-right') {
+      // GIRO A LA DERECHA (Peinado estilizado a la derecha con flequillo)
+      graphics.fillEllipse(32, 13, 20, 11);
+      graphics.beginPath();
+      graphics.moveTo(22, 12);
+      graphics.lineTo(38, 12);
+      graphics.lineTo(36, 21);
+      graphics.lineTo(26, 18);
+      graphics.closePath();
+      graphics.fillPath();
+    } else if (dir === 'left' || dir === 'down-left') {
+      // GIRO A LA IZQUIERDA (Peinado estilizado a la izquierda con flequillo)
+      graphics.fillEllipse(32, 13, 20, 11);
+      graphics.beginPath();
+      graphics.moveTo(42, 12);
+      graphics.lineTo(26, 12);
+      graphics.lineTo(28, 21);
+      graphics.lineTo(38, 18);
+      graphics.closePath();
+      graphics.fillPath();
+    } else {
+      // VISTA FRONTAL (Corte noble elfo con flequillo perfilado)
+      graphics.fillEllipse(32, 13, 22, 11);
+      graphics.beginPath();
+      graphics.moveTo(22, 12);
+      graphics.lineTo(34, 12);
+      graphics.lineTo(28, 20);
+      graphics.closePath();
+      graphics.fillPath();
     }
   }
 

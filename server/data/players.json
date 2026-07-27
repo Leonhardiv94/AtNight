@@ -54,102 +54,6 @@
     },
     "updatedAt": "2026-07-27T00:35:55.300Z"
   },
-  "Leonhard1": {
-    "characterName": "Leonhard1",
-    "ownerEmail": "leonhardiv94@gmail.com",
-    "characterClass": "arquero",
-    "gender": "femenino",
-    "skinColor": "#cbd5e1",
-    "hairColor": "#f8fafc",
-    "outfitColor": "#9333ea",
-    "level": 2,
-    "xp": 115,
-    "availablePoints": 0,
-    "elements": {
-      "vitalidad": {
-        "equip": 0,
-        "base": 5
-      },
-      "sabiduria": {
-        "equip": 0,
-        "base": 0
-      },
-      "aire": {
-        "equip": 0,
-        "base": 0
-      },
-      "tierra": {
-        "equip": 0,
-        "base": 0
-      },
-      "fuego": {
-        "equip": 0,
-        "base": 0
-      },
-      "agua": {
-        "equip": 0,
-        "base": 0
-      }
-    },
-    "specials": {
-      "tasaMana": 0,
-      "manaTotal": 0,
-      "velocidad": 0,
-      "defensa": 0,
-      "ataque": 0
-    },
-    "hp": 125,
-    "maxHp": 125,
-    "mana": 11,
-    "maxMana": 11,
-    "inventory": [
-      {
-        "id": "chicken_egg",
-        "name": "Huevo de Pollo",
-        "icon": "",
-        "count": 6,
-        "category": "recursos",
-        "weight": 1
-      },
-      {
-        "id": "gold",
-        "name": "Monedas de Oro",
-        "icon": "",
-        "count": 669,
-        "category": "especiales",
-        "weight": 0
-      },
-      {
-        "id": "chicken_feather",
-        "name": "Pluma de Pollo",
-        "icon": "",
-        "count": 6,
-        "category": "recursos",
-        "weight": 1
-      },
-      {
-        "id": "chicken_eye",
-        "name": "Ojo de Pollo",
-        "icon": "",
-        "count": 3,
-        "category": "recursos",
-        "weight": 1
-      },
-      {
-        "id": "chicken_beak",
-        "name": "Pico de Pollo",
-        "icon": "",
-        "count": 2,
-        "category": "recursos",
-        "weight": 1
-      }
-    ],
-    "lastPosition": {
-      "x": 0,
-      "y": 1132
-    },
-    "updatedAt": "2026-07-27T00:48:41.227Z"
-  },
   "Leonhard": {
     "characterName": "Leonhard",
     "ownerEmail": "leonhardiv94@gmail.com",
@@ -200,9 +104,9 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 59.01803333333265,
-      "y": 1072.2123333333454
+      "x": 0,
+      "y": 1132
     },
-    "updatedAt": "2026-07-27T01:02:03.200Z"
+    "updatedAt": "2026-07-27T01:06:29.615Z"
   }
 }

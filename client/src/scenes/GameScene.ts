@@ -317,160 +317,186 @@ export class GameScene extends Phaser.Scene {
           armPendulumY = 2;
         }
 
-        // Sombra Base Proyectada directamente bajo los pies
+        // Sombra Base Proyectada directamente bajo los pies (y=92)
         graphics.fillStyle(0x000000, 0.35);
-        graphics.fillEllipse(32, 98, isFemale ? 36 : 44, 12);
+        graphics.fillEllipse(32, 92, isFemale ? 34 : 42, 10);
 
         const isSide = dir.includes('left') || dir.includes('right');
         const isLeft = dir.includes('left');
 
-        // 1. Piernas y Botas (Conectadas directamente al suelo sin brecha flotante)
+        // 1. Piernas y Botas (Juntas y Proporcionadas: centro leftX=27, rightX=37, soles en y=92)
         if (isSide) {
           const backX = 32 - (isLeft ? -legStep : legStep);
           const frontX = 32 + (isLeft ? -legStep : legStep);
           const legW = isFemale ? 5 : 8;
 
           graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(backX - legW / 2, 48, legW, 26);
-          graphics.fillRect(frontX - legW / 2, 48, legW, 26);
+          graphics.fillRect(backX - legW / 2, 54, legW, 18);
+          graphics.fillRect(frontX - legW / 2, 54, legW, 18);
 
           graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero
-          graphics.fillRect(frontX - (legW + 2) / 2, 66, legW + 2, 30);
-          graphics.fillRect(backX - (legW + 1) / 2, 66, legW + 1, 30);
+          graphics.fillRect(frontX - (legW + 2) / 2, 66, legW + 2, 22);
+          graphics.fillRect(backX - (legW + 1) / 2, 66, legW + 1, 22);
 
-          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas asentadas en la sombra (y=94..98)
-          graphics.fillRect(frontX - (legW + 4) / 2, 94, legW + 4, 4);
-          graphics.fillRect(backX - (legW + 3) / 2, 94, legW + 3, 4);
+          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas en la sombra (y=88..92)
+          graphics.fillRect(frontX - (legW + 4) / 2, 88, legW + 4, 4);
+          graphics.fillRect(backX - (legW + 3) / 2, 88, legW + 3, 4);
         } else {
-          const leftX = isFemale ? 24 : 22;
-          const rightX = isFemale ? 40 : 42;
-          const leftY = 48 + legStep;
-          const rightY = 48 - legStep;
+          const leftX = isFemale ? 27 : 24; // Piernas juntas y naturales
+          const rightX = isFemale ? 37 : 40;
+          const leftY = 54 + legStep;
+          const rightY = 54 - legStep;
           const legW = isFemale ? 5 : 8;
 
           graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(leftX - legW / 2, leftY, legW, 26);
-          graphics.fillRect(rightX - legW / 2, rightY, legW, 26);
+          graphics.fillRect(leftX - legW / 2, leftY, legW, 16);
+          graphics.fillRect(rightX - legW / 2, rightY, legW, 16);
 
           graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero de Cazadora
-          graphics.fillRect(leftX - (legW + 2) / 2, leftY + 18, legW + 2, 30);
-          graphics.fillRect(rightX - (legW + 2) / 2, rightY + 18, legW + 2, 30);
+          graphics.fillRect(leftX - (legW + 2) / 2, leftY + 12, legW + 2, 22);
+          graphics.fillRect(rightX - (legW + 2) / 2, rightY + 12, legW + 2, 22);
 
-          graphics.fillStyle(0x1c1917, 1); // Suelas de Botas asentadas en la sombra (y=94..98)
-          graphics.fillRect(leftX - (legW + 3) / 2, leftY + 44, legW + 3, 4);
-          graphics.fillRect(rightX - (legW + 3) / 2, rightY + 44, legW + 3, 4);
+          graphics.fillStyle(0x1c1917, 1); // Suelas asentadas en la sombra (y=88..92)
+          graphics.fillRect(leftX - (legW + 3) / 2, leftY + 34, legW + 3, 4);
+          graphics.fillRect(rightX - (legW + 3) / 2, rightY + 34, legW + 3, 4);
         }
 
-        // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Fina y Alta)
+        // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Estilizada)
         if (isFemale) {
           // Corset Ceñido con Pechera Arqueada & Cintura de Avispa Estilizada (Ancho 12px en cintura)
           graphics.fillStyle(outfitHex, 1);
           graphics.beginPath();
-          graphics.moveTo(24, 30);
-          graphics.lineTo(26, 44); // Cintura super estilizada (12px de ancho!)
-          graphics.lineTo(38, 44); // Base de la Cintura
-          graphics.lineTo(40, 30); // Torso Alto (16px de ancho)
+          graphics.moveTo(24, 28);
+          graphics.lineTo(26, 42); // Cintura super estilizada (12px de ancho)
+          graphics.lineTo(38, 42); // Base de la Cintura
+          graphics.lineTo(40, 28); // Torso Alto (16px de ancho)
           graphics.closePath();
           graphics.fillPath();
 
           // Escote / Pechera Femenina
           graphics.fillStyle(skinHex, 1);
-          graphics.fillTriangle(32, 37, 26, 30, 38, 30);
+          graphics.fillTriangle(32, 35, 26, 28, 38, 28);
 
           // Faldita / Corsel de Cazadora de Cuero
           graphics.fillStyle(0x78350f, 1);
           graphics.beginPath();
-          graphics.moveTo(25, 44);
-          graphics.lineTo(20, 56);
-          graphics.lineTo(44, 56);
-          graphics.lineTo(39, 44);
+          graphics.moveTo(25, 42);
+          graphics.lineTo(21, 56);
+          graphics.lineTo(43, 56);
+          graphics.lineTo(39, 42);
           graphics.closePath();
           graphics.fillPath();
 
           // Cinturón Táctico Dorado
           graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillRect(25, 43, 14, 3);
+          graphics.fillRect(25, 41, 14, 3);
         } else {
           graphics.fillStyle(outfitHex, 1);
-          graphics.fillRect(18, 36, 28, 28);
+          graphics.fillRect(18, 34, 28, 28);
         }
 
         // 3. Carcaj en la Espalda y Tirantes para la Arquera Femenina (cls === 'arquero')
         if (cls === 'arquero') {
           // Carcaj de Cuero de Arquera con Flechas con Plumas Doradas
           graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(38, 18, 6, 26);
+          graphics.fillRect(38, 16, 6, 26);
           graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillRect(39, 10, 2, 8); // Flecha 1
-          graphics.fillRect(41, 8, 2, 10); // Flecha 2
+          graphics.fillRect(39, 8, 2, 8); // Flecha 1
+          graphics.fillRect(41, 6, 2, 10); // Flecha 2
 
           // Tirante cruzado de cuero táctico
           graphics.fillStyle(0x451a03, 1);
           graphics.beginPath();
-          graphics.moveTo(24, 32);
-          graphics.lineTo(40, 46);
-          graphics.lineTo(38, 48);
-          graphics.lineTo(22, 34);
+          graphics.moveTo(24, 30);
+          graphics.lineTo(40, 44);
+          graphics.lineTo(38, 46);
+          graphics.lineTo(22, 32);
           graphics.closePath();
           graphics.fillPath();
         } else if (cls === 'espadachin') {
           graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillCircle(32, 40, 4);
+          graphics.fillCircle(32, 38, 4);
         } else if (cls === 'mago') {
           graphics.fillStyle(0xc084fc, 1);
-          graphics.fillCircle(32, 40, 4);
+          graphics.fillCircle(32, 38, 4);
         }
 
         // 4. Cuello Anclado Conectando Torso y Cabeza Estilizada
         graphics.fillStyle(skinHex, 1);
-        graphics.fillRect(29, 23, 6, 8);
+        graphics.fillRect(29, 21, 6, 8);
 
         // 5. Brazos Anclados a los Hombros en Silueta Femenina (x=16 y x=41)
         graphics.fillStyle(skinHex, 1);
         if (isSide) {
           const armX = (isLeft ? 28 : 36) + (isLeft ? -armPendulumX : armPendulumX);
           const armW = isFemale ? 5 : 8;
-          graphics.fillRect(armX - armW / 2, 30, armW, 20); // Brazo continuo sin huecos
+          graphics.fillRect(armX - armW / 2, 28, armW, 20); // Brazo continuo sin huecos
           graphics.fillStyle(0x78350f, 1); // Guardabrazos de Cuero
-          graphics.fillRect(armX - (armW + 1) / 2, 40, armW + 1, 7);
+          graphics.fillRect(armX - (armW + 1) / 2, 38, armW + 1, 7);
         } else {
           const armW = isFemale ? 5 : 7;
-          graphics.fillRect(16, 30 + armPendulumY, armW, 20); // Brazo izquierdo continuo
-          graphics.fillRect(41, 30 - armPendulumY, armW, 20); // Brazo derecho continuo
+          graphics.fillRect(16, 28 + armPendulumY, armW, 20); // Brazo izquierdo continuo
+          graphics.fillRect(41, 28 - armPendulumY, armW, 20); // Brazo derecho continuo
           graphics.fillStyle(0x78350f, 1); // Guardabrazos de Arquera
-          graphics.fillRect(15, 40 + armPendulumY, armW + 2, 7);
-          graphics.fillRect(40, 40 - armPendulumY, armW + 2, 7);
+          graphics.fillRect(15, 38 + armPendulumY, armW + 2, 7);
+          graphics.fillRect(40, 38 - armPendulumY, armW + 2, 7);
         }
 
         // 6. Cabeza y Orejas Elfas Estilizadas de Arquera
         graphics.fillStyle(skinHex, 1);
-        graphics.fillEllipse(32, 19, isFemale ? 17 : 24, isFemale ? 19 : 24);
+        graphics.fillEllipse(32, 17, isFemale ? 17 : 24, isFemale ? 19 : 24);
 
         if (cls === 'arquero') {
           graphics.fillStyle(skinHex, 1);
-          graphics.fillTriangle(20, 18, 14, 13, 22, 22); // Oreja Elfa Izquierda
-          graphics.fillTriangle(44, 18, 50, 13, 42, 22); // Oreja Elfa Derecha
+          graphics.fillTriangle(20, 16, 14, 11, 22, 20); // Oreja Elfa Izquierda
+          graphics.fillTriangle(44, 16, 50, 11, 42, 20); // Oreja Elfa Derecha
         }
 
         // Rostro Fino y Expresivo con Pestañas
         if (dir === 'down' || dir.includes('down')) {
           graphics.fillStyle(0x27140a, 1);
-          graphics.fillRect(25, 18, 4, 1.5); graphics.fillRect(35, 18, 4, 1.5);
+          graphics.fillRect(25, 16, 4, 1.5); graphics.fillRect(35, 16, 4, 1.5);
           graphics.fillStyle(0x0f172a, 1);
-          graphics.fillRect(26, 20, 3, 3.5); graphics.fillRect(35, 20, 3, 3.5);
+          graphics.fillRect(26, 18, 3, 3.5); graphics.fillRect(35, 18, 3, 3.5);
           graphics.fillStyle(0xffffff, 1);
-          graphics.fillRect(27, 20, 1.5, 1.5); graphics.fillRect(36, 20, 1.5, 1.5);
+          graphics.fillRect(27, 18, 1.5, 1.5); graphics.fillRect(36, 18, 1.5, 1.5);
         }
 
-        // 7. Melena Larga Fluyendo sobre Hombros
+        // 7. Melena Larga Dinámica según la Dirección del Personaje (Hair Directional Logic)
         graphics.fillStyle(hairHex, 1);
         if (isFemale) {
-          graphics.fillEllipse(32, 14, 22, 12);
-          graphics.fillRect(18, 14, 5, 30); // Melena cayendo sobre los hombros
-          graphics.fillRect(39, 14, 5, 30);
+          graphics.fillEllipse(32, 12, 22, 11);
+
+          if (dir === 'up' || dir === 'up-left' || dir === 'up-right') {
+            // ESPALDA: Un solo cabello fluido cayendo suavemente sobre la espalda
+            graphics.fillEllipse(32, 24, 20, 24);
+            graphics.fillRect(22, 14, 20, 22);
+          } else if (dir === 'right' || dir === 'down-right') {
+            // GIRO A LA DERECHA: Mechón derecho desaparece, mechón izquierdo es más grueso y va al centro del cuerpo
+            graphics.beginPath();
+            graphics.moveTo(18, 12);
+            graphics.lineTo(24, 12);
+            graphics.lineTo(34, 34); // Cae hasta el centro del cuerpo (x = 34)
+            graphics.lineTo(26, 34);
+            graphics.closePath();
+            graphics.fillPath();
+          } else if (dir === 'left' || dir === 'down-left') {
+            // GIRO A LA IZQUIERDA: Mechón izquierdo desaparece, mechón derecho es más grueso y va al centro del cuerpo
+            graphics.beginPath();
+            graphics.moveTo(46, 12);
+            graphics.lineTo(40, 12);
+            graphics.lineTo(30, 34); // Cae hasta el centro del cuerpo (x = 30)
+            graphics.lineTo(38, 34);
+            graphics.closePath();
+            graphics.fillPath();
+          } else {
+            // FRONTAL (down): Dos mechones simétricos frontales sobre el pecho
+            graphics.fillRect(18, 12, 5, 24); // Mechón Izquierdo
+            graphics.fillRect(39, 12, 5, 24); // Mechón Derecho
+          }
         } else {
-          graphics.fillEllipse(32, 16, 24, 12);
-          graphics.fillRect(20, 15, 12, 5);
+          graphics.fillEllipse(32, 14, 24, 12);
+          graphics.fillRect(20, 13, 12, 5);
         }
 
         graphics.generateTexture(texKey, 64, 112);
@@ -674,10 +700,10 @@ export class GameScene extends Phaser.Scene {
 
     const initialFrame = `char-${this.currentCharacterName}-down-0`;
     this.player = this.physics.add.sprite(this.islandCenterIsoX, this.islandCenterIsoY, initialFrame);
-    this.player.setOrigin(0.5, 0.88);
+    this.player.setOrigin(0.5, 0.82);
     this.player.setCollideWorldBounds(false);
-    this.player.body?.setSize(32, 24);
-    this.player.body?.setOffset(16, 74);
+    this.player.body?.setSize(28, 20);
+    this.player.body?.setOffset(18, 70);
     this.player.setDepth(this.islandCenterIsoY);
     this.player.play(`char-${this.currentCharacterName}-idle-down`, true);
   }

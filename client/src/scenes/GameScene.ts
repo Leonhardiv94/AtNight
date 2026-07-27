@@ -335,234 +335,12 @@ export class GameScene extends Phaser.Scene {
         }
         graphics.clear();
 
-        // Distinción entre Perspectiva Frontal/Posterior (Foreshortening) y Perspectiva Lateral (Rotación de Pivote)
-        const isFrontOrBack = dir === 'down' || dir === 'up';
-        const isSide = dir.includes('left') || dir.includes('right');
-        const isLeft = dir.includes('left');
-
-        let leftLegAngle = 0;
-        let rightLegAngle = 0;
-        let leftLegEndH = 36;
-        let rightLegEndH = 36;
-
-        let leftArmAngle = 0;
-        let rightArmAngle = 0;
-        let leftArmHMod = 0;
-        let rightArmHMod = 0;
-
-        if (isFrontOrBack) {
-          // VISTA FRONTAL / POSTERIOR (down / up):
-          // Ángulo = 0 (Sin rotación lateral tipo tijera para que no se abran las piernas).
-          // Se aplica Foreshortening (acortamiento vertical por perspectiva):
-          if (frame === 1) {
-            leftLegEndH = 38;    // Pierna que da el paso se extiende ligeramente
-            rightLegEndH = 32;   // Pierna trasera se acorta por perspectiva
-            leftArmHMod = -2;
-            rightArmHMod = 2;
-          } else if (frame === 3) {
-            leftLegEndH = 32;    // Pierna trasera se acorta
-            rightLegEndH = 38;   // Pierna delantera se extiende
-            leftArmHMod = 2;
-            rightArmHMod = -2;
-          }
+        if (cls === 'arquero' && isFemale) {
+          // RENDERIZADOR DEDICADO EXCLUSIVO PARA LA ARQUERA FEMENINA (PROTAGONISTA)
+          this.drawFemaleArcherCharacter(graphics, skinHex, hairHex, outfitHex, dir, frame);
         } else {
-          // VISTAS LATERALES Y DIAGONALES:
-          // Rotación limpia sobre el pivote de la articulación superior
-          if (frame === 1) {
-            leftLegAngle = -0.25;
-            rightLegAngle = 0.25;
-            leftArmAngle = 0.28;
-            rightArmAngle = -0.28;
-          } else if (frame === 3) {
-            leftLegAngle = 0.25;
-            rightLegAngle = -0.25;
-            leftArmAngle = -0.28;
-            rightArmAngle = 0.28;
-          }
-        }
-
-        // Sombra Base Proyectada directamente bajo los pies (y=86)
-        graphics.fillStyle(0x000000, 0.35);
-        graphics.fillEllipse(32, 86, isFemale ? 34 : 42, 10);
-
-        // 1. Piernas y Botas (Articuladas desde la Cadera: hipY = 48)
-        const legW = isFemale ? 5 : 8;
-        const hipY = 48; // Punto fijo de rotación superior
-
-        if (isSide) {
-          const backHipX = 32;
-          const frontHipX = 32;
-          const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
-          const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
-
-          // Pierna Trasera (Piel visible hasta h=22, bota desde h=18)
-          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 22, backAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 18, 34, backAngle, 0x451a03); // Bota Recortada
-          this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 34, 38, backAngle, 0x1c1917); // Suela
-
-          // Pierna Delantera (Piel visible hasta h=22, bota desde h=18)
-          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 22, frontAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 18, 34, frontAngle, 0x451a03); // Bota Recortada
-          this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 34, 38, frontAngle, 0x1c1917); // Suela
-        } else {
-          const leftHipX = isFemale ? 26 : 24;  // Caderas adheridas y estilizadas
-          const rightHipX = isFemale ? 38 : 40;
-
-          // Pierna Izquierda (Piel visible hasta h=22, bota estilizada recortada desde h=18)
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 22, leftLegAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 18, leftLegEndH - 4, leftLegAngle, 0x451a03); // Bota Recortada
-          this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x1c1917); // Suela
-
-          // Pierna Derecha (Piel visible hasta h=22, bota estilizada recortada desde h=18)
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 22, rightLegAngle, isFemale ? skinHex : 0x5c2c16);
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 18, rightLegEndH - 4, rightLegAngle, 0x451a03); // Bota Recortada
-          this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917); // Suela
-        }
-
-        // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Estilizada)
-        if (isFemale) {
-          // Corset Ceñido con Pechera Arqueada & Cintura de Avispa Estilizada (Ancho 12px en cintura)
-          graphics.fillStyle(outfitHex, 1);
-          graphics.beginPath();
-          graphics.moveTo(24, 28);
-          graphics.lineTo(26, 42); // Cintura super estilizada (12px de ancho)
-          graphics.lineTo(38, 42); // Base de la Cintura
-          graphics.lineTo(40, 28); // Torso Alto (16px de ancho)
-          graphics.closePath();
-          graphics.fillPath();
-
-          // Escote / Pechera Femenina
-          graphics.fillStyle(skinHex, 1);
-          graphics.fillTriangle(32, 35, 26, 28, 38, 28);
-
-          // Faldita / Corsel de Cazadora de Cuero
-          graphics.fillStyle(0x78350f, 1);
-          graphics.beginPath();
-          graphics.moveTo(25, 42);
-          graphics.lineTo(21, 56);
-          graphics.lineTo(43, 56);
-          graphics.lineTo(39, 42);
-          graphics.closePath();
-          graphics.fillPath();
-
-          // Cinturón Táctico Dorado
-          graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillRect(25, 41, 14, 3);
-        } else {
-          graphics.fillStyle(outfitHex, 1);
-          graphics.fillRect(18, 34, 28, 28);
-        }
-
-        // 3. Carcaj en la Espalda y Tirantes para la Arquera Femenina (cls === 'arquero')
-        if (cls === 'arquero') {
-          // Carcaj de Cuero de Arquera con Flechas con Plumas Doradas
-          graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(38, 16, 6, 26);
-          graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillRect(39, 8, 2, 8); // Flecha 1
-          graphics.fillRect(41, 6, 2, 10); // Flecha 2
-
-          // Tirante cruzado de cuero táctico
-          graphics.fillStyle(0x451a03, 1);
-          graphics.beginPath();
-          graphics.moveTo(24, 30);
-          graphics.lineTo(40, 44);
-          graphics.lineTo(38, 46);
-          graphics.lineTo(22, 32);
-          graphics.closePath();
-          graphics.fillPath();
-        } else if (cls === 'espadachin') {
-          graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillCircle(32, 38, 4);
-        } else if (cls === 'mago') {
-          graphics.fillStyle(0xc084fc, 1);
-          graphics.fillCircle(32, 38, 4);
-        }
-
-        // 4. Cuello Anclado Conectando Torso y Cabeza Estilizada
-        graphics.fillStyle(skinHex, 1);
-        graphics.fillRect(29, 21, 6, 8);
-
-        // 5. Brazos Adheridos al Torso y Rotados sobre los Hombros (Pivote y=28, sin huecos flotantes)
-        const armW = isFemale ? 5 : 7;
-        const shoulderY = 28;
-
-        if (isSide) {
-          const armX = 32;
-          const armAngle = isLeft ? -leftArmAngle : leftArmAngle;
-          this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 20, armAngle, skinHex);
-          this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 10, 17, armAngle, 0x78350f); // Guardabrazos
-        } else {
-          const leftShoulderX = isFemale ? 21 : 18;  // Adherido directamente al corset (x=24)
-          const rightShoulderX = isFemale ? 43 : 46; // Adherido directamente al corset (x=40)
-
-          const armLeftEndH = 20 + leftArmHMod;
-          const armRightEndH = 20 + rightArmHMod;
-
-          // Brazo Izquierdo (Pivote superior en leftShoulderX, shoulderY)
-          this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, 0, armLeftEndH, leftArmAngle, skinHex);
-          this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW + 1, 10, 17, leftArmAngle, 0x78350f);
-
-          // Brazo Derecho (Pivote superior en rightShoulderX, shoulderY)
-          this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, armRightEndH, rightArmAngle, skinHex);
-          this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 10, 17, rightArmAngle, 0x78350f);
-        }
-
-        // 6. Cabeza y Orejas Elfas Estilizadas de Arquera
-        graphics.fillStyle(skinHex, 1);
-        graphics.fillEllipse(32, 17, isFemale ? 17 : 24, isFemale ? 19 : 24);
-
-        if (cls === 'arquero') {
-          graphics.fillStyle(skinHex, 1);
-          graphics.fillTriangle(20, 16, 14, 11, 22, 20); // Oreja Elfa Izquierda
-          graphics.fillTriangle(44, 16, 50, 11, 42, 20); // Oreja Elfa Derecha
-        }
-
-        // Rostro Fino y Expresivo con Pestañas
-        if (dir === 'down' || dir.includes('down')) {
-          graphics.fillStyle(0x27140a, 1);
-          graphics.fillRect(25, 16, 4, 1.5); graphics.fillRect(35, 16, 4, 1.5);
-          graphics.fillStyle(0x0f172a, 1);
-          graphics.fillRect(26, 18, 3, 3.5); graphics.fillRect(35, 18, 3, 3.5);
-          graphics.fillStyle(0xffffff, 1);
-          graphics.fillRect(27, 18, 1.5, 1.5); graphics.fillRect(36, 18, 1.5, 1.5);
-        }
-
-        // 7. Melena Larga Dinámica según la Dirección del Personaje (Hair Directional Logic)
-        graphics.fillStyle(hairHex, 1);
-        if (isFemale) {
-          graphics.fillEllipse(32, 12, 22, 11);
-
-          if (dir === 'up' || dir === 'up-left' || dir === 'up-right') {
-            // ESPALDA: Un solo cabello fluido cayendo suavemente sobre la espalda
-            graphics.fillEllipse(32, 24, 20, 24);
-            graphics.fillRect(22, 14, 20, 22);
-          } else if (dir === 'right' || dir === 'down-right') {
-            // GIRO A LA DERECHA: Mechón derecho desaparece, mechón izquierdo es más grueso y va al centro del cuerpo
-            graphics.beginPath();
-            graphics.moveTo(18, 12);
-            graphics.lineTo(24, 12);
-            graphics.lineTo(34, 34); // Cae hasta el centro del cuerpo (x = 34)
-            graphics.lineTo(26, 34);
-            graphics.closePath();
-            graphics.fillPath();
-          } else if (dir === 'left' || dir === 'down-left') {
-            // GIRO A LA IZQUIERDA: Mechón izquierdo desaparece, mechón derecho es más grueso y va al centro del cuerpo
-            graphics.beginPath();
-            graphics.moveTo(46, 12);
-            graphics.lineTo(40, 12);
-            graphics.lineTo(30, 34); // Cae hasta el centro del cuerpo (x = 30)
-            graphics.lineTo(38, 34);
-            graphics.closePath();
-            graphics.fillPath();
-          } else {
-            // FRONTAL (down): Dos mechones simétricos frontales sobre el pecho
-            graphics.fillRect(18, 12, 5, 24); // Mechón Izquierdo
-            graphics.fillRect(39, 12, 5, 24); // Mechón Derecho
-          }
-        } else {
-          graphics.fillEllipse(32, 14, 24, 12);
-          graphics.fillRect(20, 13, 12, 5);
+          // Renderizador base modular para otras combinaciones futuras
+          this.drawGenericCharacter(graphics, skinHex, hairHex, outfitHex, cls, isFemale, dir, frame);
         }
 
         graphics.generateTexture(texKey, 64, 112);
@@ -596,6 +374,235 @@ export class GameScene extends Phaser.Scene {
         repeat: -1
       });
     });
+  }
+
+  // =========================================================================
+  // 🧝‍♀️ RENDERIZADOR BLINDADO DEDICADO DE LA ARQUERA FEMENINA (DISEÑO DEFINITIVO)
+  // =========================================================================
+  private drawFemaleArcherCharacter(
+    graphics: Phaser.GameObjects.Graphics,
+    skinHex: number,
+    hairHex: number,
+    outfitHex: number,
+    dir: string,
+    frame: number
+  ) {
+    const isFrontOrBack = dir === 'down' || dir === 'up';
+    const isSide = dir.includes('left') || dir.includes('right');
+    const isLeft = dir.includes('left');
+
+    let leftLegAngle = 0;
+    let rightLegAngle = 0;
+    let leftLegEndH = 36;
+    let rightLegEndH = 36;
+
+    let leftArmAngle = 0;
+    let rightArmAngle = 0;
+    let leftArmHMod = 0;
+    let rightArmHMod = 0;
+
+    if (isFrontOrBack) {
+      if (frame === 1) {
+        leftLegEndH = 38;
+        rightLegEndH = 32;
+        leftArmHMod = -2;
+        rightArmHMod = 2;
+      } else if (frame === 3) {
+        leftLegEndH = 32;
+        rightLegEndH = 38;
+        leftArmHMod = 2;
+        rightArmHMod = -2;
+      }
+    } else {
+      if (frame === 1) {
+        leftLegAngle = -0.25;
+        rightLegAngle = 0.25;
+        leftArmAngle = 0.28;
+        rightArmAngle = -0.28;
+      } else if (frame === 3) {
+        leftLegAngle = 0.25;
+        rightLegAngle = -0.25;
+        leftArmAngle = -0.28;
+        rightArmAngle = 0.28;
+      }
+    }
+
+    // Sombra Base Proyectada
+    graphics.fillStyle(0x000000, 0.35);
+    graphics.fillEllipse(32, 86, 34, 10);
+
+    // 1. Piernas y Botas (Articuladas desde la Cadera: hipY = 48)
+    const legW = 5;
+    const hipY = 48;
+
+    if (isSide) {
+      const backHipX = 32;
+      const frontHipX = 32;
+      const backAngle = isLeft ? -leftLegAngle : leftLegAngle;
+      const frontAngle = isLeft ? -rightLegAngle : rightLegAngle;
+
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW, 0, 22, backAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 2, 18, 34, backAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, backHipX, hipY, legW + 3, 34, 38, backAngle, 0x1c1917);
+
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW, 0, 22, frontAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 2, 18, 34, frontAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, frontHipX, hipY, legW + 4, 34, 38, frontAngle, 0x1c1917);
+    } else {
+      const leftHipX = 26;
+      const rightHipX = 38;
+
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW, 0, 22, leftLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 2, 18, leftLegEndH - 4, leftLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, leftHipX, hipY, legW + 3, leftLegEndH - 4, leftLegEndH, leftLegAngle, 0x1c1917);
+
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW, 0, 22, rightLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 2, 18, rightLegEndH - 4, rightLegAngle, 0x451a03);
+      this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917);
+    }
+
+    // 2. Corset & Faldita de Cazadora
+    graphics.fillStyle(outfitHex, 1);
+    graphics.beginPath();
+    graphics.moveTo(24, 28);
+    graphics.lineTo(26, 42);
+    graphics.lineTo(38, 42);
+    graphics.lineTo(40, 28);
+    graphics.closePath();
+    graphics.fillPath();
+
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillTriangle(32, 35, 26, 28, 38, 28);
+
+    graphics.fillStyle(0x78350f, 1);
+    graphics.beginPath();
+    graphics.moveTo(25, 42);
+    graphics.lineTo(21, 56);
+    graphics.lineTo(43, 56);
+    graphics.lineTo(39, 42);
+    graphics.closePath();
+    graphics.fillPath();
+
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(25, 41, 14, 3);
+
+    // 3. Carcaj de Flechas
+    graphics.fillStyle(0x5c2c16, 1);
+    graphics.fillRect(38, 16, 6, 26);
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(39, 8, 2, 8);
+    graphics.fillRect(41, 6, 2, 10);
+
+    graphics.fillStyle(0x451a03, 1);
+    graphics.beginPath();
+    graphics.moveTo(24, 30);
+    graphics.lineTo(40, 44);
+    graphics.lineTo(38, 46);
+    graphics.lineTo(22, 32);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // 4. Cuello Anclado
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillRect(29, 21, 6, 8);
+
+    // 5. Brazos Adheridos al Torso
+    const armW = 5;
+    const shoulderY = 28;
+
+    if (isSide) {
+      const armX = 32;
+      const armAngle = isLeft ? -leftArmAngle : leftArmAngle;
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 20, armAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 10, 17, armAngle, 0x78350f);
+    } else {
+      const leftShoulderX = 21;
+      const rightShoulderX = 43;
+
+      const armLeftEndH = 20 + leftArmHMod;
+      const armRightEndH = 20 + rightArmHMod;
+
+      this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW, 0, armLeftEndH, leftArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, leftShoulderX, shoulderY, armW + 1, 10, 17, leftArmAngle, 0x78350f);
+
+      this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, armRightEndH, rightArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 10, 17, rightArmAngle, 0x78350f);
+    }
+
+    // 6. Cabeza y Orejas Elfas
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillEllipse(32, 17, 17, 19);
+
+    graphics.fillTriangle(20, 16, 14, 11, 22, 20);
+    graphics.fillTriangle(44, 16, 50, 11, 42, 20);
+
+    if (dir === 'down' || dir.includes('down')) {
+      graphics.fillStyle(0x27140a, 1);
+      graphics.fillRect(25, 16, 4, 1.5); graphics.fillRect(35, 16, 4, 1.5);
+      graphics.fillStyle(0x0f172a, 1);
+      graphics.fillRect(26, 18, 3, 3.5); graphics.fillRect(35, 18, 3, 3.5);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillRect(27, 18, 1.5, 1.5); graphics.fillRect(36, 18, 1.5, 1.5);
+    }
+
+    // 7. Melena Larga Dinámica según la Dirección del Personaje
+    graphics.fillStyle(hairHex, 1);
+    graphics.fillEllipse(32, 12, 22, 11);
+
+    if (dir === 'up' || dir === 'up-left' || dir === 'up-right') {
+      graphics.fillEllipse(32, 24, 20, 24);
+      graphics.fillRect(22, 14, 20, 22);
+    } else if (dir === 'right' || dir === 'down-right') {
+      graphics.beginPath();
+      graphics.moveTo(18, 12);
+      graphics.lineTo(24, 12);
+      graphics.lineTo(34, 34);
+      graphics.lineTo(26, 34);
+      graphics.closePath();
+      graphics.fillPath();
+    } else if (dir === 'left' || dir === 'down-left') {
+      graphics.beginPath();
+      graphics.moveTo(46, 12);
+      graphics.lineTo(40, 12);
+      graphics.lineTo(30, 34);
+      graphics.lineTo(38, 34);
+      graphics.closePath();
+      graphics.fillPath();
+    } else {
+      graphics.fillRect(18, 12, 5, 24);
+      graphics.fillRect(39, 12, 5, 24);
+    }
+  }
+
+  private drawGenericCharacter(
+    graphics: Phaser.GameObjects.Graphics,
+    skinHex: number,
+    hairHex: number,
+    outfitHex: number,
+    cls: string,
+    isFemale: boolean,
+    dir: string,
+    frame: number
+  ) {
+    graphics.fillStyle(0x000000, 0.35);
+    graphics.fillEllipse(32, 86, 38, 10);
+
+    const legW = isFemale ? 5 : 8;
+    const hipY = 48;
+    this.drawRotatedLimbSegment(graphics, 25, hipY, legW, 0, 22, 0, skinHex);
+    this.drawRotatedLimbSegment(graphics, 25, hipY, legW + 2, 18, 34, 0, 0x451a03);
+    this.drawRotatedLimbSegment(graphics, 39, hipY, legW, 0, 22, 0, skinHex);
+    this.drawRotatedLimbSegment(graphics, 39, hipY, legW + 2, 18, 34, 0, 0x451a03);
+
+    graphics.fillStyle(outfitHex, 1);
+    graphics.fillRect(20, 28, 24, 28);
+
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillRect(29, 21, 6, 8);
+    graphics.fillEllipse(32, 17, 18, 20);
+
+    graphics.fillStyle(hairHex, 1);
+    graphics.fillEllipse(32, 12, 22, 10);
   }
 
   public async savePlayerToServer() {

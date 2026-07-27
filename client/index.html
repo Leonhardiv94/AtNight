@@ -3085,6 +3085,7 @@
 
     function selectAndEnterGame(characterName) {
       window.selectedCharacterName = characterName;
+      localStorage.setItem('atnight_active_char', characterName);
 
       const overlay = document.getElementById('auth-screen-overlay');
       if (overlay) overlay.classList.add('hidden');

@@ -139,7 +139,17 @@ export class GameScene extends Phaser.Scene {
     this.updateHud();
     const initialChar = (typeof window !== 'undefined' && (window as any).selectedCharacterName)
       ? (window as any).selectedCharacterName
-      : undefined;
+      : (localStorage.getItem('atnight_active_char') || undefined);
+
+    // Intentar aplicar apariencia inmediatamente desde localStorage si está disponible
+    try {
+      const cachedData = localStorage.getItem('atnight_active_char_data');
+      if (cachedData) {
+        const p = JSON.parse(cachedData);
+        if (p) this.applyCharacterAppearance(p);
+      }
+    } catch (_e) {}
+
     this.loadSavedCharacter(initialChar);
 
     // Auto-Save Player Progress to Server every 10 seconds
@@ -154,12 +164,13 @@ export class GameScene extends Phaser.Scene {
   private currentCharacterData: any = null;
 
   public async loadSavedCharacter(charName?: string) {
-    const targetName = charName || (typeof window !== 'undefined' ? (window as any).selectedCharacterName : undefined);
+    const targetName = charName || (typeof window !== 'undefined' ? (window as any).selectedCharacterName : undefined) || localStorage.getItem('atnight_active_char');
     if (targetName) {
       this.currentCharacterName = targetName;
+      localStorage.setItem('atnight_active_char', targetName);
     }
 
-    if (!this.currentCharacterName || this.currentCharacterName === 'HéroeAtNight') return;
+    if (!this.currentCharacterName) return;
 
     try {
       const res = await fetch(`http://localhost:3002/api/player/${encodeURIComponent(this.currentCharacterName)}`);
@@ -168,6 +179,7 @@ export class GameScene extends Phaser.Scene {
       if (data.success && data.player) {
         const p = data.player;
         this.currentCharacterData = p;
+        localStorage.setItem('atnight_active_char_data', JSON.stringify(p));
         this.playerLevel = p.level || 1;
         this.playerXp = p.xp || 0;
         this.playerHp = p.hp || 100;
@@ -448,16 +460,27 @@ export class GameScene extends Phaser.Scene {
         }
 
         graphics.generateTexture(texKey, 64, 112);
+
+        // Generar también para la clave de reserva 'hero-' para garantizar compatibilidad total
+        const fallbackTexKey = `hero-${dir}-${frame}`;
+        if (this.textures.exists(fallbackTexKey)) {
+          this.textures.remove(fallbackTexKey);
+        }
+        graphics.generateTexture(fallbackTexKey, 64, 112);
       }
     });
 
-    // Registrar animaciones personalizadas
+    // Registrar animaciones personalizadas para ambas claves (char- y hero-)
     directions.forEach(d => {
       const walkKey = `char-${name}-walk-${d}`;
       const idleKey = `char-${name}-idle-${d}`;
+      const fallbackWalkKey = `hero-walk-${d}`;
+      const fallbackIdleKey = `hero-idle-${d}`;
 
       if (this.anims.exists(walkKey)) this.anims.remove(walkKey);
       if (this.anims.exists(idleKey)) this.anims.remove(idleKey);
+      if (this.anims.exists(fallbackWalkKey)) this.anims.remove(fallbackWalkKey);
+      if (this.anims.exists(fallbackIdleKey)) this.anims.remove(fallbackIdleKey);
 
       this.anims.create({
         key: walkKey,
@@ -474,6 +497,25 @@ export class GameScene extends Phaser.Scene {
       this.anims.create({
         key: idleKey,
         frames: [{ key: `char-${name}-${d}-0` }],
+        frameRate: 1,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: fallbackWalkKey,
+        frames: [
+          { key: `hero-${d}-1` },
+          { key: `hero-${d}-2` },
+          { key: `hero-${d}-3` },
+          { key: `hero-${d}-0` }
+        ],
+        frameRate: 9,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: fallbackIdleKey,
+        frames: [{ key: `hero-${d}-0` }],
         frameRate: 1,
         repeat: -1
       });

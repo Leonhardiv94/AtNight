@@ -875,76 +875,139 @@ export class GameScene extends Phaser.Scene {
       this.drawRotatedLimbSegment(graphics, rightHipX, hipY, legW + 3, rightLegEndH - 4, rightLegEndH, rightLegAngle, 0x1c1917);
     }
 
-    // 2. Coraza de Cuero Fornida + Cota de Malla en Pecho y Espalda
-    // Cota de Malla Plateada (Base bajo la armadura)
-    graphics.fillStyle(0x94a3b8, 1);
-    graphics.fillRect(22, 28, 20, 16); // Malla en Torso
+    // 2. Coraza de Cuero Fornida + Cota de Malla en Pecho y Espalda (Angosta en Perfil isSide)
+    if (isSide) {
+      // VISTA DE PERFIL: Grosor corporal angosto (Profundidad pecho-espalda = 12px)
+      // Cota de Malla Plateada
+      graphics.fillStyle(0x94a3b8, 1);
+      graphics.fillRect(26, 28, 12, 16);
 
-    // Textura de eslabones de cota de malla en gris acero
-    graphics.fillStyle(0x64748b, 1);
-    graphics.fillRect(24, 30, 2, 2); graphics.fillRect(28, 30, 2, 2); graphics.fillRect(32, 30, 2, 2); graphics.fillRect(36, 30, 2, 2);
-    graphics.fillRect(26, 33, 2, 2); graphics.fillRect(30, 33, 2, 2); graphics.fillRect(34, 33, 2, 2); graphics.fillRect(38, 33, 2, 2);
+      // Textura de eslabones
+      graphics.fillStyle(0x64748b, 1);
+      graphics.fillRect(27, 30, 2, 2); graphics.fillRect(31, 30, 2, 2); graphics.fillRect(35, 30, 2, 2);
+      graphics.fillRect(29, 33, 2, 2); graphics.fillRect(33, 33, 2, 2);
 
-    // Coraza de Cuero Táctico (OutfitHex o Cuero 0x78350f)
-    graphics.fillStyle(outfitHex, 1);
-    graphics.beginPath();
-    graphics.moveTo(22, 28);
-    graphics.lineTo(25, 42); // Cintura curva definida pero fuerte (14px)
-    graphics.lineTo(39, 42);
-    graphics.lineTo(42, 28);
-    graphics.closePath();
-    graphics.fillPath();
+      // Coraza de Cuero en Perfil (Cintura angosta 8px)
+      graphics.fillStyle(outfitHex, 1);
+      graphics.beginPath();
+      graphics.moveTo(26, 28);
+      graphics.lineTo(28, 42);
+      graphics.lineTo(36, 42);
+      graphics.lineTo(38, 28);
+      graphics.closePath();
+      graphics.fillPath();
 
-    if (!dir.includes('up')) {
-      // 3. Copas de Acero Esculpidas en los Senos (Metálicas Reforzadas)
-      graphics.fillStyle(0xcbd5e1, 1);
-      graphics.fillCircle(27, 33, 5.5); // Copa Izquierda
-      graphics.fillCircle(37, 33, 5.5); // Copa Derecha
+      if (!dir.includes('up')) {
+        // Copa de Acero esculpida en el pecho según la dirección del perfil
+        const cupX = isLeft ? 29 : 35;
+        graphics.fillStyle(0xcbd5e1, 1);
+        graphics.fillCircle(cupX, 33, 4.5);
+        graphics.fillStyle(0xffffff, 1);
+        graphics.fillCircle(cupX - (isLeft ? 1 : -1), 31, 1.5);
+      } else {
+        // Placa de Espaldar de Acero en perfil posterior
+        graphics.fillStyle(0xcbd5e1, 1);
+        graphics.fillRect(27, 30, 8, 10);
+      }
 
-      // Brillo Metálico Esculpido en las Copas de Acero
+      // Falda de Tiras de Cuero en Perfil
+      graphics.fillStyle(0x451a03, 1);
+      graphics.beginPath();
+      graphics.moveTo(27, 42);
+      graphics.lineTo(24, 61);
+      graphics.lineTo(40, 61);
+      graphics.lineTo(37, 42);
+      graphics.closePath();
+      graphics.fillPath();
+
+      // Tiras de cuero en perfil
+      graphics.fillStyle(0x78350f, 1);
+      graphics.fillRect(25, 44, 4, 16);
+      graphics.fillRect(30, 44, 4, 17);
+      graphics.fillRect(35, 44, 4, 16);
+
+      // Herrajes de Latón Dorado en perfil
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(26, 58, 2, 2); graphics.fillRect(31, 59, 2, 2); graphics.fillRect(36, 58, 2, 2);
+
+      // Cinturón Guerrero en Perfil
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(27, 41, 10, 3);
       graphics.fillStyle(0xffffff, 1);
-      graphics.fillCircle(26, 31, 2);
-      graphics.fillCircle(36, 31, 2);
+      graphics.fillRect(30, 40, 4, 5);
+
     } else {
-      // Placa de Espaldar de Acero en la Espalda
-      graphics.fillStyle(0xcbd5e1, 1);
-      graphics.fillRect(26, 30, 12, 10);
+      // VISTAS FRONTAL Y POSTERIOR: Ancho completo del torso (20px)
+      // Cota de Malla Plateada
+      graphics.fillStyle(0x94a3b8, 1);
+      graphics.fillRect(22, 28, 20, 16);
+
+      // Textura de eslabones de cota de malla
+      graphics.fillStyle(0x64748b, 1);
+      graphics.fillRect(24, 30, 2, 2); graphics.fillRect(28, 30, 2, 2); graphics.fillRect(32, 30, 2, 2); graphics.fillRect(36, 30, 2, 2);
+      graphics.fillRect(26, 33, 2, 2); graphics.fillRect(30, 33, 2, 2); graphics.fillRect(34, 33, 2, 2); graphics.fillRect(38, 33, 2, 2);
+
+      // Coraza de Cuero Táctico
+      graphics.fillStyle(outfitHex, 1);
+      graphics.beginPath();
+      graphics.moveTo(22, 28);
+      graphics.lineTo(25, 42);
+      graphics.lineTo(39, 42);
+      graphics.lineTo(42, 28);
+      graphics.closePath();
+      graphics.fillPath();
+
+      if (!dir.includes('up')) {
+        // 3. Copas de Acero Esculpidas en los Senos (Metálicas Reforzadas)
+        graphics.fillStyle(0xcbd5e1, 1);
+        graphics.fillCircle(27, 33, 5.5); // Copa Izquierda
+        graphics.fillCircle(37, 33, 5.5); // Copa Derecha
+
+        // Brillo Metálico Esculpido en las Copas de Acero
+        graphics.fillStyle(0xffffff, 1);
+        graphics.fillCircle(26, 31, 2);
+        graphics.fillCircle(36, 31, 2);
+      } else {
+        // Placa de Espaldar de Acero en la Espalda
+        graphics.fillStyle(0xcbd5e1, 1);
+        graphics.fillRect(26, 30, 12, 10);
+        graphics.fillStyle(0xffffff, 1);
+        graphics.fillRect(27, 31, 10, 2);
+      }
+
+      // 4. Falda de Tiras de Cuero Tácticas (Gladiator Pteruges) - Más larga sin pasar rodillas (y=42 a y=64)
+      graphics.fillStyle(0x451a03, 1);
+      graphics.beginPath();
+      graphics.moveTo(24, 42);
+      graphics.lineTo(19, 64);
+      graphics.lineTo(45, 64);
+      graphics.lineTo(40, 42);
+      graphics.closePath();
+      graphics.fillPath();
+
+      // Tiras Individuales Cortadas de Cuero (Pteruges)
+      graphics.fillStyle(0x78350f, 1);
+      graphics.fillRect(21, 44, 4, 18);
+      graphics.fillRect(27, 44, 4, 19);
+      graphics.fillRect(33, 44, 4, 19);
+      graphics.fillRect(39, 44, 4, 18);
+
+      // Herrajes de Latón Dorado en las tiras
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(22, 60, 2, 2); graphics.fillRect(28, 61, 2, 2); graphics.fillRect(34, 61, 2, 2); graphics.fillRect(40, 60, 2, 2);
+
+      // Cinturón Guerrero Dorado con Hebilla
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(24, 41, 16, 3);
       graphics.fillStyle(0xffffff, 1);
-      graphics.fillRect(27, 31, 10, 2);
+      graphics.fillRect(30, 40, 4, 5);
     }
-
-    // 4. Falda de Tiras de Cuero Tácticas (Gladiator Pteruges) - Más larga sin pasar rodillas (y=42 a y=64)
-    graphics.fillStyle(0x451a03, 1);
-    graphics.beginPath();
-    graphics.moveTo(24, 42);
-    graphics.lineTo(19, 64);
-    graphics.lineTo(45, 64);
-    graphics.lineTo(40, 42);
-    graphics.closePath();
-    graphics.fillPath();
-
-    // Tiras Individuales Cortadas de Cuero (Pteruges)
-    graphics.fillStyle(0x78350f, 1);
-    graphics.fillRect(21, 44, 4, 18);
-    graphics.fillRect(27, 44, 4, 19);
-    graphics.fillRect(33, 44, 4, 19);
-    graphics.fillRect(39, 44, 4, 18);
-
-    // Herrajes de Latón Dorado en las tiras
-    graphics.fillStyle(0xfbbf24, 1);
-    graphics.fillRect(22, 60, 2, 2); graphics.fillRect(28, 61, 2, 2); graphics.fillRect(34, 61, 2, 2); graphics.fillRect(40, 60, 2, 2);
-
-    // Cinturón Guerrero Dorado con Hebilla
-    graphics.fillStyle(0xfbbf24, 1);
-    graphics.fillRect(24, 41, 16, 3);
-    graphics.fillStyle(0xffffff, 1);
-    graphics.fillRect(30, 40, 4, 5);
 
     // 5. Cuello Anclado Conectando Torso y Cabeza
     graphics.fillStyle(skinHex, 1);
     graphics.fillRect(29, 21, 6, 8);
 
-    // 6. Brazos Atléticos con Hombreas / Guardabrazos de Acero (Pivote shoulderY = 28)
+    // 6. Brazos Atléticos con Guardabrazos de Acero (Pivote shoulderY = 28)
     const armW = 5;
     const shoulderY = 28;
 
@@ -953,6 +1016,12 @@ export class GameScene extends Phaser.Scene {
       const armAngle = isLeft ? -leftArmAngle : leftArmAngle;
       this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW, 0, 18, armAngle, skinHex);
       this.drawRotatedLimbSegment(graphics, armX, shoulderY, armW + 1, 8, 16, armAngle, 0x94a3b8); // Guardabrazos de acero
+
+      // Hombrera de Acero en Perfil (Centrada exactamente sobre la articulación del hombro en x=32, y=27)
+      graphics.fillStyle(0xcbd5e1, 1);
+      graphics.fillCircle(32, 27, 4.5);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillCircle(31, 25.5, 1.5);
     } else {
       const leftShoulderX = 20;
       const rightShoulderX = 44;
@@ -965,12 +1034,15 @@ export class GameScene extends Phaser.Scene {
 
       this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW, 0, armRightEndH, rightArmAngle, skinHex);
       this.drawRotatedLimbSegment(graphics, rightShoulderX, shoulderY, armW + 1, 8, 16, rightArmAngle, 0x94a3b8); // Acero
-    }
 
-    // Hombreras de Acero en los Hombros
-    graphics.fillStyle(0xcbd5e1, 1);
-    graphics.fillCircle(20, 27, 4);
-    graphics.fillCircle(44, 27, 4);
+      // Hombreras de Acero en Vistas Frontal y Posterior (x=20 y x=44)
+      graphics.fillStyle(0xcbd5e1, 1);
+      graphics.fillCircle(20, 27, 4);
+      graphics.fillCircle(44, 27, 4);
+      graphics.fillStyle(0xffffff, 1);
+      graphics.fillCircle(19, 25.5, 1.5);
+      graphics.fillCircle(43, 25.5, 1.5);
+    }
 
     // 7. Cabeza Humana con Orejas Pequeñas Pegadas (SOLO en vistas Frontal y Posterior)
     graphics.fillStyle(skinHex, 1);

@@ -319,74 +319,77 @@ export class GameScene extends Phaser.Scene {
 
         // Sombra Base Proyectada
         graphics.fillStyle(0x000000, 0.35);
-        graphics.fillEllipse(32, 100, 44, 14);
+        graphics.fillEllipse(32, 100, isFemale ? 36 : 44, 14);
 
         const isSide = dir.includes('left') || dir.includes('right');
         const isLeft = dir.includes('left');
 
-        // 1. Piernas Conectadas y Botas de Cazadora (Sin huecos ni partes flotantes)
+        // 1. Piernas y Botas (Silueta Estilizada según Sexo y Clase)
         if (isSide) {
           const backX = 32 - (isLeft ? -legStep : legStep);
           const frontX = 32 + (isLeft ? -legStep : legStep);
+          const legW = isFemale ? 5 : 8;
+
           graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(backX - 4, 52, 8, 20);
-          graphics.fillRect(frontX - 4, 52, 8, 20);
+          graphics.fillRect(backX - legW / 2, 50, legW, 22);
+          graphics.fillRect(frontX - legW / 2, 50, legW, 22);
 
           graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero
-          graphics.fillRect(frontX - 5, 68, 10, 20);
-          graphics.fillRect(backX - 4, 68, 9, 20);
+          graphics.fillRect(frontX - (legW + 2) / 2, 66, legW + 2, 22);
+          graphics.fillRect(backX - (legW + 1) / 2, 66, legW + 1, 22);
 
           graphics.fillStyle(0x1c1917, 1); // Suelas de Botas
-          graphics.fillRect(frontX - 6, 88, 12, 4);
-          graphics.fillRect(backX - 5, 88, 10, 4);
+          graphics.fillRect(frontX - (legW + 4) / 2, 87, legW + 4, 4);
+          graphics.fillRect(backX - (legW + 3) / 2, 87, legW + 3, 4);
         } else {
-          const leftX = 22;
-          const rightX = 42;
-          const leftY = 52 + legStep;
-          const rightY = 52 - legStep;
+          const leftX = isFemale ? 24 : 22;
+          const rightX = isFemale ? 40 : 42;
+          const leftY = 50 + legStep;
+          const rightY = 50 - legStep;
+          const legW = isFemale ? 5 : 8;
 
           graphics.fillStyle(isFemale ? skinHex : 0x5c2c16, 1);
-          graphics.fillRect(leftX - 4, leftY, 8, 18);
-          graphics.fillRect(rightX - 4, rightY, 8, 18);
+          graphics.fillRect(leftX - legW / 2, leftY, legW, 20);
+          graphics.fillRect(rightX - legW / 2, rightY, legW, 20);
 
-          graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero
-          graphics.fillRect(leftX - 5, leftY + 12, 10, 20);
-          graphics.fillRect(rightX - 5, rightY + 12, 10, 20);
+          graphics.fillStyle(0x451a03, 1); // Botas Altas de Cuero de Cazadora
+          graphics.fillRect(leftX - (legW + 2) / 2, leftY + 14, legW + 2, 22);
+          graphics.fillRect(rightX - (legW + 2) / 2, rightY + 14, legW + 2, 22);
 
           graphics.fillStyle(0x1c1917, 1); // Suelas de Botas
-          graphics.fillRect(leftX - 6, leftY + 30, 12, 4);
-          graphics.fillRect(rightX - 6, rightY + 30, 12, 4);
+          graphics.fillRect(leftX - (legW + 3) / 2, leftY + 34, legW + 3, 4);
+          graphics.fillRect(rightX - (legW + 3) / 2, rightY + 34, legW + 3, 4);
         }
 
-        // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Estilizada)
+        // 2. Torso, Corset con Escote Arqueado y Faldita de Cazadora (Silueta Femenina Fina y Alta)
         if (isFemale) {
-          // Corset Ceñido con Pechera Arqueada & Cintura de Avispa (y=34 a y=50)
+          // Corset Ceñido con Pechera Arqueada & Cintura de Avispa Estilizada (Ancho 12px en cintura)
           graphics.fillStyle(outfitHex, 1);
           graphics.beginPath();
-          graphics.moveTo(18, 34);
-          graphics.lineTo(22, 50); // Cintura ceñida
-          graphics.lineTo(42, 50); // Base de la Cintura
-          graphics.lineTo(46, 34); // Torso alto
+          graphics.moveTo(24, 30);
+          graphics.lineTo(26, 44); // Cintura super estilizada (12px de ancho!)
+          graphics.lineTo(38, 44); // Base de la Cintura
+          graphics.lineTo(40, 30); // Torso Alto (16px de ancho)
           graphics.closePath();
           graphics.fillPath();
 
           // Escote / Pechera Femenina
           graphics.fillStyle(skinHex, 1);
-          graphics.fillTriangle(32, 40, 24, 34, 40, 34);
+          graphics.fillTriangle(32, 37, 26, 30, 38, 30);
 
-          // Faldita / Corsel de Cazadora de Cuero (y=48 a y=60)
+          // Faldita / Corsel de Cazadora de Cuero
           graphics.fillStyle(0x78350f, 1);
           graphics.beginPath();
-          graphics.moveTo(20, 48);
-          graphics.lineTo(14, 60);
-          graphics.lineTo(50, 60);
-          graphics.lineTo(44, 48);
+          graphics.moveTo(25, 44);
+          graphics.lineTo(20, 56);
+          graphics.lineTo(44, 56);
+          graphics.lineTo(39, 44);
           graphics.closePath();
           graphics.fillPath();
 
           // Cinturón Táctico Dorado
           graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillRect(20, 48, 24, 3);
+          graphics.fillRect(25, 43, 14, 3);
         } else {
           graphics.fillStyle(outfitHex, 1);
           graphics.fillRect(18, 36, 28, 28);
@@ -396,73 +399,75 @@ export class GameScene extends Phaser.Scene {
         if (cls === 'arquero') {
           // Carcaj de Cuero de Arquera con Flechas con Plumas Doradas
           graphics.fillStyle(0x5c2c16, 1);
-          graphics.fillRect(39, 22, 7, 28);
+          graphics.fillRect(38, 18, 6, 26);
           graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillRect(40, 14, 2, 8); // Flecha 1
-          graphics.fillRect(43, 12, 2, 10); // Flecha 2
+          graphics.fillRect(39, 10, 2, 8); // Flecha 1
+          graphics.fillRect(41, 8, 2, 10); // Flecha 2
 
           // Tirante cruzado de cuero táctico
           graphics.fillStyle(0x451a03, 1);
           graphics.beginPath();
-          graphics.moveTo(20, 36);
-          graphics.lineTo(44, 50);
-          graphics.lineTo(42, 53);
-          graphics.lineTo(18, 39);
+          graphics.moveTo(24, 32);
+          graphics.lineTo(40, 46);
+          graphics.lineTo(38, 48);
+          graphics.lineTo(22, 34);
           graphics.closePath();
           graphics.fillPath();
         } else if (cls === 'espadachin') {
           graphics.fillStyle(0xfbbf24, 1);
-          graphics.fillCircle(32, 44, 4.5);
+          graphics.fillCircle(32, 40, 4);
         } else if (cls === 'mago') {
           graphics.fillStyle(0xc084fc, 1);
-          graphics.fillCircle(32, 44, 5);
+          graphics.fillCircle(32, 40, 4);
         }
 
-        // 4. Cuello Anclado Conectando Torso y Cabeza
+        // 4. Cuello Anclado Conectando Torso y Cabeza Estilizada
         graphics.fillStyle(skinHex, 1);
-        graphics.fillRect(28, 26, 8, 10);
+        graphics.fillRect(29, 23, 6, 8);
 
-        // 5. Brazos Anclados a los Hombros (y=34)
+        // 5. Brazos Anclados a los Hombros en Silueta Femenina (x=16 y x=41)
         graphics.fillStyle(skinHex, 1);
         if (isSide) {
           const armX = (isLeft ? 28 : 36) + (isLeft ? -armPendulumX : armPendulumX);
-          graphics.fillRect(armX - 4, 34, 8, 20); // Brazo continuo sin huecos
+          const armW = isFemale ? 5 : 8;
+          graphics.fillRect(armX - armW / 2, 30, armW, 20); // Brazo continuo sin huecos
           graphics.fillStyle(0x78350f, 1); // Guardabrazos de Cuero
-          graphics.fillRect(armX - 4, 44, 8, 8);
+          graphics.fillRect(armX - (armW + 1) / 2, 40, armW + 1, 7);
         } else {
-          graphics.fillRect(11, 34 + armPendulumY, 7, 20); // Brazo izquierdo conectado a hombro
-          graphics.fillRect(46, 34 - armPendulumY, 7, 20); // Brazo derecho conectado a hombro
+          const armW = isFemale ? 5 : 7;
+          graphics.fillRect(16, 30 + armPendulumY, armW, 20); // Brazo izquierdo continuo
+          graphics.fillRect(41, 30 - armPendulumY, armW, 20); // Brazo derecho continuo
           graphics.fillStyle(0x78350f, 1); // Guardabrazos de Arquera
-          graphics.fillRect(10, 44 + armPendulumY, 9, 8);
-          graphics.fillRect(45, 46 - armPendulumY, 9, 8);
+          graphics.fillRect(15, 40 + armPendulumY, armW + 2, 7);
+          graphics.fillRect(40, 40 - armPendulumY, armW + 2, 7);
         }
 
-        // 6. Cabeza y Orejas Elfas de Arquera
+        // 6. Cabeza y Orejas Elfas Estilizadas de Arquera
         graphics.fillStyle(skinHex, 1);
-        graphics.fillEllipse(32, 22, 24, 24);
+        graphics.fillEllipse(32, 19, isFemale ? 17 : 24, isFemale ? 19 : 24);
 
         if (cls === 'arquero') {
           graphics.fillStyle(skinHex, 1);
-          graphics.fillTriangle(18, 20, 13, 14, 20, 24); // Oreja Elfa Izquierda
-          graphics.fillTriangle(46, 20, 51, 14, 44, 24); // Oreja Elfa Derecha
+          graphics.fillTriangle(20, 18, 14, 13, 22, 22); // Oreja Elfa Izquierda
+          graphics.fillTriangle(44, 18, 50, 13, 42, 22); // Oreja Elfa Derecha
         }
 
-        // Rostro con Pestañas
+        // Rostro Fino y Expresivo con Pestañas
         if (dir === 'down' || dir.includes('down')) {
           graphics.fillStyle(0x27140a, 1);
-          graphics.fillRect(23, 20, 6, 2); graphics.fillRect(35, 20, 6, 2);
+          graphics.fillRect(25, 18, 4, 1.5); graphics.fillRect(35, 18, 4, 1.5);
           graphics.fillStyle(0x0f172a, 1);
-          graphics.fillRect(24, 23, 4, 4); graphics.fillRect(36, 23, 4, 4);
+          graphics.fillRect(26, 20, 3, 3.5); graphics.fillRect(35, 20, 3, 3.5);
           graphics.fillStyle(0xffffff, 1);
-          graphics.fillRect(25, 23, 2, 2); graphics.fillRect(37, 23, 2, 2);
+          graphics.fillRect(27, 20, 1.5, 1.5); graphics.fillRect(36, 20, 1.5, 1.5);
         }
 
         // 7. Melena Larga Fluyendo sobre Hombros
         graphics.fillStyle(hairHex, 1);
         if (isFemale) {
-          graphics.fillEllipse(32, 16, 26, 14);
-          graphics.fillRect(15, 16, 6, 32); // Melena cayendo sobre los hombros
-          graphics.fillRect(43, 16, 6, 32);
+          graphics.fillEllipse(32, 14, 22, 12);
+          graphics.fillRect(18, 14, 5, 30); // Melena cayendo sobre los hombros
+          graphics.fillRect(39, 14, 5, 30);
         } else {
           graphics.fillEllipse(32, 16, 24, 12);
           graphics.fillRect(20, 15, 12, 5);

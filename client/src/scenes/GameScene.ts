@@ -1643,18 +1643,25 @@ export class GameScene extends Phaser.Scene {
     const isBackView = dir === 'up' || dir.includes('up');
     const isFrontView = dir === 'down' || dir.includes('down');
 
-    // La Mano Derecha del Mago sostiene el Báculo:
-    // En vista frontal -> Pantalla Derecha (staffX = 46)
-    // En vista posterior (Espalda gira 180°) -> Pantalla Izquierda (staffX = 18)
-    // En vista lateral -> Según el lado activo (staffX = isLeft ? 18 : 46)
-    const staffX = isBackView ? (isLeft ? 46 : 18) : (isLeft ? 18 : 46);
+    // El báculo es sostenido por el brazo activo en dirección al movimiento:
+    // Al caminar a la izquierda (left, down-left, up-left) -> Brazo Izquierdo (staffX = 18)
+    // Al caminar a la derecha o al frente -> Brazo Derecho (staffX = 46)
+    // De espalda pura (up) -> Brazo en pantalla izquierda (staffX = 18)
+    let staffX = 46;
+    if (isLeft) {
+      staffX = 18;
+    } else if (dir === 'up') {
+      staffX = 18;
+    } else {
+      staffX = 46;
+    }
     const handY = 42;
 
     if (isFrontView) {
       // VISTA FRONTAL: El báculo se dibuja POR DELANTE del brazo y del cuerpo
       // 1. Mangas y Brazos al fondo
       if (isPureSide) {
-        const armX = 32;
+        const armX = staffX;
         this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
         this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
       } else {
@@ -1677,13 +1684,13 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(staffX - 0.5, handY - 2, 5, 1.5);
 
     } else {
-      // VISTA POSTERIOR: El báculo pasa POR DETRÁS del brazo y del cuerpo (al fondo)
+      // VISTA POSTERIOR / PERFIL: El báculo pasa POR DETRÁS del brazo y del cuerpo (al fondo)
       // 1. Báculo al fondo por detrás de la túnica/brazo
       this.drawWizardStaffAsset(graphics, staffX);
 
       // 2. Mangas y Brazo en la capa frontal superior tapando el báculo por detrás
       if (isPureSide) {
-        const armX = 32;
+        const armX = staffX;
         this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
         this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
       } else {

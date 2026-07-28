@@ -1638,11 +1638,13 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(skinHex, 1);
     graphics.fillRect(29, 20, 6, 8);
 
-    // 4. Mangas Anchas de Campana y Brazo con Báculo Mágico
+    // 4. Mangas Anchas de Campana y Brazo Sosteniendo Firmemente el Báculo Mágico
     const shoulderY = 27;
-    const staffX = dir.includes('left') ? 16 : 48;
+    const isLeftArmStaff = dir.includes('left');
+    const staffX = isLeftArmStaff ? 18 : 44;
+    const handY = 42;
 
-    // Dibujar el Báculo Mágico de Madera (Staff)
+    // 1. Dibujar el Báculo Mágico de Madera (Staff)
     graphics.fillStyle(0x78350f, 1); // Madera mística
     graphics.fillRect(staffX, 10, 4, 72);
     // Cabeza del báculo de madera torcida
@@ -1653,20 +1655,28 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(0xffffff, 1); // Destello de energía
     graphics.fillCircle(staffX + 1, 6.5, 1.8);
 
-    // Mangas de Campana de Mago (outfitHex)
+    // 2. Dibujar Mangas de Campana y Brazos de Mago (outfitHex)
     if (isSide) {
       const armX = 32;
-      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 18, leftArmAngle, outfitHex);
-      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 19, leftArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
     } else {
       // Manga Izquierda
-      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 18, leftArmAngle, outfitHex);
-      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 14, 19, leftArmAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);
 
-      // Manga Derecha (Sosteniendo el Báculo)
-      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 7, 0, 18, rightArmAngle, outfitHex);
-      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 14, 19, rightArmAngle, skinHex);
+      // Manga Derecha
+      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 7, 0, 16, rightArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 12, 16, rightArmAngle, skinHex);
     }
+
+    // 3. Dibujar Mano de Mago Empuñando y Cerrada SOBRE el Báculo (Evita que flote)
+    graphics.fillStyle(0x78350f, 1); // Puño / Guantelete místico
+    graphics.fillRect(staffX - 2, handY - 4, 8, 3);
+    graphics.fillStyle(skinHex, 1); // Mano agarrando el astil de madera
+    graphics.fillRect(staffX - 2, handY - 1, 8, 7);
+    graphics.fillStyle(0xfbbf24, 1); // Anillo / Pulsera dorada de mago
+    graphics.fillRect(staffX - 2, handY - 3, 8, 2);
 
     // 5. Cabeza Humana de Mago Sabio
     graphics.fillStyle(skinHex, 1);

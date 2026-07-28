@@ -1668,13 +1668,13 @@ export class GameScene extends Phaser.Scene {
       // 2. Báculo por DELANTE del brazo y cuerpo
       this.drawWizardStaffAsset(graphics, staffX);
 
-      // 3. Mano empuñando el báculo en el frente
+      // 3. Mano pequeña empuñando el báculo en el frente
       graphics.fillStyle(0x78350f, 1);
-      graphics.fillRect(staffX - 2, handY - 4, 8, 3);
+      graphics.fillRect(staffX - 1, handY - 3, 6, 2);
       graphics.fillStyle(skinHex, 1);
-      graphics.fillRect(staffX - 2, handY - 1, 8, 7);
+      graphics.fillRect(staffX - 0.5, handY - 1, 5, 4);
       graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(staffX - 2, handY - 3, 8, 2);
+      graphics.fillRect(staffX - 0.5, handY - 2, 5, 1.5);
 
     } else {
       // VISTA POSTERIOR: El báculo pasa POR DETRÁS del brazo y del cuerpo (al fondo)
@@ -1696,11 +1696,11 @@ export class GameScene extends Phaser.Scene {
 
       // 3. Detalle de sujeción posterior
       graphics.fillStyle(0x78350f, 1);
-      graphics.fillRect(staffX - 2, handY - 4, 8, 3);
+      graphics.fillRect(staffX - 1, handY - 3, 6, 2);
       graphics.fillStyle(skinHex, 1);
-      graphics.fillRect(staffX - 2, handY - 1, 8, 7);
+      graphics.fillRect(staffX - 0.5, handY - 1, 5, 4);
       graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(staffX - 2, handY - 3, 8, 2);
+      graphics.fillRect(staffX - 0.5, handY - 2, 5, 1.5);
     }
 
     // 5. Cabeza Humana de Mago Sabio

@@ -1644,26 +1644,27 @@ export class GameScene extends Phaser.Scene {
     const isFrontView = dir === 'down' || dir.includes('down');
 
     // El báculo es sostenido por el brazo activo en dirección al movimiento:
-    // Al caminar a la izquierda (left, down-left, up-left) -> Brazo Izquierdo (staffX = 18)
-    // Al caminar a la derecha o al frente -> Brazo Derecho (staffX = 46)
+    // Al caminar a la izquierda (left, down-left, up-left) -> Brazo Izquierdo (staffX = 20)
+    // Al caminar a la derecha o al frente -> Brazo Derecho (staffX = 44)
     // De espalda pura (up) -> Brazo en pantalla izquierda (staffX = 18)
-    let staffX = 46;
+    let staffX = 44;
     if (isLeft) {
-      staffX = 18;
+      staffX = 20;
     } else if (dir === 'up') {
       staffX = 18;
     } else {
-      staffX = 46;
+      staffX = 44;
     }
     const handY = 42;
 
     if (isFrontView) {
-      // VISTA FRONTAL: El báculo se dibuja POR DELANTE del brazo y del cuerpo
-      // 1. Mangas y Brazos al fondo
+      // VISTA FRONTAL / FRONTAL-DIAGONAL
       if (isPureSide) {
-        const armX = staffX;
-        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
-        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
+        // PERFIL PURO DE FRENTE/LADO: Brazo en diagonal desde el hombro (32, 27) hasta el báculo en (20/44)
+        // El otro brazo está oculto tras el cuerpo y NO se dibuja
+        const armAngle = isLeft ? -0.65 : 0.65;
+        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 7, 0, 16, armAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 5, 12, 16, armAngle, skinHex);
       } else {
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);
@@ -1684,15 +1685,16 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(staffX - 0.5, handY - 2, 5, 1.5);
 
     } else {
-      // VISTA POSTERIOR / PERFIL: El báculo pasa POR DETRÁS del brazo y del cuerpo (al fondo)
+      // VISTA POSTERIOR / PERFIL PURO LATERAL: El báculo pasa por detrás del cuerpo/brazo
       // 1. Báculo al fondo por detrás de la túnica/brazo
       this.drawWizardStaffAsset(graphics, staffX);
 
       // 2. Mangas y Brazo en la capa frontal superior tapando el báculo por detrás
       if (isPureSide) {
-        const armX = staffX;
-        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
-        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
+        // PERFIL PURO LATERAL: Un solo brazo diagonal desde el hombro (32, 27) hasta el báculo
+        const armAngle = isLeft ? -0.65 : 0.65;
+        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 7, 0, 16, armAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 5, 12, 16, armAngle, skinHex);
       } else {
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);

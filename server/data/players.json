@@ -8,7 +8,7 @@
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
     "level": 1,
-    "xp": 0,
+    "xp": 102,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -47,12 +47,37 @@
     "maxHp": 100,
     "mana": 10,
     "maxMana": 10,
-    "inventory": [],
+    "inventory": [
+      {
+        "id": "chicken_feather",
+        "name": "Pluma de Pollo",
+        "icon": "",
+        "count": 1,
+        "category": "recursos",
+        "weight": 1
+      },
+      {
+        "id": "gold",
+        "name": "Monedas de Oro",
+        "icon": "",
+        "count": 6,
+        "category": "especiales",
+        "weight": 0
+      },
+      {
+        "id": "chicken_egg",
+        "name": "Huevo de Pollo",
+        "icon": "",
+        "count": 1,
+        "category": "recursos",
+        "weight": 1
+      }
+    ],
     "lastPosition": {
-      "x": -11.444766666666673,
-      "y": 1296.5552333333371
+      "x": 0,
+      "y": 1132
     },
-    "updatedAt": "2026-07-27T02:39:00.794Z"
+    "updatedAt": "2026-07-27T15:43:40.713Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -118,7 +143,7 @@
     "hairColor": "#fde047",
     "outfitColor": "#dc2626",
     "level": 1,
-    "xp": 0,
+    "xp": 76,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -157,12 +182,29 @@
     "maxHp": 100,
     "mana": 10,
     "maxMana": 10,
-    "inventory": [],
+    "inventory": [
+      {
+        "id": "chicken_egg",
+        "name": "Huevo de Pollo",
+        "icon": "",
+        "count": 1,
+        "category": "recursos",
+        "weight": 1
+      },
+      {
+        "id": "gold",
+        "name": "Monedas de Oro",
+        "icon": "",
+        "count": 47,
+        "category": "especiales",
+        "weight": 0
+      }
+    ],
     "lastPosition": {
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-27T02:47:26.226Z"
+    "updatedAt": "2026-07-27T15:24:22.286Z"
   },
   "Gerrero": {
     "characterName": "Gerrero",
@@ -214,9 +256,64 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 89.91909277158447,
-      "y": 1301.1703100402804
+      "x": 0,
+      "y": 1132
     },
-    "updatedAt": "2026-07-27T13:10:01.255Z"
+    "updatedAt": "2026-07-28T19:06:04.887Z"
+  },
+  "Mago": {
+    "characterName": "Mago",
+    "ownerEmail": "leonhardiv94@gmail.com",
+    "characterClass": "mago",
+    "gender": "masculino",
+    "skinColor": "#fed7aa",
+    "hairColor": "#1e293b",
+    "outfitColor": "#9333ea",
+    "level": 1,
+    "xp": 0,
+    "availablePoints": 0,
+    "elements": {
+      "vitalidad": {
+        "equip": 0,
+        "base": 0
+      },
+      "sabiduria": {
+        "equip": 0,
+        "base": 0
+      },
+      "aire": {
+        "equip": 0,
+        "base": 0
+      },
+      "tierra": {
+        "equip": 0,
+        "base": 0
+      },
+      "fuego": {
+        "equip": 0,
+        "base": 0
+      },
+      "agua": {
+        "equip": 0,
+        "base": 0
+      }
+    },
+    "specials": {
+      "tasaMana": 0,
+      "manaTotal": 0,
+      "velocidad": 0,
+      "defensa": 0,
+      "ataque": 0
+    },
+    "hp": 100,
+    "maxHp": 100,
+    "mana": 10,
+    "maxMana": 10,
+    "inventory": [],
+    "lastPosition": {
+      "x": -27.55546943082618,
+      "y": 1320.501962664676
+    },
+    "updatedAt": "2026-07-28T19:09:18.781Z"
   }
 }

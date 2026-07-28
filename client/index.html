@@ -3394,15 +3394,44 @@
           ctx.fillRect(px - 17, py - 34, 2, 8);
           ctx.fillRect(px - 14, py - 36, 2, 10);
         } else if (clsId === 'mago') {
+          // Báculo Mágico de Madera Torcida con Orbe Arcano Cian Radiante
           ctx.fillStyle = '#78350f';
-          ctx.fillRect(px + 14, py - 35, 4, 60);
-          ctx.fillStyle = '#c084fc';
-          ctx.shadowColor = 'rgba(192, 132, 252, 0.8)';
-          ctx.shadowBlur = 15;
+          ctx.fillRect(px + 14, py - 42, 4, 68);
+          ctx.beginPath(); ctx.arc(px + 16, py - 42, 6, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#38bdf8';
+          ctx.shadowColor = 'rgba(56, 189, 248, 0.9)';
+          ctx.shadowBlur = 18;
           ctx.beginPath();
-          ctx.arc(px + 16, py - 38, 8, 0, Math.PI * 2);
+          ctx.arc(px + 16, py - 48, 8, 0, Math.PI * 2);
           ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath(); ctx.arc(px + 14, py - 50, 3, 0, Math.PI * 2); ctx.fill();
           ctx.shadowBlur = 0;
+
+          if (!isFemale) {
+            // Barba Larga Fluida Canosa de Mago Sabio
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath();
+            ctx.moveTo(px - 9, py - 32);
+            ctx.quadraticCurveTo(px - 14, py - 10, px, py + 8);
+            ctx.quadraticCurveTo(px + 14, py - 10, px + 9, py - 32);
+            ctx.closePath();
+            ctx.fill();
+
+            // Sombrero Puntiagudo de Mago Archimago
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            ctx.ellipse(px, py - 46, 18, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(px - 12, py - 46);
+            ctx.lineTo(px, py - 68);
+            ctx.lineTo(px + 12, py - 46);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(px - 10, py - 48, 20, 3);
+          }
         } else if (clsId === 'amigo_sol') {
           ctx.fillStyle = '#fbbf24';
           ctx.shadowColor = 'rgba(251, 191, 36, 0.8)';

@@ -347,6 +347,9 @@ export class GameScene extends Phaser.Scene {
         } else if (cls === 'espadachin' && !isFemale) {
           // RENDERIZADOR DEDICADO EXCLUSIVO PARA EL ESPADACHÍN MASCULINO (GUERRERO)
           this.drawMaleWarriorCharacter(graphics, skinHex, hairHex, outfitHex, dir, frame);
+        } else if (cls === 'mago') {
+          // RENDERIZADOR DEDICADO EXCLUSIVO PARA EL MAGO SABIO ANCIANO (TÚNICA & BÁCULO)
+          this.drawWizardCharacter(graphics, skinHex, hairHex, outfitHex, isFemale, dir, frame);
         } else {
           // Renderizador base modular para otras combinaciones futuras
           this.drawGenericCharacter(graphics, skinHex, hairHex, outfitHex, cls, isFemale, dir, frame);
@@ -1476,6 +1479,288 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(px, 4, 18, 11);
       graphics.fillRect(px + 1, 2, 16, 2);
       graphics.fillRect(isLeft ? 21 : 40, 10, 2, 6); // Patilla
+    }
+  }
+
+  // =========================================================================
+  // 🔮 RENDERIZADOR BLINDADO DEDICADO DEL MAGO SABIO ANCIANO (TÚNICA & BÁCULO)
+  // =========================================================================
+  private drawWizardCharacter(
+    graphics: Phaser.GameObjects.Graphics,
+    skinHex: number,
+    hairHex: number,
+    outfitHex: number,
+    isFemale: boolean,
+    dir: string,
+    frame: number
+  ) {
+    const isFrontOrBack = dir === 'down' || dir === 'up';
+    const isPureSide = dir === 'left' || dir === 'right';
+    const isDiagonal = dir.includes('up-') || dir.includes('down-');
+    const isSide = isPureSide || isDiagonal;
+    const isLeft = dir.includes('left');
+
+    let leftArmAngle = 0;
+    let rightArmAngle = 0;
+    let robeSway = 0;
+
+    if (isFrontOrBack) {
+      if (frame === 1) robeSway = -1.5;
+      else if (frame === 3) robeSway = 1.5;
+    } else {
+      if (frame === 1) {
+        leftArmAngle = 0.22;
+        rightArmAngle = -0.22;
+        robeSway = -2;
+      } else if (frame === 3) {
+        leftArmAngle = -0.22;
+        rightArmAngle = 0.22;
+        robeSway = 2;
+      }
+    }
+
+    // Sombra Base Proyectada Bajo la Túnica (y = 83)
+    graphics.fillStyle(0x000000, 0.38);
+    graphics.fillEllipse(32, 83, 44, 12);
+
+    // 1. Zapatos / Pies bajo el dobladillo de la túnica (y = 74..79)
+    graphics.fillStyle(0x1c1917, 1);
+    if (isSide) {
+      this.drawRotatedLimbSegment(graphics, 32, 60, 6, 12, 20, isLeft ? -leftArmAngle * 0.5 : leftArmAngle * 0.5, 0x1c1917);
+    } else {
+      graphics.fillRect(25, 74, 5, 5);
+      graphics.fillRect(34, 74, 5, 5);
+    }
+
+    // 2. Túnica Orgánica Mística de Mago (Forma Fluida no rectangular)
+    // Fondo/Pliegues Oscuros de la Túnica
+    graphics.fillStyle(0x0f172a, 1);
+
+    if (isPureSide) {
+      // PERFIL PURO: Túnica fluida de 19px de ancho
+      graphics.beginPath();
+      graphics.moveTo(23, 27);
+      graphics.lineTo(21 + robeSway, 76);
+      graphics.lineTo(43 + robeSway, 76);
+      graphics.lineTo(41, 27);
+      graphics.closePath();
+      graphics.fillPath();
+
+      // Capa exterior de la túnica (outfitHex)
+      graphics.fillStyle(outfitHex, 1);
+      graphics.beginPath();
+      graphics.moveTo(24, 27);
+      graphics.quadraticCurveTo(22 + robeSway, 50, 23 + robeSway, 75);
+      graphics.lineTo(41 + robeSway, 75);
+      graphics.quadraticCurveTo(42 + robeSway, 50, 40, 27);
+      graphics.closePath();
+      graphics.fillPath();
+
+    } else if (isDiagonal) {
+      // DIAGONAL: Túnica fluida 3D de 23px de ancho
+      graphics.beginPath();
+      graphics.moveTo(20.5, 27);
+      graphics.lineTo(18.5 + robeSway, 76);
+      graphics.lineTo(45.5 + robeSway, 76);
+      graphics.lineTo(43.5, 27);
+      graphics.closePath();
+      graphics.fillPath();
+
+      graphics.fillStyle(outfitHex, 1);
+      graphics.beginPath();
+      graphics.moveTo(21.5, 27);
+      graphics.quadraticCurveTo(19.5 + robeSway, 50, 20.5 + robeSway, 75);
+      graphics.lineTo(43.5 + robeSway, 75);
+      graphics.quadraticCurveTo(44.5 + robeSway, 50, 42.5, 27);
+      graphics.closePath();
+      graphics.fillPath();
+
+    } else {
+      // FRONTAL Y POSTERIOR: Túnica Orgánica Completa de 26px de ancho con pliegues
+      graphics.beginPath();
+      graphics.moveTo(19, 27);
+      graphics.lineTo(16 + robeSway, 76);
+      graphics.lineTo(48 + robeSway, 76);
+      graphics.lineTo(45, 27);
+      graphics.closePath();
+      graphics.fillPath();
+
+      graphics.fillStyle(outfitHex, 1);
+      graphics.beginPath();
+      graphics.moveTo(20, 27);
+      graphics.quadraticCurveTo(17 + robeSway, 50, 18 + robeSway, 75);
+      graphics.lineTo(46 + robeSway, 75);
+      graphics.quadraticCurveTo(47 + robeSway, 50, 44, 27);
+      graphics.closePath();
+      graphics.fillPath();
+
+      // Pliegues místicos de la túnica en frontal
+      if (!dir.includes('up')) {
+        graphics.fillStyle(0x0f172a, 0.4);
+        graphics.beginPath();
+        graphics.moveTo(32, 42);
+        graphics.lineTo(26 + robeSway, 75);
+        graphics.lineTo(38 + robeSway, 75);
+        graphics.closePath();
+        graphics.fillPath();
+      }
+    }
+
+    // Cinturón Rúnico Dorado con Hebilla Mística
+    graphics.fillStyle(0x78350f, 1);
+    graphics.fillRect(isPureSide ? 24 : 21, 41, isPureSide ? 16 : 22, 4);
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(29, 40, 6, 6);
+    graphics.fillStyle(0x38bdf8, 1); // Gema central azul arcano
+    graphics.fillCircle(32, 43, 1.8);
+
+    // Manto / Capa Superior de los Hombros
+    graphics.fillStyle(0x1e1b4b, 1);
+    graphics.beginPath();
+    graphics.moveTo(isPureSide ? 23 : 19, 27);
+    graphics.lineTo(isPureSide ? 21 : 17, 36);
+    graphics.lineTo(isPureSide ? 41 : 47, 36);
+    graphics.lineTo(isPureSide ? 39 : 45, 27);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // Borde rúnico dorado del manto
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(isPureSide ? 21 : 17, 35, isPureSide ? 20 : 30, 2);
+
+    // 3. Cuello de Mago
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillRect(29, 20, 6, 8);
+
+    // 4. Mangas Anchas de Campana y Brazo con Báculo Mágico
+    const shoulderY = 27;
+    const staffX = dir.includes('left') ? 16 : 48;
+
+    // Dibujar el Báculo Mágico de Madera (Staff)
+    graphics.fillStyle(0x78350f, 1); // Madera mística
+    graphics.fillRect(staffX, 10, 4, 72);
+    // Cabeza del báculo de madera torcida
+    graphics.fillCircle(staffX + 2, 12, 5);
+    // Gema Mística Flotante Radiante en la cima del báculo
+    graphics.fillStyle(0x38bdf8, 1); // Orbe arcano cian radiante
+    graphics.fillCircle(staffX + 2, 8, 4.5);
+    graphics.fillStyle(0xffffff, 1); // Destello de energía
+    graphics.fillCircle(staffX + 1, 6.5, 1.8);
+
+    // Mangas de Campana de Mago (outfitHex)
+    if (isSide) {
+      const armX = 32;
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 18, leftArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 19, leftArmAngle, skinHex);
+    } else {
+      // Manga Izquierda
+      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 18, leftArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 14, 19, leftArmAngle, skinHex);
+
+      // Manga Derecha (Sosteniendo el Báculo)
+      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 7, 0, 18, rightArmAngle, outfitHex);
+      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 14, 19, rightArmAngle, skinHex);
+    }
+
+    // 5. Cabeza Humana de Mago Sabio
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillEllipse(32, 17, 18, 20);
+
+    // Orejas de Mago Sabio (Visibles en frontal y posterior)
+    if (isFrontOrBack) {
+      graphics.fillCircle(22.5, 18, 1.8);
+      graphics.fillCircle(41.5, 18, 1.8);
+    }
+
+    // Rostro de Anciano Sabio: Cejas Pobladas y Ojos Místicos
+    if (dir === 'down' || dir.includes('down')) {
+      // Cejas ancianas pobladas canosas
+      graphics.fillStyle(0xe2e8f0, 1);
+      graphics.fillRect(24, 14, 5, 2.2); graphics.fillRect(35, 14, 5, 2.2);
+      // Ojos arcanos
+      graphics.fillStyle(0x0f172a, 1);
+      graphics.fillRect(26, 17, 3, 3); graphics.fillRect(35, 17, 3, 3);
+      graphics.fillStyle(0x38bdf8, 1); // Brillo arcano en ojos
+      graphics.fillRect(27, 17, 1.5, 1.5); graphics.fillRect(36, 17, 1.5, 1.5);
+    }
+
+    // 6. Cabello Canoso Largo y Larga Barba Fluida de Anciano Sabio (Wise Old Beard)
+    const beardColor = isFemale ? hairHex : 0xf8fafc; // Barba blanca/canosa para el mago viejo
+
+    if (!isFemale) {
+      if (dir === 'down' || dir.includes('down')) {
+        // FRONTAL: Larga Barba Fluida de Mago Sabio cayendo sobre el pecho
+        graphics.fillStyle(beardColor, 1);
+        graphics.beginPath();
+        graphics.moveTo(23, 20);
+        graphics.quadraticCurveTo(20, 32, 27, 44); // Punta de la barba blanca
+        graphics.lineTo(32, 47);
+        graphics.lineTo(37, 44);
+        graphics.quadraticCurveTo(44, 32, 41, 20);
+        graphics.closePath();
+        graphics.fillPath();
+
+        // Bigote del Mago
+        graphics.fillStyle(0xe2e8f0, 1);
+        graphics.fillRect(25, 20, 14, 3);
+      }
+    }
+
+    // Sombrero Puntiagudo de Mago / Capucha de Archimago (Wizard Hat)
+    graphics.fillStyle(0x1e1b4b, 1); // Azul noche místico
+
+    if (dir === 'down' || dir.includes('down')) {
+      // Ala ancha del sombrero de mago
+      graphics.fillEllipse(32, 13, 28, 7);
+      // Cono/Cúpula del sombrero puntiagudo
+      graphics.beginPath();
+      graphics.moveTo(22, 13);
+      graphics.lineTo(32, -3); // Punta del sombrero de archimago elevándose
+      graphics.lineTo(42, 13);
+      graphics.closePath();
+      graphics.fillPath();
+      // Cinta dorada del sombrero
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(24, 11, 16, 3);
+    } else if (dir === 'up' || dir.includes('up')) {
+      // Vista posterior del sombrero de mago y melena canosa posterior
+      graphics.fillStyle(beardColor, 1);
+      graphics.fillRect(24, 18, 16, 16); // Cabello largo por detrás
+
+      graphics.fillStyle(0x1e1b4b, 1);
+      graphics.fillEllipse(32, 13, 28, 7);
+      graphics.beginPath();
+      graphics.moveTo(22, 13);
+      graphics.lineTo(32, -3);
+      graphics.lineTo(42, 13);
+      graphics.closePath();
+      graphics.fillPath();
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(24, 11, 16, 3);
+    } else {
+      // Vistas laterales/diagonales del sombrero de mago
+      const hatPeakX = isLeft ? 26 : 38;
+      graphics.fillEllipse(32, 13, 26, 7);
+      graphics.beginPath();
+      graphics.moveTo(22, 13);
+      graphics.lineTo(hatPeakX, -3);
+      graphics.lineTo(42, 13);
+      graphics.closePath();
+      graphics.fillPath();
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(24, 11, 16, 3);
+
+      if (!isFemale) {
+        // Perfil de la barba sabio
+        graphics.fillStyle(beardColor, 1);
+        graphics.beginPath();
+        graphics.moveTo(isLeft ? 22 : 32, 20);
+        graphics.lineTo(isLeft ? 18 : 38, 38);
+        graphics.lineTo(isLeft ? 30 : 42, 38);
+        graphics.lineTo(isLeft ? 34 : 42, 20);
+        graphics.closePath();
+        graphics.fillPath();
+      }
     }
   }
 

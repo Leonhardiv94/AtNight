@@ -1638,45 +1638,70 @@ export class GameScene extends Phaser.Scene {
     graphics.fillStyle(skinHex, 1);
     graphics.fillRect(29, 20, 6, 8);
 
-    // 4. Mangas Anchas de Campana y Brazo Sosteniendo Firmemente el Báculo Mágico
+    // 4. Mangas Anchas de Campana, Brazo y Báculo Mágico en Perspectiva 3D
     const shoulderY = 27;
-    const isLeftArmStaff = dir.includes('left');
-    const staffX = isLeftArmStaff ? 18 : 44;
+    const isBackView = dir === 'up' || dir.includes('up');
+    const isFrontView = dir === 'down' || dir.includes('down');
+
+    // La Mano Derecha del Mago sostiene el Báculo:
+    // En vista frontal -> Pantalla Derecha (staffX = 46)
+    // En vista posterior (Espalda gira 180°) -> Pantalla Izquierda (staffX = 18)
+    // En vista lateral -> Según el lado activo (staffX = isLeft ? 18 : 46)
+    const staffX = isBackView ? (isLeft ? 46 : 18) : (isLeft ? 18 : 46);
     const handY = 42;
 
-    // 1. Dibujar el Báculo Mágico de Madera (Staff)
-    graphics.fillStyle(0x78350f, 1); // Madera mística
-    graphics.fillRect(staffX, 10, 4, 72);
-    // Cabeza del báculo de madera torcida
-    graphics.fillCircle(staffX + 2, 12, 5);
-    // Gema Mística Flotante Radiante en la cima del báculo
-    graphics.fillStyle(0x38bdf8, 1); // Orbe arcano cian radiante
-    graphics.fillCircle(staffX + 2, 8, 4.5);
-    graphics.fillStyle(0xffffff, 1); // Destello de energía
-    graphics.fillCircle(staffX + 1, 6.5, 1.8);
+    if (isFrontView) {
+      // VISTA FRONTAL: El báculo pasa POR DETRÁS del brazo y la mano se dibuja por delante
+      // 1. Báculo al fondo
+      this.drawWizardStaffAsset(graphics, staffX);
 
-    // 2. Dibujar Mangas de Campana y Brazos de Mago (outfitHex)
-    if (isSide) {
-      const armX = 32;
-      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
-      this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
+      // 2. Mangas y Brazos por delante del báculo
+      if (isPureSide) {
+        const armX = 32;
+        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
+      } else {
+        this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);
+
+        this.drawRotatedLimbSegment(graphics, 46, shoulderY, 7, 0, 16, rightArmAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 12, 16, rightArmAngle, skinHex);
+      }
+
+      // 3. Mano cerrada sujetando el báculo en el frente
+      graphics.fillStyle(0x78350f, 1);
+      graphics.fillRect(staffX - 2, handY - 4, 8, 3);
+      graphics.fillStyle(skinHex, 1);
+      graphics.fillRect(staffX - 2, handY - 1, 8, 7);
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(staffX - 2, handY - 3, 8, 2);
+
     } else {
-      // Manga Izquierda
-      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
-      this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);
+      // VISTA POSTERIOR / LATERAL: El brazo se dibuja PRIMERO y el báculo en la capa exterior
+      // 1. Mangas y Brazos primero por detrás
+      if (isPureSide) {
+        const armX = 32;
+        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, armX, shoulderY, 5, 14, 18, leftArmAngle, skinHex);
+      } else {
+        this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);
 
-      // Manga Derecha
-      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 7, 0, 16, rightArmAngle, outfitHex);
-      this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 12, 16, rightArmAngle, skinHex);
+        this.drawRotatedLimbSegment(graphics, 46, shoulderY, 7, 0, 16, rightArmAngle, outfitHex);
+        this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 12, 16, rightArmAngle, skinHex);
+      }
+
+      // 2. Báculo por delante de la capa del brazo en la vista trasera/exterior
+      this.drawWizardStaffAsset(graphics, staffX);
+
+      // 3. Agarre de la mano en el báculo
+      graphics.fillStyle(0x78350f, 1);
+      graphics.fillRect(staffX - 2, handY - 4, 8, 3);
+      graphics.fillStyle(skinHex, 1);
+      graphics.fillRect(staffX - 2, handY - 1, 8, 7);
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(staffX - 2, handY - 3, 8, 2);
     }
-
-    // 3. Dibujar Mano de Mago Empuñando y Cerrada SOBRE el Báculo (Evita que flote)
-    graphics.fillStyle(0x78350f, 1); // Puño / Guantelete místico
-    graphics.fillRect(staffX - 2, handY - 4, 8, 3);
-    graphics.fillStyle(skinHex, 1); // Mano agarrando el astil de madera
-    graphics.fillRect(staffX - 2, handY - 1, 8, 7);
-    graphics.fillStyle(0xfbbf24, 1); // Anillo / Pulsera dorada de mago
-    graphics.fillRect(staffX - 2, handY - 3, 8, 2);
 
     // 5. Cabeza Humana de Mago Sabio
     graphics.fillStyle(skinHex, 1);
@@ -1780,6 +1805,19 @@ export class GameScene extends Phaser.Scene {
         graphics.fillPath();
       }
     }
+  }
+
+  // Helper para renderizar el Báculo Mágico de Mago (Staff + Orbe Radiante)
+  private drawWizardStaffAsset(graphics: Phaser.GameObjects.Graphics, staffX: number) {
+    graphics.fillStyle(0x78350f, 1); // Madera mística
+    graphics.fillRect(staffX, 10, 4, 72);
+    // Cabeza del báculo de madera torcida
+    graphics.fillCircle(staffX + 2, 12, 5);
+    // Gema Mística Flotante Radiante en la cima del báculo
+    graphics.fillStyle(0x38bdf8, 1); // Orbe arcano cian radiante
+    graphics.fillCircle(staffX + 2, 8, 4.5);
+    graphics.fillStyle(0xffffff, 1); // Destello de energía
+    graphics.fillCircle(staffX + 1, 6.5, 1.8);
   }
 
   // Helper para renderizar el Carcaj de Flechas Elfo y Tirante Cruzado (Frontal o Invertido en Espalda)

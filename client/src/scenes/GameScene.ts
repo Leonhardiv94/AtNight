@@ -1660,11 +1660,21 @@ export class GameScene extends Phaser.Scene {
     if (isFrontView) {
       // VISTA FRONTAL / FRONTAL-DIAGONAL
       if (isPureSide) {
-        // PERFIL PURO DE FRENTE/LADO: Brazo en diagonal desde el hombro (32, 27) hasta el báculo en (20/44)
-        // El otro brazo está oculto tras el cuerpo y NO se dibuja
-        const armAngle = isLeft ? -0.65 : 0.65;
-        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 7, 0, 16, armAngle, outfitHex);
-        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 5, 12, 16, armAngle, skinHex);
+        if (isLeft) {
+          // CAMINANDO A LA IZQUIERDA: Manga orientada en diagonal hacia adelante alcanzando el báculo en x=20
+          graphics.fillStyle(outfitHex, 1);
+          graphics.beginPath();
+          graphics.moveTo(32, 27);
+          graphics.lineTo(36, 29);
+          graphics.lineTo(23, 42);
+          graphics.lineTo(19, 39);
+          graphics.closePath();
+          graphics.fillPath();
+        } else {
+          // CAMINANDO A LA DERECHA: Manga orientada recto hacia abajo (vertical)
+          graphics.fillStyle(outfitHex, 1);
+          graphics.fillRect(38, 27, 7, 15);
+        }
       } else {
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);
@@ -1691,10 +1701,21 @@ export class GameScene extends Phaser.Scene {
 
       // 2. Mangas y Brazo en la capa frontal superior tapando el báculo por detrás
       if (isPureSide) {
-        // PERFIL PURO LATERAL: Un solo brazo diagonal desde el hombro (32, 27) hasta el báculo
-        const armAngle = isLeft ? -0.65 : 0.65;
-        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 7, 0, 16, armAngle, outfitHex);
-        this.drawRotatedLimbSegment(graphics, 32, shoulderY, 5, 12, 16, armAngle, skinHex);
+        if (isLeft) {
+          // CAMINANDO A LA IZQUIERDA: Manga orientada en diagonal hacia adelante alcanzando el báculo en x=20
+          graphics.fillStyle(outfitHex, 1);
+          graphics.beginPath();
+          graphics.moveTo(32, 27);
+          graphics.lineTo(36, 29);
+          graphics.lineTo(23, 42);
+          graphics.lineTo(19, 39);
+          graphics.closePath();
+          graphics.fillPath();
+        } else {
+          // CAMINANDO A LA DERECHA: Manga orientada recto hacia abajo (vertical)
+          graphics.fillStyle(outfitHex, 1);
+          graphics.fillRect(38, 27, 7, 15);
+        }
       } else {
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
         this.drawRotatedLimbSegment(graphics, 18, shoulderY, 5, 12, 16, leftArmAngle, skinHex);

@@ -1550,9 +1550,11 @@ export class GameScene extends Phaser.Scene {
       graphics.fillStyle(outfitHex, 1);
       graphics.beginPath();
       graphics.moveTo(24, 27);
-      graphics.quadraticCurveTo(22 + robeSway, 50, 23 + robeSway, 75);
+      graphics.lineTo(22 + robeSway, 50);
+      graphics.lineTo(23 + robeSway, 75);
       graphics.lineTo(41 + robeSway, 75);
-      graphics.quadraticCurveTo(42 + robeSway, 50, 40, 27);
+      graphics.lineTo(42 + robeSway, 50);
+      graphics.lineTo(40, 27);
       graphics.closePath();
       graphics.fillPath();
 
@@ -1569,9 +1571,11 @@ export class GameScene extends Phaser.Scene {
       graphics.fillStyle(outfitHex, 1);
       graphics.beginPath();
       graphics.moveTo(21.5, 27);
-      graphics.quadraticCurveTo(19.5 + robeSway, 50, 20.5 + robeSway, 75);
+      graphics.lineTo(19.5 + robeSway, 50);
+      graphics.lineTo(20.5 + robeSway, 75);
       graphics.lineTo(43.5 + robeSway, 75);
-      graphics.quadraticCurveTo(44.5 + robeSway, 50, 42.5, 27);
+      graphics.lineTo(44.5 + robeSway, 50);
+      graphics.lineTo(42.5, 27);
       graphics.closePath();
       graphics.fillPath();
 
@@ -1588,9 +1592,11 @@ export class GameScene extends Phaser.Scene {
       graphics.fillStyle(outfitHex, 1);
       graphics.beginPath();
       graphics.moveTo(20, 27);
-      graphics.quadraticCurveTo(17 + robeSway, 50, 18 + robeSway, 75);
+      graphics.lineTo(17 + robeSway, 50);
+      graphics.lineTo(18 + robeSway, 75);
       graphics.lineTo(46 + robeSway, 75);
-      graphics.quadraticCurveTo(47 + robeSway, 50, 44, 27);
+      graphics.lineTo(47 + robeSway, 50);
+      graphics.lineTo(44, 27);
       graphics.closePath();
       graphics.fillPath();
 
@@ -1693,10 +1699,12 @@ export class GameScene extends Phaser.Scene {
         graphics.fillStyle(beardColor, 1);
         graphics.beginPath();
         graphics.moveTo(23, 20);
-        graphics.quadraticCurveTo(20, 32, 27, 44); // Punta de la barba blanca
+        graphics.lineTo(20, 32);
+        graphics.lineTo(27, 44);
         graphics.lineTo(32, 47);
         graphics.lineTo(37, 44);
-        graphics.quadraticCurveTo(44, 32, 41, 20);
+        graphics.lineTo(44, 32);
+        graphics.lineTo(41, 20);
         graphics.closePath();
         graphics.fillPath();
 

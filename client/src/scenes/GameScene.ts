@@ -1651,11 +1651,8 @@ export class GameScene extends Phaser.Scene {
     const handY = 42;
 
     if (isFrontView) {
-      // VISTA FRONTAL: El báculo pasa POR DETRÁS del brazo y la mano se dibuja por delante
-      // 1. Báculo al fondo
-      this.drawWizardStaffAsset(graphics, staffX);
-
-      // 2. Mangas y Brazos por delante del báculo
+      // VISTA FRONTAL: El báculo se dibuja POR DELANTE del brazo y del cuerpo
+      // 1. Mangas y Brazos al fondo
       if (isPureSide) {
         const armX = 32;
         this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
@@ -1668,7 +1665,10 @@ export class GameScene extends Phaser.Scene {
         this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 12, 16, rightArmAngle, skinHex);
       }
 
-      // 3. Mano cerrada sujetando el báculo en el frente
+      // 2. Báculo por DELANTE del brazo y cuerpo
+      this.drawWizardStaffAsset(graphics, staffX);
+
+      // 3. Mano empuñando el báculo en el frente
       graphics.fillStyle(0x78350f, 1);
       graphics.fillRect(staffX - 2, handY - 4, 8, 3);
       graphics.fillStyle(skinHex, 1);
@@ -1677,8 +1677,11 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(staffX - 2, handY - 3, 8, 2);
 
     } else {
-      // VISTA POSTERIOR / LATERAL: El brazo se dibuja PRIMERO y el báculo en la capa exterior
-      // 1. Mangas y Brazos primero por detrás
+      // VISTA POSTERIOR: El báculo pasa POR DETRÁS del brazo y del cuerpo (al fondo)
+      // 1. Báculo al fondo por detrás de la túnica/brazo
+      this.drawWizardStaffAsset(graphics, staffX);
+
+      // 2. Mangas y Brazo en la capa frontal superior tapando el báculo por detrás
       if (isPureSide) {
         const armX = 32;
         this.drawRotatedLimbSegment(graphics, armX, shoulderY, 7, 0, 16, leftArmAngle, outfitHex);
@@ -1691,10 +1694,7 @@ export class GameScene extends Phaser.Scene {
         this.drawRotatedLimbSegment(graphics, 46, shoulderY, 5, 12, 16, rightArmAngle, skinHex);
       }
 
-      // 2. Báculo por delante de la capa del brazo en la vista trasera/exterior
-      this.drawWizardStaffAsset(graphics, staffX);
-
-      // 3. Agarre de la mano en el báculo
+      // 3. Detalle de sujeción posterior
       graphics.fillStyle(0x78350f, 1);
       graphics.fillRect(staffX - 2, handY - 4, 8, 3);
       graphics.fillStyle(skinHex, 1);

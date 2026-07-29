@@ -3415,14 +3415,18 @@
           ctx.fillRect(px + 13.5, py - 5.5, 5, 1.5);
 
           if (!isFemale) {
-            // Barba Sabia Corta Elegante (Menos barbón)
+            // Barba Sabia Masculina Distinguida (Mediana)
             ctx.fillStyle = '#f8fafc';
             ctx.beginPath();
-            ctx.moveTo(px - 7, py - 32);
-            ctx.quadraticCurveTo(px - 10, py - 22, px, py - 14);
-            ctx.quadraticCurveTo(px + 10, py - 22, px + 7, py - 32);
+            ctx.moveTo(px - 8, py - 32);
+            ctx.quadraticCurveTo(px - 12, py - 16, px, py - 3);
+            ctx.quadraticCurveTo(px + 12, py - 16, px + 8, py - 32);
             ctx.closePath();
             ctx.fill();
+
+            // Bigote masculino bien poblado
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillRect(px - 7, py - 32, 14, 3);
 
             // Largo Cabello Blanco Fluido de Mago Sabio (Sin Sombrero)
             ctx.fillStyle = '#f8fafc';

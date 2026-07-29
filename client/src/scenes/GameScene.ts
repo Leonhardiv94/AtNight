@@ -1760,22 +1760,22 @@ export class GameScene extends Phaser.Scene {
 
     if (!isFemale) {
       if (dir === 'down' || dir.includes('down')) {
-        // FRONTAL: Barba Sabia Corta y Pulida (Menos barbón)
+        // FRONTAL: Barba Sabia Masculina Distinguida (Mediana)
         graphics.fillStyle(beardColor, 1);
         graphics.beginPath();
-        graphics.moveTo(25, 20);
-        graphics.lineTo(23, 25);
-        graphics.lineTo(28, 30);
-        graphics.lineTo(32, 32); // Punta pulida bajo la barbilla
-        graphics.lineTo(36, 30);
-        graphics.lineTo(41, 25);
-        graphics.lineTo(39, 20);
+        graphics.moveTo(24, 20);
+        graphics.lineTo(21, 28);
+        graphics.lineTo(26, 36);
+        graphics.lineTo(32, 39); // Punta masculina bien definida
+        graphics.lineTo(38, 36);
+        graphics.lineTo(43, 28);
+        graphics.lineTo(40, 20);
         graphics.closePath();
         graphics.fillPath();
 
-        // Bigote pulido
+        // Bigote masculino bien poblado
         graphics.fillStyle(0xe2e8f0, 1);
-        graphics.fillRect(26, 20, 12, 2.5);
+        graphics.fillRect(25, 20, 14, 3);
       }
     }
 
@@ -1798,13 +1798,13 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(isLeft ? 28 : 20, 13, 12, 22);
 
       if (!isFemale) {
-        // Perfil de la barba corta sabia
+        // Perfil de la barba masculina media
         graphics.fillStyle(beardColor, 1);
         graphics.beginPath();
-        graphics.moveTo(isLeft ? 24 : 32, 20);
-        graphics.lineTo(isLeft ? 20 : 38, 28);
-        graphics.lineTo(isLeft ? 28 : 36, 28);
-        graphics.lineTo(isLeft ? 32 : 40, 20);
+        graphics.moveTo(isLeft ? 23 : 32, 20);
+        graphics.lineTo(isLeft ? 19 : 38, 33);
+        graphics.lineTo(isLeft ? 29 : 37, 33);
+        graphics.lineTo(isLeft ? 33 : 41, 20);
         graphics.closePath();
         graphics.fillPath();
       }

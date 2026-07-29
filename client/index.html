@@ -3428,13 +3428,21 @@
             ctx.fillStyle = '#e2e8f0';
             ctx.fillRect(px - 7, py - 32, 14, 3);
 
-            // Largo Cabello Blanco Fluido de Mago Sabio (Sin Sombrero)
+            // Largo Cabello Blanco Fluido de Mago Sabio
             ctx.fillStyle = '#f8fafc';
             ctx.beginPath();
             ctx.arc(px, py - 40, 14, Math.PI, Math.PI * 2);
             ctx.fill();
             ctx.fillRect(px - 14, py - 40, 4, 22);
             ctx.fillRect(px + 10, py - 40, 4, 22);
+          } else {
+            // Largo Cabello Místico de Maga Femenina
+            ctx.fillStyle = hairColor;
+            ctx.beginPath();
+            ctx.arc(px, py - 40, 14, Math.PI, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(px - 15, py - 40, 5, 26);
+            ctx.fillRect(px + 10, py - 40, 5, 26);
           }
         } else if (clsId === 'amigo_sol') {
           ctx.fillStyle = '#fbbf24';

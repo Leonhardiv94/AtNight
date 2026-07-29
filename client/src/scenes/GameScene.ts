@@ -1733,30 +1733,42 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(staffX - 0.5, handY - 2, 5, 1.5);
     }
 
-    // 5. Cabeza Humana de Mago Sabio
+    // 5. Cabeza Humana de Mago/Maga
     graphics.fillStyle(skinHex, 1);
-    graphics.fillEllipse(32, 17, 18, 20);
+    // Rostro más fino de 15px para la Maga Femenina, 18px para el Mago Masculino
+    graphics.fillEllipse(32, 17, isFemale ? 15 : 18, 19);
 
-    // Orejas de Mago Sabio (Visibles en frontal y posterior)
+    // Orejas Sabias (Visibles en frontal y posterior)
     if (isFrontOrBack) {
-      graphics.fillCircle(22.5, 18, 1.8);
-      graphics.fillCircle(41.5, 18, 1.8);
+      graphics.fillCircle(isFemale ? 23.5 : 22.5, 18, 1.6);
+      graphics.fillCircle(isFemale ? 40.5 : 41.5, 18, 1.6);
     }
 
-    // Rostro de Anciano Sabio: Cejas Pobladas y Ojos Místicos
+    // Rostro: Cejas y Ojos Místicos (Arqueados y finos para la maga femenina)
     if (dir === 'down' || dir.includes('down')) {
-      // Cejas ancianas pobladas canosas
-      graphics.fillStyle(0xe2e8f0, 1);
-      graphics.fillRect(24, 14, 5, 2.2); graphics.fillRect(35, 14, 5, 2.2);
-      // Ojos arcanos
-      graphics.fillStyle(0x0f172a, 1);
-      graphics.fillRect(26, 17, 3, 3); graphics.fillRect(35, 17, 3, 3);
-      graphics.fillStyle(0x38bdf8, 1); // Brillo arcano en ojos
-      graphics.fillRect(27, 17, 1.5, 1.5); graphics.fillRect(36, 17, 1.5, 1.5);
+      if (isFemale) {
+        // Cejas finas estilizadas femeninas
+        graphics.fillStyle(hairHex, 1);
+        graphics.fillRect(25, 14, 4, 1.5); graphics.fillRect(34, 14, 4, 1.5);
+        // Ojos arcanos femeninos expresivos
+        graphics.fillStyle(0x0f172a, 1);
+        graphics.fillRect(26, 17, 3, 3); graphics.fillRect(34, 17, 3, 3);
+        graphics.fillStyle(0x38bdf8, 1); // Brillo arcano azul
+        graphics.fillRect(26.5, 17, 1.5, 1.5); graphics.fillRect(34.5, 17, 1.5, 1.5);
+      } else {
+        // Cejas ancianas pobladas canosas
+        graphics.fillStyle(0xe2e8f0, 1);
+        graphics.fillRect(24, 14, 5, 2.2); graphics.fillRect(35, 14, 5, 2.2);
+        // Ojos arcanos masculinos
+        graphics.fillStyle(0x0f172a, 1);
+        graphics.fillRect(26, 17, 3, 3); graphics.fillRect(35, 17, 3, 3);
+        graphics.fillStyle(0x38bdf8, 1); // Brillo arcano en ojos
+        graphics.fillRect(27, 17, 1.5, 1.5); graphics.fillRect(36, 17, 1.5, 1.5);
+      }
     }
 
-    // 6. Cabello Canoso Largo y Larga Barba Fluida de Anciano Sabio (Wise Old Beard)
-    const beardColor = isFemale ? hairHex : 0xf8fafc; // Barba blanca/canosa para el mago viejo
+    // 6. Cabello y Barba (Barba SOLO para el Mago Masculino)
+    const beardColor = 0xf8fafc; // Barba blanca para el mago viejo
 
     if (!isFemale) {
       if (dir === 'down' || dir.includes('down')) {
@@ -1779,19 +1791,19 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // 7. Largo Cabello Blanco Fluido de Archimago Sabio (Sin Sombrero)
+    // 7. Largo Cabello Místico (Blanco sabio para el mago masculino, hairHex para la maga femenina)
     const hairColor = isFemale ? hairHex : 0xf8fafc;
     graphics.fillStyle(hairColor, 1);
 
     if (dir === 'down' || dir.includes('down')) {
-      // FRONTAL: Melena superior sabia y cabello largo blanco cayendo a los lados de los hombros
-      graphics.fillEllipse(32, 11, 20, 10); // Cúpula del cabello superior sabio
-      graphics.fillRect(20, 13, 5, 20);     // Caída de cabello largo por hombro izquierdo
-      graphics.fillRect(39, 13, 5, 20);     // Caída de cabello largo por hombro derecho
+      // FRONTAL: Melena superior y cabello largo cayendo a los lados de los hombros
+      graphics.fillEllipse(32, 11, 20, 10);
+      graphics.fillRect(19, 13, 5, isFemale ? 24 : 20);
+      graphics.fillRect(39, 13, 5, isFemale ? 24 : 20);
     } else if (dir === 'up' || dir.includes('up')) {
       // POSTERIOR / ESPALDA: Cabello largo completo cayendo por la espalda sobre la túnica
       graphics.fillEllipse(32, 11, 22, 10);
-      graphics.fillRect(21, 13, 22, 24);    // Manto de cabello blanco sobre la espalda
+      graphics.fillRect(20, 13, 24, isFemale ? 26 : 24);
     } else {
       // PERFIL LATERAL: Cabello largo cayendo por la parte posterior de la cabeza sobre la espalda
       graphics.fillEllipse(32, 11, 20, 10);

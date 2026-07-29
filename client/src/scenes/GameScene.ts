@@ -1760,22 +1760,22 @@ export class GameScene extends Phaser.Scene {
 
     if (!isFemale) {
       if (dir === 'down' || dir.includes('down')) {
-        // FRONTAL: Larga Barba Fluida de Mago Sabio cayendo sobre el pecho
+        // FRONTAL: Barba Sabia Corta y Pulida (Menos barbón)
         graphics.fillStyle(beardColor, 1);
         graphics.beginPath();
-        graphics.moveTo(23, 20);
-        graphics.lineTo(20, 32);
-        graphics.lineTo(27, 44);
-        graphics.lineTo(32, 47);
-        graphics.lineTo(37, 44);
-        graphics.lineTo(44, 32);
-        graphics.lineTo(41, 20);
+        graphics.moveTo(25, 20);
+        graphics.lineTo(23, 25);
+        graphics.lineTo(28, 30);
+        graphics.lineTo(32, 32); // Punta pulida bajo la barbilla
+        graphics.lineTo(36, 30);
+        graphics.lineTo(41, 25);
+        graphics.lineTo(39, 20);
         graphics.closePath();
         graphics.fillPath();
 
-        // Bigote del Mago
+        // Bigote pulido
         graphics.fillStyle(0xe2e8f0, 1);
-        graphics.fillRect(25, 20, 14, 3);
+        graphics.fillRect(26, 20, 12, 2.5);
       }
     }
 
@@ -1798,13 +1798,13 @@ export class GameScene extends Phaser.Scene {
       graphics.fillRect(isLeft ? 28 : 20, 13, 12, 22);
 
       if (!isFemale) {
-        // Perfil de la barba sabio
+        // Perfil de la barba corta sabia
         graphics.fillStyle(beardColor, 1);
         graphics.beginPath();
-        graphics.moveTo(isLeft ? 22 : 32, 20);
-        graphics.lineTo(isLeft ? 18 : 38, 38);
-        graphics.lineTo(isLeft ? 30 : 42, 38);
-        graphics.lineTo(isLeft ? 34 : 42, 20);
+        graphics.moveTo(isLeft ? 24 : 32, 20);
+        graphics.lineTo(isLeft ? 20 : 38, 28);
+        graphics.lineTo(isLeft ? 28 : 36, 28);
+        graphics.lineTo(isLeft ? 32 : 40, 20);
         graphics.closePath();
         graphics.fillPath();
       }

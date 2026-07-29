@@ -2962,6 +2962,16 @@
         const classObj = CHARACTER_CLASSES.find(cl => cl.id === c.characterClass) || CHARACTER_CLASSES[0];
         const genderIcon = c.gender === 'femenino' ? '♀' : '♂';
         const outfitHex = c.outfitColor || '#0284c7';
+
+        let classNameText = classObj.name;
+        if (c.characterClass === 'mago') {
+          classNameText = c.gender === 'femenino' ? '🔮 MAGA' : '🔮 MAGO';
+        } else if (c.characterClass === 'espadachin') {
+          classNameText = c.gender === 'femenino' ? '⚔️ ESPADACHINA' : '⚔️ ESPADACHÍN';
+        } else if (c.characterClass === 'arquero') {
+          classNameText = c.gender === 'femenino' ? '🏹 ARQUERA' : '🏹 ARQUERO';
+        }
+
         const card = document.createElement('div');
         card.className = 'char-card';
         card.style.display = 'flex';
@@ -2973,7 +2983,7 @@
             <div style="width: 22px; height: 22px; min-width: 22px; border-radius: 50%; background: ${outfitHex}; border: 2px solid #ffffff; box-shadow: 0 0 10px ${outfitHex};" title="Color de Atuendo: ${outfitHex}"></div>
             <div style="white-space: nowrap;">
               <div style="font-weight: 800; font-size: 1rem; color: #ffffff;">${c.characterName} <span style="font-size: 0.8rem; color: #fbbf24;">(${genderIcon})</span></div>
-              <div style="font-size: 0.78rem; color: #94a3b8; white-space: nowrap;">${classObj.name} | Nivel ${c.level || 1}</div>
+              <div style="font-size: 0.78rem; color: #94a3b8; white-space: nowrap;">${classNameText} | Nivel ${c.level || 1}</div>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
@@ -3047,6 +3057,7 @@
       currentGender = gender;
       document.getElementById('gender-btn-masculino').classList.toggle('active', gender === 'masculino');
       document.getElementById('gender-btn-femenino').classList.toggle('active', gender === 'femenino');
+      updateClassUI();
       updateCharPreview();
     }
 
@@ -3058,8 +3069,37 @@
 
     function updateClassUI() {
       const cls = CHARACTER_CLASSES[currentClassIndex];
-      document.getElementById('class-title-text').innerText = cls.name;
-      document.getElementById('class-desc-text').innerText = cls.desc;
+      let title = cls.name;
+      let desc = cls.desc;
+
+      if (cls.id === 'mago') {
+        if (currentGender === 'femenino') {
+          title = '🔮 MAGA (FEMENINO)';
+          desc = 'Hechicera esbelta de las artes místicas y tormentas arcanas';
+        } else {
+          title = '🔮 MAGO (MASCULINO)';
+          desc = 'Sabio anciano de las artes místicas y hechizos de zona';
+        }
+      } else if (cls.id === 'espadachin') {
+        if (currentGender === 'femenino') {
+          title = '⚔️ ESPADACHINA (FEMENINO)';
+          desc = 'Guerrera táctica resistente de combate cuerpo a cuerpo';
+        } else {
+          title = '⚔️ ESPADACHÍN (MASCULINO)';
+          desc = 'Guerrero robusto musculoso de combate cuerpo a cuerpo';
+        }
+      } else if (cls.id === 'arquero') {
+        if (currentGender === 'femenino') {
+          title = '🏹 ARQUERA (FEMENINO)';
+          desc = 'Cazadora elfa ágil con gran alcance y precisión';
+        } else {
+          title = '🏹 ARQUERO (MASCULINO)';
+          desc = 'Tirador elfo ágil con túnica y armadura completa';
+        }
+      }
+
+      document.getElementById('class-title-text').innerText = title;
+      document.getElementById('class-desc-text').innerText = desc;
     }
 
     async function handleCreateCharacterSubmit() {

@@ -3424,19 +3424,13 @@
             ctx.closePath();
             ctx.fill();
 
-            // Sombrero Puntiagudo de Mago Archimago
-            ctx.fillStyle = '#1e1b4b';
+            // Largo Cabello Blanco Fluido de Mago Sabio (Sin Sombrero)
+            ctx.fillStyle = '#f8fafc';
             ctx.beginPath();
-            ctx.ellipse(px, py - 46, 18, 5, 0, 0, Math.PI * 2);
+            ctx.arc(px, py - 40, 14, Math.PI, Math.PI * 2);
             ctx.fill();
-            ctx.beginPath();
-            ctx.moveTo(px - 12, py - 46);
-            ctx.lineTo(px, py - 68);
-            ctx.lineTo(px + 12, py - 46);
-            ctx.closePath();
-            ctx.fill();
-            ctx.fillStyle = '#fbbf24';
-            ctx.fillRect(px - 10, py - 48, 20, 3);
+            ctx.fillRect(px - 14, py - 40, 4, 22);
+            ctx.fillRect(px + 10, py - 40, 4, 22);
           }
         } else if (clsId === 'amigo_sol') {
           ctx.fillStyle = '#fbbf24';

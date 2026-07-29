@@ -1779,49 +1779,23 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Sombrero Puntiagudo de Mago / Capucha de Archimago (Wizard Hat)
-    graphics.fillStyle(0x1e1b4b, 1); // Azul noche místico
+    // 7. Largo Cabello Blanco Fluido de Archimago Sabio (Sin Sombrero)
+    const hairColor = isFemale ? hairHex : 0xf8fafc;
+    graphics.fillStyle(hairColor, 1);
 
     if (dir === 'down' || dir.includes('down')) {
-      // Ala ancha del sombrero de mago
-      graphics.fillEllipse(32, 13, 28, 7);
-      // Cono/Cúpula del sombrero puntiagudo
-      graphics.beginPath();
-      graphics.moveTo(22, 13);
-      graphics.lineTo(32, -3); // Punta del sombrero de archimago elevándose
-      graphics.lineTo(42, 13);
-      graphics.closePath();
-      graphics.fillPath();
-      // Cinta dorada del sombrero
-      graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(24, 11, 16, 3);
+      // FRONTAL: Melena superior sabia y cabello largo blanco cayendo a los lados de los hombros
+      graphics.fillEllipse(32, 11, 20, 10); // Cúpula del cabello superior sabio
+      graphics.fillRect(20, 13, 5, 20);     // Caída de cabello largo por hombro izquierdo
+      graphics.fillRect(39, 13, 5, 20);     // Caída de cabello largo por hombro derecho
     } else if (dir === 'up' || dir.includes('up')) {
-      // Vista posterior del sombrero de mago y melena canosa posterior
-      graphics.fillStyle(beardColor, 1);
-      graphics.fillRect(24, 18, 16, 16); // Cabello largo por detrás
-
-      graphics.fillStyle(0x1e1b4b, 1);
-      graphics.fillEllipse(32, 13, 28, 7);
-      graphics.beginPath();
-      graphics.moveTo(22, 13);
-      graphics.lineTo(32, -3);
-      graphics.lineTo(42, 13);
-      graphics.closePath();
-      graphics.fillPath();
-      graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(24, 11, 16, 3);
+      // POSTERIOR / ESPALDA: Cabello largo completo cayendo por la espalda sobre la túnica
+      graphics.fillEllipse(32, 11, 22, 10);
+      graphics.fillRect(21, 13, 22, 24);    // Manto de cabello blanco sobre la espalda
     } else {
-      // Vistas laterales/diagonales del sombrero de mago
-      const hatPeakX = isLeft ? 26 : 38;
-      graphics.fillEllipse(32, 13, 26, 7);
-      graphics.beginPath();
-      graphics.moveTo(22, 13);
-      graphics.lineTo(hatPeakX, -3);
-      graphics.lineTo(42, 13);
-      graphics.closePath();
-      graphics.fillPath();
-      graphics.fillStyle(0xfbbf24, 1);
-      graphics.fillRect(24, 11, 16, 3);
+      // PERFIL LATERAL: Cabello largo cayendo por la parte posterior de la cabeza sobre la espalda
+      graphics.fillEllipse(32, 11, 20, 10);
+      graphics.fillRect(isLeft ? 28 : 20, 13, 12, 22);
 
       if (!isFemale) {
         // Perfil de la barba sabio

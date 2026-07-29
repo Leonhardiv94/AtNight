@@ -1643,14 +1643,14 @@ export class GameScene extends Phaser.Scene {
     const isBackView = dir === 'up' || dir.includes('up');
     const isFrontView = dir === 'down' || dir.includes('down');
 
-    // El báculo es sostenido por el brazo activo en dirección al movimiento:
-    // Al caminar a la izquierda (left, down-left, up-left) -> Brazo Izquierdo (staffX = 20)
-    // Al caminar a la derecha o al frente -> Brazo Derecho (staffX = 44)
-    // De espalda pura (up) -> Brazo en pantalla izquierda (staffX = 18)
+    // El báculo es sostenido por el brazo según la perspectiva 3D:
+    // En vista frontal (down) y frontales diagonales (down-left, down-right) -> Brazo Derecho en pantalla (staffX = 44)
+    // En perfil puro a la izquierda (left) -> Brazo Izquierdo (staffX = 20)
+    // En vista posterior de espalda (up, up-left) -> Pantalla Izquierda (staffX = 18)
     let staffX = 44;
-    if (isLeft) {
+    if (dir === 'left') {
       staffX = 20;
-    } else if (dir === 'up') {
+    } else if (dir === 'up' || dir === 'up-left') {
       staffX = 18;
     } else {
       staffX = 44;

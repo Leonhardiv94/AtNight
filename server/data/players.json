@@ -8,7 +8,7 @@
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
     "level": 1,
-    "xp": 102,
+    "xp": 280,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -52,7 +52,7 @@
         "id": "chicken_feather",
         "name": "Pluma de Pollo",
         "icon": "",
-        "count": 1,
+        "count": 3,
         "category": "recursos",
         "weight": 1
       },
@@ -60,13 +60,21 @@
         "id": "gold",
         "name": "Monedas de Oro",
         "icon": "",
-        "count": 6,
+        "count": 37,
         "category": "especiales",
         "weight": 0
       },
       {
         "id": "chicken_egg",
         "name": "Huevo de Pollo",
+        "icon": "",
+        "count": 2,
+        "category": "recursos",
+        "weight": 1
+      },
+      {
+        "id": "chicken_beak",
+        "name": "Pico de Pollo",
         "icon": "",
         "count": 1,
         "category": "recursos",
@@ -77,7 +85,7 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-27T15:43:40.713Z"
+    "updatedAt": "2026-08-03T00:58:26.754Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -143,7 +151,7 @@
     "hairColor": "#fde047",
     "outfitColor": "#dc2626",
     "level": 1,
-    "xp": 76,
+    "xp": 126,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -195,16 +203,24 @@
         "id": "gold",
         "name": "Monedas de Oro",
         "icon": "",
-        "count": 47,
+        "count": 100,
         "category": "especiales",
         "weight": 0
+      },
+      {
+        "id": "chicken_beak",
+        "name": "Pico de Pollo",
+        "icon": "",
+        "count": 1,
+        "category": "recursos",
+        "weight": 1
       }
     ],
     "lastPosition": {
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-27T15:24:22.286Z"
+    "updatedAt": "2026-08-03T19:41:15.908Z"
   },
   "Gerrero": {
     "characterName": "Gerrero",
@@ -327,39 +343,8 @@
     "level": 1,
     "xp": 0,
     "availablePoints": 0,
-    "elements": {
-      "vitalidad": {
-        "equip": 0,
-        "base": 0
-      },
-      "sabiduria": {
-        "equip": 0,
-        "base": 0
-      },
-      "aire": {
-        "equip": 0,
-        "base": 0
-      },
-      "tierra": {
-        "equip": 0,
-        "base": 0
-      },
-      "fuego": {
-        "equip": 0,
-        "base": 0
-      },
-      "agua": {
-        "equip": 0,
-        "base": 0
-      }
-    },
-    "specials": {
-      "tasaMana": 0,
-      "manaTotal": 0,
-      "velocidad": 0,
-      "defensa": 0,
-      "ataque": 0
-    },
+    "elements": {},
+    "specials": {},
     "hp": 100,
     "maxHp": 100,
     "mana": 10,
@@ -369,6 +354,6 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-29T18:38:03.734Z"
+    "updatedAt": "2026-07-29T19:04:17.757Z"
   }
 }

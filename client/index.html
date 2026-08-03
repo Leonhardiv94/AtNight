@@ -2962,16 +2962,6 @@
         const classObj = CHARACTER_CLASSES.find(cl => cl.id === c.characterClass) || CHARACTER_CLASSES[0];
         const genderIcon = c.gender === 'femenino' ? '♀' : '♂';
         const outfitHex = c.outfitColor || '#0284c7';
-
-        let classNameText = classObj.name;
-        if (c.characterClass === 'mago') {
-          classNameText = c.gender === 'femenino' ? '🔮 MAGA' : '🔮 MAGO';
-        } else if (c.characterClass === 'espadachin') {
-          classNameText = c.gender === 'femenino' ? '⚔️ ESPADACHINA' : '⚔️ ESPADACHÍN';
-        } else if (c.characterClass === 'arquero') {
-          classNameText = c.gender === 'femenino' ? '🏹 ARQUERA' : '🏹 ARQUERO';
-        }
-
         const card = document.createElement('div');
         card.className = 'char-card';
         card.style.display = 'flex';
@@ -2983,7 +2973,7 @@
             <div style="width: 22px; height: 22px; min-width: 22px; border-radius: 50%; background: ${outfitHex}; border: 2px solid #ffffff; box-shadow: 0 0 10px ${outfitHex};" title="Color de Atuendo: ${outfitHex}"></div>
             <div style="white-space: nowrap;">
               <div style="font-weight: 800; font-size: 1rem; color: #ffffff;">${c.characterName} <span style="font-size: 0.8rem; color: #fbbf24;">(${genderIcon})</span></div>
-              <div style="font-size: 0.78rem; color: #94a3b8; white-space: nowrap;">${classNameText} | Nivel ${c.level || 1}</div>
+              <div style="font-size: 0.78rem; color: #94a3b8; white-space: nowrap;">${classObj.name} | Nivel ${c.level || 1}</div>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
@@ -3057,7 +3047,6 @@
       currentGender = gender;
       document.getElementById('gender-btn-masculino').classList.toggle('active', gender === 'masculino');
       document.getElementById('gender-btn-femenino').classList.toggle('active', gender === 'femenino');
-      updateClassUI();
       updateCharPreview();
     }
 
@@ -3069,37 +3058,8 @@
 
     function updateClassUI() {
       const cls = CHARACTER_CLASSES[currentClassIndex];
-      let title = cls.name;
-      let desc = cls.desc;
-
-      if (cls.id === 'mago') {
-        if (currentGender === 'femenino') {
-          title = '🔮 MAGA (FEMENINO)';
-          desc = 'Hechicera esbelta de las artes místicas y tormentas arcanas';
-        } else {
-          title = '🔮 MAGO (MASCULINO)';
-          desc = 'Sabio anciano de las artes místicas y hechizos de zona';
-        }
-      } else if (cls.id === 'espadachin') {
-        if (currentGender === 'femenino') {
-          title = '⚔️ ESPADACHINA (FEMENINO)';
-          desc = 'Guerrera táctica resistente de combate cuerpo a cuerpo';
-        } else {
-          title = '⚔️ ESPADACHÍN (MASCULINO)';
-          desc = 'Guerrero robusto musculoso de combate cuerpo a cuerpo';
-        }
-      } else if (cls.id === 'arquero') {
-        if (currentGender === 'femenino') {
-          title = '🏹 ARQUERA (FEMENINO)';
-          desc = 'Cazadora elfa ágil con gran alcance y precisión';
-        } else {
-          title = '🏹 ARQUERO (MASCULINO)';
-          desc = 'Tirador elfo ágil con túnica y armadura completa';
-        }
-      }
-
-      document.getElementById('class-title-text').innerText = title;
-      document.getElementById('class-desc-text').innerText = desc;
+      document.getElementById('class-title-text').innerText = cls.name;
+      document.getElementById('class-desc-text').innerText = cls.desc;
     }
 
     async function handleCreateCharacterSubmit() {
@@ -3239,266 +3199,176 @@
         ctx.ellipse(0, 15, 25, 10, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // 2. RENDEREAR PERSONAJE 100% IDÉNTICO AL MOTOR DE JUEGO (VISTA FRONTAL)
+        // 2. RENDEREAR PERSONAJE 1-A-1 IDÉNTICO AL JUEGO (VISTA FRONTAL DOWN)
         const pCvs = document.createElement('canvas');
         pCvs.width = 64;
         pCvs.height = 112;
-        const         if (clsId === 'espadachin' && !isFemale) {
-          // ESPADACHÍN MASCULINO (GUERRERO ROBUSTO FLAT TOP V-TAPER - SIN ESPADA)
-          // Botas de cuero con dobladillos (y=75..83)
-          pCtx.fillStyle = '#451a03'; pCtx.fillRect(23, 75, 7, 8); pCtx.fillRect(34, 75, 7, 8);
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(22, 74, 9, 3); pCtx.fillRect(33, 74, 9, 3);
+        const pCtx = pCvs.getContext('2d');
 
-          // Pantalones de cuero musculosos (y=48..75)
-          pCtx.fillStyle = '#451a03'; pCtx.fillRect(24, 48, 7, 27); pCtx.fillRect(33, 48, 7, 27);
+        const skinC = '#ffdbac';
+        const outfitC = outfitColor;
+        const hairC = hairColor;
 
-          // Torso Robusto V-Taper (26px ancho x=19..45 tapering a 20px x=22..42)
-          pCtx.fillStyle = '#0f172a';
-          pCtx.beginPath();
-          pCtx.moveTo(19, 27); pCtx.lineTo(22, 42); pCtx.lineTo(42, 42); pCtx.lineTo(45, 27);
-          pCtx.closePath(); pCtx.fill();
+        if (clsId === 'espadachin' && !isFemale) {
+          // Espadachín Masculino (Vista Frontal sin espada)
+          pCtx.fillStyle = '#dc2626'; pCtx.fillRect(15, 30, 34, 46);
 
-          // Peto de acero esculpido con reflejos (x=21..43)
-          pCtx.fillStyle = '#cbd5e1'; pCtx.fillRect(21, 29, 22, 12);
-          pCtx.fillStyle = '#e2e8f0'; pCtx.fillRect(22, 30, 20, 10);
-          pCtx.fillStyle = '#ffffff'; pCtx.fillRect(23, 30, 18, 2);
-          pCtx.fillStyle = '#475569'; pCtx.fillRect(31.5, 30, 1, 10);
+          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(23, 76, 7, 24); pCtx.fillRect(34, 76, 7, 24);
+          pCtx.fillStyle = '#5c2c16'; pCtx.fillRect(22, 60, 8, 18); pCtx.fillRect(34, 60, 8, 18);
 
-          // Faldón de tiras de cuero & cinturón táctico con hebilla dorada
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(21, 42, 22, 6);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(21, 41, 22, 3);
-          pCtx.fillStyle = '#ffffff'; pCtx.fillRect(30, 40, 4, 5);
-
-          // Cuello robusto
-          pCtx.fillStyle = skinC; pCtx.fillRect(28, 20, 8, 8);
-
-          // Brazos robustos y guardabrazos de cuero
-          pCtx.fillStyle = outfitC;
-          pCtx.fillRect(16, 27, 6, 18); pCtx.fillRect(42, 27, 6, 18);
-          pCtx.fillStyle = '#78350f'; // Guardabrazos tácticos
-          pCtx.fillRect(15, 38, 7, 7); pCtx.fillRect(42, 38, 7, 7);
-          pCtx.fillStyle = skinC;
-          pCtx.fillRect(16, 44, 6, 5); pCtx.fillRect(42, 44, 6, 5);
-
-          // Hombreras de acero pegadas arriba
           pCtx.fillStyle = '#cbd5e1';
-          pCtx.beginPath(); pCtx.ellipse(18, 26, 6, 3.5, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.beginPath(); pCtx.ellipse(46, 26, 6, 3.5, 0, 0, Math.PI * 2); pCtx.fill();
+          pCtx.beginPath(); pCtx.moveTo(18, 30); pCtx.lineTo(46, 30); pCtx.lineTo(41, 62); pCtx.lineTo(23, 62); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#ffffff'; pCtx.fillRect(22, 32, 4, 26);
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(22, 58, 20, 5);
+          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 57, 6, 7); pCtx.fillRect(13, 28, 7, 7); pCtx.fillRect(44, 28, 7, 7);
 
-          // Cabeza con Peinado Meseta Recto (Flat Top Plateau Cut)
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.ellipse(32, 17, 9, 10, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.beginPath(); pCtx.arc(22.5, 18, 1.8, 0, Math.PI * 2); pCtx.arc(41.5, 18, 1.8, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = skinC; pCtx.fillRect(14, 34, 5, 26); pCtx.fillRect(45, 34, 5, 26);
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(13, 46, 7, 10); pCtx.fillRect(44, 46, 7, 10);
 
-          pCtx.fillStyle = '#27140a'; pCtx.fillRect(25, 15, 4, 1.8); pCtx.fillRect(35, 15, 4, 1.8);
-          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 18, 3, 3.5); pCtx.fillRect(35, 18, 3, 3.5);
+          pCtx.fillStyle = skinC; pCtx.fillRect(24, 16, 16, 16);
+          pCtx.fillStyle = '#27140a'; pCtx.fillRect(26, 19, 4, 1.5); pCtx.fillRect(34, 19, 4, 1.5);
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(27, 22, 3, 3); pCtx.fillRect(34, 22, 3, 3);
+          pCtx.fillStyle = '#ffffff'; pCtx.fillRect(27.5, 22, 1.5, 1.5); pCtx.fillRect(34.5, 22, 1.5, 1.5);
 
           pCtx.fillStyle = hairC;
-          pCtx.fillRect(22, 4, 20, 11);
-          pCtx.fillRect(23, 2, 18, 2);
-          pCtx.fillRect(21, 10, 2, 6); pCtx.fillRect(41, 10, 2, 6);
-
+          pCtx.fillRect(21, 5, 22, 12);
+          pCtx.fillRect(22, 2, 20, 3);
+          pCtx.fillRect(20, 16, 2, 6); pCtx.fillRect(42, 16, 2, 6);
         } else if (clsId === 'espadachin' && isFemale) {
-          // ESPADACHINA FEMENINA (GUERRERA CON CORAZA DE COPAS Y TRENZA - SIN ESPADA)
-          // Mallas y botas altas de cuero
-          pCtx.fillStyle = '#1e293b'; pCtx.fillRect(26, 48, 6, 27); pCtx.fillRect(38, 48, 6, 27);
-          pCtx.fillStyle = '#451a03'; pCtx.fillRect(25, 75, 7, 8); pCtx.fillRect(38, 75, 7, 8);
+          // Espadachina Femenina (Vista Frontal sin espada)
+          pCtx.fillStyle = '#dc2626'; pCtx.fillRect(16, 30, 32, 46);
 
-          // Cota de malla & Túnica
-          pCtx.fillStyle = '#94a3b8'; pCtx.fillRect(21, 27, 22, 18);
-          pCtx.fillStyle = outfitC; pCtx.fillRect(22, 28, 20, 15);
+          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(24, 76, 6, 24); pCtx.fillRect(34, 76, 6, 24);
+          pCtx.fillStyle = skinC; pCtx.fillRect(24, 60, 6, 18); pCtx.fillRect(34, 60, 6, 18);
 
-          // Copas de acero esculpidas en el pecho con destellos
-          pCtx.fillStyle = '#cbd5e1';
-          pCtx.beginPath(); pCtx.arc(26, 34, 5.5, 0, Math.PI * 2); pCtx.arc(38, 34, 5.5, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#ffffff';
-          pCtx.beginPath(); pCtx.arc(25, 32, 2, 0, Math.PI * 2); pCtx.arc(37, 32, 2, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#94a3b8'; pCtx.fillRect(21, 30, 22, 32);
+          pCtx.fillStyle = outfitC; pCtx.beginPath(); pCtx.moveTo(20, 30); pCtx.lineTo(44, 30); pCtx.lineTo(41, 60); pCtx.lineTo(23, 60); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#cbd5e1'; pCtx.beginPath(); pCtx.arc(26, 42, 5, 0, Math.PI * 2); pCtx.arc(38, 42, 5, 0, Math.PI * 2); pCtx.fill();
 
-          // Falda táctica de tiras de cuero (Pteruges) con herrajes de latón
-          pCtx.fillStyle = '#451a03'; pCtx.fillRect(20, 42, 24, 8);
-          pCtx.fillStyle = '#78350f';
-          pCtx.fillRect(21, 45, 4, 14); pCtx.fillRect(26, 45, 4, 15);
-          pCtx.fillRect(34, 45, 4, 15); pCtx.fillRect(39, 45, 4, 14);
-          pCtx.fillStyle = '#fbbf24';
-          pCtx.fillRect(21.5, 57, 3, 2); pCtx.fillRect(26.5, 58, 3, 2);
-          pCtx.fillRect(34.5, 58, 3, 2); pCtx.fillRect(39.5, 57, 3, 2);
+          pCtx.fillStyle = '#451a03'; pCtx.fillRect(20, 58, 24, 18);
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(21, 60, 4, 15); pCtx.fillRect(27, 60, 4, 16); pCtx.fillRect(33, 60, 4, 16); pCtx.fillRect(39, 60, 4, 15);
 
-          // Cuello estilizado
-          pCtx.fillStyle = skinC; pCtx.fillRect(29, 21, 6, 7);
+          pCtx.fillStyle = skinC; pCtx.fillRect(16, 34, 4, 26); pCtx.fillRect(44, 34, 4, 26);
+          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(15, 28, 6, 6); pCtx.fillRect(43, 28, 6, 6);
 
-          // Brazos y guardabrazos de cuero
-          pCtx.fillStyle = skinC; pCtx.fillRect(17, 27, 5, 18); pCtx.fillRect(42, 27, 5, 18);
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(16, 37, 6, 6); pCtx.fillRect(42, 37, 6, 6);
-
-          // Cabeza y Trenza Guerrera
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.ellipse(32, 17, 8, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
-
-          pCtx.fillStyle = hairC;
-          pCtx.beginPath(); pCtx.ellipse(32, 12, 11, 7, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillRect(19, 13, 4, 26);
-
+          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.ellipse(32, 22, 7.5, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22, 3, 3); pCtx.fillRect(35, 22, 3, 3);
+          pCtx.fillStyle = hairC; pCtx.beginPath(); pCtx.arc(32, 16, 11, Math.PI, Math.PI * 2.2); pCtx.fill();
+          pCtx.fillRect(18, 17, 4, 24); pCtx.fillRect(42, 17, 4, 24);
         } else if (clsId === 'arquero' && !isFemale) {
-          // ARQUERO MASCULINO (ELFO TIRADOR CON TÚNICA Y CARCAJ EN LA ESPALDA - SIN ARCO)
-          // Pantalones elfo y botas de cuero
-          pCtx.fillStyle = '#1e293b'; pCtx.fillRect(23, 48, 7, 27); pCtx.fillRect(34, 48, 7, 27);
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(22, 75, 8, 8); pCtx.fillRect(34, 75, 8, 8);
+          // Arquero Masculino (Vista Frontal sin arco)
+          pCtx.fillStyle = '#451a03'; pCtx.fillRect(14, 22, 6, 26);
+          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(15, 14, 2, 8); pCtx.fillRect(17, 12, 2, 10);
 
-          // Carcaj de madera en la espalda con flechas de plumas doradas sobresaliendo
-          pCtx.fillStyle = '#5c2c16'; pCtx.fillRect(15, 16, 6, 26);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(16, 8, 2, 8); pCtx.fillRect(18, 10, 2, 6);
+          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(23, 76, 7, 24); pCtx.fillRect(34, 76, 7, 24);
+          pCtx.fillStyle = '#15803d'; pCtx.beginPath(); pCtx.moveTo(18, 30); pCtx.lineTo(46, 30); pCtx.lineTo(43, 66); pCtx.lineTo(21, 66); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#451a03'; pCtx.fillRect(20, 56, 24, 5); pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 55, 6, 7);
 
-          // Túnica elfa verde mística y cinturón táctico con hebilla dorada
-          pCtx.fillStyle = outfitC; pCtx.fillRect(20, 27, 24, 22);
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(20, 41, 24, 5);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 40, 6, 7);
+          pCtx.fillStyle = '#15803d'; pCtx.fillRect(14, 32, 5, 24); pCtx.fillRect(45, 32, 5, 24);
+          pCtx.fillStyle = skinC; pCtx.fillRect(14, 56, 5, 4); pCtx.fillRect(45, 56, 5, 4);
 
-          // Cuello
-          pCtx.fillStyle = skinC; pCtx.fillRect(29, 20, 6, 8);
+          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.moveTo(22, 22); pCtx.lineTo(14, 16); pCtx.lineTo(22, 28); pCtx.moveTo(42, 22); pCtx.lineTo(50, 16); pCtx.lineTo(42, 28); pCtx.fill();
+          pCtx.fillRect(24, 16, 16, 16);
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(27, 22, 3, 3); pCtx.fillRect(34, 22, 3, 3);
 
-          // Mangas largas de la túnica y guardabrazos de cuero
-          pCtx.fillStyle = outfitC; pCtx.fillRect(16, 27, 5, 17); pCtx.fillRect(43, 27, 5, 17);
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(15, 38, 6, 6); pCtx.fillRect(43, 38, 6, 6);
-          pCtx.fillStyle = skinC; pCtx.fillRect(16, 44, 5, 5); pCtx.fillRect(43, 44, 5, 5);
-
-          // Orejas elfas prominentes
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.arc(22.5, 18, 1.8, 0, Math.PI * 2); pCtx.arc(41.5, 18, 1.8, 0, Math.PI * 2); pCtx.fill();
-
-          // Cabeza y Peinado Elfo
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.ellipse(32, 17, 8.5, 10, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = hairC;
-          pCtx.beginPath(); pCtx.ellipse(32, 12, 11, 7, 0, 0, Math.PI * 2); pCtx.fill();
-
+          pCtx.fillStyle = hairC; pCtx.beginPath(); pCtx.arc(32, 18, 12, Math.PI * 0.85, Math.PI * 2.15); pCtx.fill();
         } else if (clsId === 'arquero' && isFemale) {
-          // ARQUERA FEMENINA (CAZADORA ELFA CON CORSET Y CARCAJ EN LA ESPALDA - SIN ARCO)
-          // Mallas y botas de cazadora
-          pCtx.fillStyle = skinC; pCtx.fillRect(25, 48, 6, 27); pCtx.fillRect(38, 48, 6, 27);
-          pCtx.fillStyle = '#451a03'; pCtx.fillRect(24, 74, 7, 9); pCtx.fillRect(38, 74, 7, 9);
+          // Arquera Femenina (Vista Frontal sin arco)
+          pCtx.fillStyle = '#451a03'; pCtx.fillRect(14, 22, 6, 26);
+          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(15, 14, 2, 8); pCtx.fillRect(17, 12, 2, 10);
 
-          // Carcaj de madera en la espalda con flechas de plumas doradas sobresaliendo
-          pCtx.fillStyle = '#5c2c16'; pCtx.fillRect(15, 16, 6, 26);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(16, 8, 2, 8); pCtx.fillRect(18, 10, 2, 6);
+          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(24, 76, 6, 24); pCtx.fillRect(34, 76, 6, 24);
+          pCtx.fillStyle = skinC; pCtx.fillRect(24, 60, 6, 18); pCtx.fillRect(34, 60, 6, 18);
 
-          // Corset de cazadora elfa entallado
-          pCtx.fillStyle = outfitC;
-          pCtx.beginPath(); pCtx.moveTo(22, 27); pCtx.lineTo(24, 43); pCtx.lineTo(40, 43); pCtx.lineTo(42, 27); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#15803d'; pCtx.beginPath(); pCtx.moveTo(20, 30); pCtx.lineTo(44, 30); pCtx.lineTo(41, 62); pCtx.lineTo(23, 62); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(21, 56, 22, 10);
 
-          // Falda elfa táctica y cinturón con hebilla dorada
-          pCtx.fillStyle = '#451a03'; pCtx.fillRect(21, 41, 22, 4);
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(22, 45, 20, 5);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 40, 6, 6);
+          pCtx.fillStyle = skinC; pCtx.fillRect(16, 32, 4, 26); pCtx.fillRect(44, 32, 4, 26);
+          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.moveTo(22, 22); pCtx.lineTo(14, 16); pCtx.lineTo(22, 28); pCtx.moveTo(42, 22); pCtx.lineTo(50, 16); pCtx.lineTo(42, 28); pCtx.fill();
+          pCtx.beginPath(); pCtx.ellipse(32, 22, 7.5, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22, 3, 3); pCtx.fillRect(35, 22, 3, 3);
 
-          // Cuello
-          pCtx.fillStyle = skinC; pCtx.fillRect(29, 21, 6, 7);
-
-          // Brazos y guardabrazos de cuero
-          pCtx.fillStyle = skinC; pCtx.fillRect(17, 27, 5, 17); pCtx.fillRect(42, 27, 5, 17);
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(16, 38, 6, 6); pCtx.fillRect(42, 38, 6, 6);
-          pCtx.fillStyle = skinC; pCtx.fillRect(17, 44, 5, 4); pCtx.fillRect(42, 44, 5, 4);
-
-          // Orejas elfas prominentes
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.arc(23, 18, 1.8, 0, Math.PI * 2); pCtx.arc(41, 18, 1.8, 0, Math.PI * 2); pCtx.fill();
-
-          // Cabeza y Cabello Largo Cazadora
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.ellipse(32, 17, 8, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = hairC;
-          pCtx.beginPath(); pCtx.ellipse(32, 12, 11, 7, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillRect(19, 13, 4, 24);
-
+          pCtx.fillStyle = hairC; pCtx.beginPath(); pCtx.arc(32, 16, 11, Math.PI, Math.PI * 2.3); pCtx.fill();
+          pCtx.fillRect(18, 17, 4, 28); pCtx.fillRect(42, 17, 4, 28);
         } else if (clsId === 'mago' && !isFemale) {
-          // MAGO SABIO MASCULINO (ANCIANO CON TÚNICA FLUIDA, CABELLO BLANCO, BARBA Y BÁCULO)
-          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(25, 74, 5, 5); pCtx.fillRect(34, 74, 5, 5);
+          // Mago Masculino (Vista Frontal con báculo y barba sabia)
+          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(23, 76, 7, 24); pCtx.fillRect(34, 76, 7, 24);
+          pCtx.fillStyle = '#1e1b4b'; pCtx.beginPath(); pCtx.moveTo(18, 30); pCtx.lineTo(46, 30); pCtx.lineTo(43, 76); pCtx.lineTo(21, 76); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(20, 56, 24, 5); pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 55, 6, 7);
 
-          pCtx.fillStyle = '#0f172a';
-          pCtx.beginPath(); pCtx.moveTo(19, 27); pCtx.lineTo(16, 76); pCtx.lineTo(48, 76); pCtx.lineTo(45, 27); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(45, 10, 4, 72);
+          pCtx.beginPath(); pCtx.arc(47, 12, 5, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.arc(47, 8, 4.5, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(46, 6.5, 1.8, 0, Math.PI * 2); pCtx.fill();
 
-          pCtx.fillStyle = outfitC;
-          pCtx.beginPath(); pCtx.moveTo(20, 27); pCtx.lineTo(18, 75); pCtx.lineTo(46, 75); pCtx.lineTo(44, 27); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = skinC; pCtx.fillRect(15, 34, 5, 24); pCtx.fillRect(44, 39, 5, 4);
+          pCtx.fillRect(24, 16, 16, 16);
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(27, 22, 3, 3); pCtx.fillRect(34, 22, 3, 3);
 
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(21, 41, 22, 4);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 40, 6, 6);
-          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.arc(32, 43, 1.8, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#f8fafc'; pCtx.beginPath(); pCtx.moveTo(25, 26); pCtx.quadraticCurveTo(22, 36, 32, 45); pCtx.quadraticCurveTo(42, 36, 39, 26); pCtx.closePath(); pCtx.fill();
 
-          pCtx.fillStyle = '#1e1b4b'; pCtx.fillRect(17, 27, 30, 9);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(17, 35, 30, 2);
-
-          pCtx.fillStyle = skinC; pCtx.fillRect(29, 20, 6, 8);
-
-          // Báculo Mágico de Madera con Orbe Cyan Radiante
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(44, 10, 4, 72);
-          pCtx.beginPath(); pCtx.arc(46, 12, 5, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.arc(46, 8, 4.5, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(45, 6.5, 1.8, 0, Math.PI * 2); pCtx.fill();
-
-          // Mangas y Mano
-          pCtx.fillStyle = outfitC; pCtx.fillRect(17, 27, 6, 16); pCtx.fillRect(43, 27, 6, 16);
-          pCtx.fillStyle = skinC; pCtx.fillRect(43.5, 41, 5, 4);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(43.5, 40, 5, 1.5);
-
-          // Cabeza, Cejas y Ojos
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.ellipse(32, 17, 9, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
-
-          pCtx.fillStyle = '#e2e8f0'; pCtx.fillRect(24, 14, 5, 2.2); pCtx.fillRect(35, 14, 5, 2.2);
-          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 17, 3, 3); pCtx.fillRect(35, 17, 3, 3);
-          pCtx.fillStyle = '#38bdf8'; pCtx.fillRect(27, 17, 1.5, 1.5); pCtx.fillRect(36, 17, 1.5, 1.5);
-
-          // Barba Masculina Media
-          pCtx.fillStyle = '#f8fafc';
-          pCtx.beginPath(); pCtx.moveTo(24, 20); pCtx.lineTo(21, 28); pCtx.lineTo(26, 36); pCtx.lineTo(32, 39); pCtx.lineTo(38, 36); pCtx.lineTo(43, 28); pCtx.lineTo(40, 20); pCtx.closePath(); pCtx.fill();
-          pCtx.fillStyle = '#e2e8f0'; pCtx.fillRect(25, 20, 14, 3);
-
-          // Cabello Blanco Sabio Largo
-          pCtx.fillStyle = '#f8fafc';
-          pCtx.beginPath(); pCtx.ellipse(32, 11, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillRect(20, 13, 5, 20); pCtx.fillRect(39, 13, 5, 20);
-
+          pCtx.fillStyle = '#f8fafc'; pCtx.beginPath(); pCtx.arc(32, 16, 12, Math.PI, Math.PI * 2); pCtx.fill();
+          pCtx.fillRect(18, 16, 5, 22); pCtx.fillRect(41, 16, 5, 22);
         } else if (clsId === 'mago' && isFemale) {
-          // MAGA FEMENINA (HECHICERA ESBELTA SIN BARBA CON ROSTRO FINO Y BÁCULO)
-          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(25, 74, 5, 5); pCtx.fillRect(34, 74, 5, 5);
+          // Maga Femenina (Vista Frontal con báculo, sin barba)
+          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(24, 76, 6, 24); pCtx.fillRect(34, 76, 6, 24);
+          pCtx.fillStyle = '#1e1b4b'; pCtx.beginPath(); pCtx.moveTo(20, 30); pCtx.lineTo(44, 30); pCtx.lineTo(42, 76); pCtx.lineTo(22, 76); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(21, 56, 22, 5); pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 55, 6, 7);
 
-          pCtx.fillStyle = '#0f172a';
-          pCtx.beginPath(); pCtx.moveTo(20, 27); pCtx.lineTo(17, 76); pCtx.lineTo(47, 76); pCtx.lineTo(44, 27); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#78350f'; pCtx.fillRect(45, 10, 4, 72);
+          pCtx.beginPath(); pCtx.arc(47, 12, 5, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.arc(47, 8, 4.5, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(46, 6.5, 1.8, 0, Math.PI * 2); pCtx.fill();
 
-          pCtx.fillStyle = outfitC;
-          pCtx.beginPath(); pCtx.moveTo(21, 27); pCtx.lineTo(19, 75); pCtx.lineTo(45, 75); pCtx.lineTo(43, 27); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = skinC; pCtx.fillRect(16, 34, 4, 24); pCtx.fillRect(44, 39, 5, 4);
 
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(22, 41, 20, 4);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(29, 40, 6, 6);
-          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.arc(32, 43, 1.8, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.ellipse(32, 22, 7.5, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22, 3, 3); pCtx.fillRect(35, 22, 3, 3);
 
-          pCtx.fillStyle = '#1e1b4b'; pCtx.fillRect(18, 27, 28, 9);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(18, 35, 28, 2);
+          pCtx.fillStyle = '#f8fafc'; pCtx.beginPath(); pCtx.ellipse(32, 16, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillRect(19, 17, 5, 24); pCtx.fillRect(39, 17, 5, 24);
+        } else if (clsId === 'amigo_sol') {
+          // Amigo del Sol (Corona Solar Radiante + Emblema Solar en Pecho)
+          pCtx.fillStyle = '#fbbf24'; pCtx.beginPath(); pCtx.arc(32, 22, 16, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(32, 22, 9, 0, Math.PI * 2); pCtx.fill();
 
-          pCtx.fillStyle = skinC; pCtx.fillRect(29, 20, 6, 8);
+          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(23, 76, 7, 24); pCtx.fillRect(34, 76, 7, 24);
+          pCtx.fillStyle = outfitC || '#ea580c'; pCtx.fillRect(20, 30, 24, 46);
+          pCtx.fillStyle = '#fbbf24'; pCtx.beginPath(); pCtx.arc(32, 42, 6, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#ef4444'; pCtx.beginPath(); pCtx.arc(32, 42, 3, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(20, 56, 24, 4);
 
-          // Báculo Mágico de Madera con Orbe Cyan Radiante
-          pCtx.fillStyle = '#78350f'; pCtx.fillRect(44, 10, 4, 72);
-          pCtx.beginPath(); pCtx.arc(46, 12, 5, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.arc(46, 8, 4.5, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(45, 6.5, 1.8, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = skinC; pCtx.fillRect(15, 34, 5, 26); pCtx.fillRect(44, 34, 5, 26);
+          pCtx.fillStyle = '#fbbf24'; pCtx.beginPath(); pCtx.arc(17, 34, 4.5, 0, Math.PI * 2); pCtx.arc(47, 34, 4.5, 0, Math.PI * 2); pCtx.fill();
 
-          // Mangas y Mano
-          pCtx.fillStyle = outfitC; pCtx.fillRect(18, 27, 5, 16); pCtx.fillRect(41, 27, 5, 16);
-          pCtx.fillStyle = skinC; pCtx.fillRect(43.5, 41, 5, 4);
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(43.5, 40, 5, 1.5);
+          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.ellipse(32, 22, isFemale ? 7.5 : 9, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22, 3, 3); pCtx.fillRect(35, 22, 3, 3);
+          pCtx.fillStyle = hairC || '#fbbf24'; pCtx.beginPath(); pCtx.ellipse(32, 16, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
+        } else if (clsId === 'amigo_luna') {
+          // Amigo de la Luna (Levitación Flotante Mística + Dagas Gemelas)
+          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.ellipse(32, 84, 18, 6, 0, 0, Math.PI * 2); pCtx.fill();
 
-          // Cabeza Fina de 15px
-          pCtx.fillStyle = skinC;
-          pCtx.beginPath(); pCtx.ellipse(32, 17, 7.5, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
+          const lev = -8;
+          pCtx.fillStyle = outfitC || '#090d16'; pCtx.beginPath(); pCtx.moveTo(20, 30 + lev); pCtx.lineTo(16, 76 + lev); pCtx.lineTo(48, 76 + lev); pCtx.lineTo(44, 30 + lev); pCtx.closePath(); pCtx.fill();
+          pCtx.fillStyle = '#1e1b4b'; pCtx.fillRect(23, 34 + lev, 18, 42);
+          pCtx.fillStyle = '#cbd5e1'; pCtx.fillRect(21, 52 + lev, 22, 4);
 
-          pCtx.fillStyle = hairC; pCtx.fillRect(25, 14, 4, 1.5); pCtx.fillRect(34, 14, 4, 1.5);
-          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 17, 3, 3); pCtx.fillRect(34, 17, 3, 3);
-          pCtx.fillStyle = '#38bdf8'; pCtx.fillRect(26.5, 17, 1.5, 1.5); pCtx.fillRect(34.5, 17, 1.5, 1.5);
+          // Dagas Gemelas
+          pCtx.fillStyle = '#cbd5e1';
+          pCtx.beginPath(); pCtx.moveTo(14, 38 + lev); pCtx.lineTo(12, 58 + lev); pCtx.lineTo(16, 50 + lev); pCtx.closePath(); pCtx.fill();
+          pCtx.beginPath(); pCtx.moveTo(50, 38 + lev); pCtx.lineTo(52, 58 + lev); pCtx.lineTo(48, 50 + lev); pCtx.closePath(); pCtx.fill();
 
-          // Largo Cabello Femenino Místico
-          pCtx.fillStyle = hairC;
-          pCtx.beginPath(); pCtx.ellipse(32, 11, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillRect(19, 13, 5, 24); pCtx.fillRect(39, 13, 5, 24);
+          pCtx.fillStyle = skinC; pCtx.fillRect(16, 34 + lev, 4, 20); pCtx.fillRect(44, 34 + lev, 4, 20);
+          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.ellipse(32, 22 + lev, isFemale ? 7.5 : 9, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
+          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22 + lev, 3, 3); pCtx.fillRect(35, 22 + lev, 3, 3);
+          pCtx.fillStyle = '#38bdf8'; pCtx.fillRect(26.5, 22 + lev, 1.5, 1.5); pCtx.fillRect(35.5, 22 + lev, 1.5, 1.5);
+
+          pCtx.fillStyle = hairC || '#cbd5e1'; pCtx.beginPath(); pCtx.ellipse(32, 16 + lev, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
+        } else {
+          // Paladines Sol / Luna
+          pCtx.fillStyle = outfitC; pCtx.fillRect(20, 30, 24, 46);
+          pCtx.fillStyle = skinC; pCtx.fillRect(24, 16, 16, 16);
+          pCtx.fillStyle = hairC; pCtx.beginPath(); pCtx.arc(32, 18, 12, Math.PI, Math.PI * 2); pCtx.fill();
         }
 
         // Estampar el canvas offscreen 100% idéntico sobre el pedestal isométrico (escalado 2.2x)

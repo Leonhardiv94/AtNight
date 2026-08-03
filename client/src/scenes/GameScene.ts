@@ -350,6 +350,12 @@ export class GameScene extends Phaser.Scene {
         } else if (cls === 'mago') {
           // RENDERIZADOR DEDICADO EXCLUSIVO PARA EL MAGO SABIO ANCIANO (TÚNICA & BÁCULO)
           this.drawWizardCharacter(graphics, skinHex, hairHex, outfitHex, isFemale, dir, frame);
+        } else if (cls === 'amigo_sol') {
+          // RENDERIZADOR DEDICADO DE LOS AMIGOS DEL SOL (CORONA SOLAR RADIANTE)
+          this.drawSunFriendCharacter(graphics, skinHex, hairHex, outfitHex, isFemale, dir, frame);
+        } else if (cls === 'amigo_luna') {
+          // RENDERIZADOR DEDICADO DE LOS AMIGOS DE LA LUNA (NOCHE / LEVITACIÓN)
+          this.drawMoonFriendCharacter(graphics, skinHex, hairHex, outfitHex, isFemale, dir, frame);
         } else {
           // Renderizador base modular para otras combinaciones futuras
           this.drawGenericCharacter(graphics, skinHex, hairHex, outfitHex, cls, isFemale, dir, frame);
@@ -1896,6 +1902,238 @@ export class GameScene extends Phaser.Scene {
       // Hebilla Dorada en el Pecho (Únicamente en vista frontal)
       graphics.fillStyle(0xfbbf24, 1);
       graphics.fillRect(30, 36, 4, 4);
+    }
+  }
+
+  // =========================================================================
+  // ☀️ RENDERIZADOR DEDICADO DE LOS AMIGOS DEL SOL (CORONA SOLAR RADIANTE Y EMBLEMA)
+  // =========================================================================
+  private drawSunFriendCharacter(
+    graphics: Phaser.GameObjects.Graphics,
+    skinHex: number,
+    hairHex: number,
+    outfitHex: number,
+    isFemale: boolean,
+    dir: string,
+    frame: number
+  ) {
+    const isFrontOrBack = dir === 'down' || dir === 'up';
+    const isPureSide = dir === 'left' || dir === 'right';
+    const isDiagonal = dir.includes('up-') || dir.includes('down-');
+    const isSide = isPureSide || isDiagonal;
+    const isLeft = dir.includes('left');
+
+    let leftLegAngle = 0;
+    let rightLegAngle = 0;
+    let leftArmAngle = 0;
+    let rightArmAngle = 0;
+
+    if (!isFrontOrBack) {
+      if (frame === 1) {
+        leftLegAngle = -0.24; rightLegAngle = 0.24;
+        leftArmAngle = 0.26; rightArmAngle = -0.26;
+      } else if (frame === 3) {
+        leftLegAngle = 0.24; rightLegAngle = -0.24;
+        leftArmAngle = -0.26; rightArmAngle = 0.26;
+      }
+    }
+
+    // 🌟 DESTACADO DEL SOL: CORONA SOLAR Y AURA CELESTIAL DETRÁS DE LA CABEZA (360°)
+    graphics.fillStyle(0xfbbf24, 0.45);
+    graphics.fillCircle(32, 17, 18);
+    graphics.fillStyle(0xfde047, 0.85);
+    graphics.fillCircle(32, 17, 13);
+
+    // Rayos divinos radiantes de la Corona Solar (8 puntas doradas)
+    graphics.fillStyle(0xfbbf24, 1);
+    for (let r = 0; r < 8; r++) {
+      const angle = (r * Math.PI) / 4;
+      const rx = 32 + Math.cos(angle) * 16;
+      const ry = 17 + Math.sin(angle) * 16;
+      graphics.fillCircle(rx, ry, 2.5);
+    }
+    graphics.fillStyle(0xffffff, 1);
+    graphics.fillCircle(32, 17, 9);
+
+    // Sombra Base en el suelo
+    graphics.fillStyle(0x000000, 0.35);
+    graphics.fillEllipse(32, 85, 36, 10);
+
+    // 1. Piernas y Botas Doradas del Sol
+    const legW = isFemale ? 5 : 6;
+    const hipY = 48;
+    if (isSide) {
+      this.drawRotatedLimbSegment(graphics, 32, hipY, legW, 0, 18, isLeft ? -leftLegAngle : leftLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, 32, hipY, legW + 2, 14, 32, isLeft ? -leftLegAngle : leftLegAngle, 0xf59e0b);
+      this.drawRotatedLimbSegment(graphics, 32, hipY, legW + 3, 32, 36, isLeft ? -leftLegAngle : leftLegAngle, 0xfbbf24);
+    } else {
+      this.drawRotatedLimbSegment(graphics, 26, hipY, legW, 0, 18, leftLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, 26, hipY, legW + 2, 14, 32, leftLegAngle, 0xf59e0b);
+      this.drawRotatedLimbSegment(graphics, 26, hipY, legW + 3, 32, 36, leftLegAngle, 0xfbbf24);
+
+      this.drawRotatedLimbSegment(graphics, 38, hipY, legW, 0, 18, rightLegAngle, skinHex);
+      this.drawRotatedLimbSegment(graphics, 38, hipY, legW + 2, 14, 32, rightLegAngle, 0xf59e0b);
+      this.drawRotatedLimbSegment(graphics, 38, hipY, legW + 3, 32, 36, rightLegAngle, 0xfbbf24);
+    }
+
+    // 2. Coraza Sol Radiante (Naranja/Dorado con Emblema Solar)
+    const outfitColor = outfitHex || 0xea580c;
+    graphics.fillStyle(outfitColor, 1);
+    graphics.fillRect(21, 28, 22, 20);
+
+    // Gran Emblema del Sol en el Pecho
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillCircle(32, 36, 6);
+    graphics.fillStyle(0xef4444, 1);
+    graphics.fillCircle(32, 36, 3);
+
+    if (isFemale) {
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillCircle(27, 34, 4.5);
+      graphics.fillCircle(37, 34, 4.5);
+    }
+
+    // Cinturón Dorado Sol
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillRect(21, 44, 22, 4);
+
+    // 3. Brazos con Hombreras Solares
+    const shoulderY = 28;
+    this.drawRotatedLimbSegment(graphics, 19, shoulderY, 5, 0, 18, leftArmAngle, skinHex);
+    this.drawRotatedLimbSegment(graphics, 45, shoulderY, 5, 0, 18, rightArmAngle, skinHex);
+
+    graphics.fillStyle(0xfbbf24, 1);
+    graphics.fillCircle(19, 27, 5);
+    graphics.fillCircle(45, 27, 5);
+    graphics.fillStyle(0xffffff, 1);
+    graphics.fillCircle(19, 26, 2);
+    graphics.fillCircle(45, 26, 2);
+
+    // 4. Cabeza
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillEllipse(32, 17, isFemale ? 15 : 18, 19);
+
+    if (dir === 'down' || dir.includes('down')) {
+      graphics.fillStyle(0x27140a, 1);
+      graphics.fillRect(25, 15, 4, 1.8); graphics.fillRect(35, 15, 4, 1.8);
+      graphics.fillStyle(0x0f172a, 1);
+      graphics.fillRect(26, 18, 3, 3.5); graphics.fillRect(35, 18, 3, 3.5);
+      graphics.fillStyle(0xfbbf24, 1);
+      graphics.fillRect(27, 18, 1.5, 1.5); graphics.fillRect(36, 18, 1.5, 1.5);
+    }
+
+    // Cabello Radiante Dorado Sol
+    graphics.fillStyle(hairHex || 0xfbbf24, 1);
+    graphics.fillEllipse(32, 12, 20, 10);
+    if (isFemale) {
+      graphics.fillRect(20, 14, 4, 24);
+      graphics.fillRect(40, 14, 4, 24);
+    } else {
+      graphics.fillRect(22, 4, 20, 10);
+    }
+  }
+
+  // =========================================================================
+  // 🌙 RENDERIZADOR DEDICADO DE LOS AMIGOS DE LA LUNA / NOCHE (LEVITACIÓN MÍSTICA)
+  // =========================================================================
+  private drawMoonFriendCharacter(
+    graphics: Phaser.GameObjects.Graphics,
+    skinHex: number,
+    hairHex: number,
+    outfitHex: number,
+    isFemale: boolean,
+    dir: string,
+    frame: number
+  ) {
+    // 🌙 EFECTO DE LEVITACIÓN / FLOTACIÓN (Elevado 10px en textura y aura en el suelo)
+    const levitateOffset = -10;
+
+    // Aura de sombra lunar mística flotante en el suelo (x=32, y=85)
+    graphics.fillStyle(0x38bdf8, 0.25);
+    graphics.fillEllipse(32, 85, 38, 12);
+    graphics.fillStyle(0x090d16, 0.4);
+    graphics.fillEllipse(32, 85, 26, 8);
+
+    // Halo de Luna Creciente detrás de la cabeza
+    graphics.fillStyle(0xcbd5e1, 0.6);
+    graphics.beginPath();
+    graphics.arc(32, 17 + levitateOffset, 15, -Math.PI * 0.7, Math.PI * 0.7);
+    graphics.fillPath();
+
+    // 1. Túnica/Manto Flotante de Medianoche
+    const outfitColor = outfitHex || 0x090d16;
+    graphics.fillStyle(outfitColor, 1);
+    graphics.beginPath();
+    graphics.moveTo(20, 26 + levitateOffset);
+    graphics.lineTo(16, 70 + levitateOffset);
+    graphics.lineTo(48, 70 + levitateOffset);
+    graphics.lineTo(44, 26 + levitateOffset);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // Capa Interna Mística Azul Noche
+    graphics.fillStyle(0x1e1b4b, 1);
+    graphics.fillRect(23, 30 + levitateOffset, 18, 38 + (frame === 1 ? -2 : (frame === 3 ? 2 : 0)));
+
+    // Cinturón Creciente Lunar
+    graphics.fillStyle(0xcbd5e1, 1);
+    graphics.fillRect(21, 42 + levitateOffset, 22, 4);
+    graphics.fillStyle(0x38bdf8, 1);
+    graphics.fillCircle(32, 44 + levitateOffset, 2.5);
+
+    // 2. Piernas Flotantes en Levitación
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillRect(25, 68 + levitateOffset, 5, 8);
+    graphics.fillRect(34, 68 + levitateOffset, 5, 8);
+
+    // 3. Dagas Gemelas de Luna Creciente Flotantes a los lados
+    graphics.fillStyle(0xcbd5e1, 1);
+    // Daga Izquierda
+    graphics.beginPath();
+    graphics.moveTo(14, 32 + levitateOffset);
+    graphics.lineTo(12, 52 + levitateOffset);
+    graphics.lineTo(16, 44 + levitateOffset);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // Daga Derecha
+    graphics.beginPath();
+    graphics.moveTo(50, 32 + levitateOffset);
+    graphics.lineTo(52, 52 + levitateOffset);
+    graphics.lineTo(48, 44 + levitateOffset);
+    graphics.closePath();
+    graphics.fillPath();
+
+    // 4. Brazos Flotantes Místicos
+    const shoulderY = 27 + levitateOffset;
+    graphics.fillStyle(outfitColor, 1);
+    graphics.fillRect(16, shoulderY, 5, 18);
+    graphics.fillRect(43, shoulderY, 5, 18);
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillRect(16, shoulderY + 18, 5, 4);
+    graphics.fillRect(43, shoulderY + 18, 5, 4);
+
+    // 5. Cabeza
+    graphics.fillStyle(skinHex, 1);
+    graphics.fillEllipse(32, 17 + levitateOffset, isFemale ? 15 : 18, 19);
+
+    if (dir === 'down' || dir.includes('down')) {
+      graphics.fillStyle(0x27140a, 1);
+      graphics.fillRect(25, 15 + levitateOffset, 4, 1.8); graphics.fillRect(35, 15 + levitateOffset, 4, 1.8);
+      graphics.fillStyle(0x0f172a, 1);
+      graphics.fillRect(26, 18 + levitateOffset, 3, 3.5); graphics.fillRect(35, 18 + levitateOffset, 3, 3.5);
+      graphics.fillStyle(0x38bdf8, 1); // Brillo ojos cian lunar
+      graphics.fillRect(27, 18 + levitateOffset, 1.5, 1.5); graphics.fillRect(36, 18 + levitateOffset, 1.5, 1.5);
+    }
+
+    // Cabello Místico de Luna (Plateado / Azul Noche)
+    graphics.fillStyle(hairHex || 0xcbd5e1, 1);
+    graphics.fillEllipse(32, 12 + levitateOffset, 20, 10);
+    if (isFemale) {
+      graphics.fillRect(19, 14 + levitateOffset, 5, 26);
+      graphics.fillRect(40, 14 + levitateOffset, 5, 26);
+    } else {
+      graphics.fillRect(22, 4 + levitateOffset, 20, 10);
     }
   }
 

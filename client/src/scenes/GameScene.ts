@@ -251,6 +251,11 @@ export class GameScene extends Phaser.Scene {
     const cls = p.characterClass || 'arquero';
     const gender = p.gender || 'femenino';
 
+    this.currentCharacterName = name;
+    this.currentCharacterData = p;
+    localStorage.setItem('atnight_active_char', name);
+    localStorage.setItem('atnight_active_char_data', JSON.stringify(p));
+
     console.log(`🎨 Generando textura y apariencia dinámica para: ${name} (${cls}, ${gender})`);
 
     try {

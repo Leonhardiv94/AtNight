@@ -3112,6 +3112,16 @@
       window.selectedCharacterName = characterName;
       localStorage.setItem('atnight_active_char', characterName);
 
+      try {
+        const cachedRaw = localStorage.getItem('atnight_active_char_data');
+        if (cachedRaw) {
+          const cached = JSON.parse(cachedRaw);
+          if (cached.characterName !== characterName) {
+            localStorage.removeItem('atnight_active_char_data');
+          }
+        }
+      } catch (_e) {}
+
       const overlay = document.getElementById('auth-screen-overlay');
       if (overlay) overlay.classList.add('hidden');
 

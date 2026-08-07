@@ -82,10 +82,10 @@
       }
     ],
     "lastPosition": {
-      "x": 0,
-      "y": 1132
+      "x": -196.06462460731382,
+      "y": 1468.7095998375164
     },
-    "updatedAt": "2026-08-03T00:58:26.754Z"
+    "updatedAt": "2026-08-07T23:20:06.542Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -137,10 +137,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 0,
-      "y": 1132
+      "x": 800.3643869676549,
+      "y": 1208.4057317506747
     },
-    "updatedAt": "2026-07-27T02:39:47.855Z"
+    "updatedAt": "2026-08-07T23:18:17.502Z"
   },
   "Guerrera": {
     "characterName": "Guerrera",
@@ -220,7 +220,7 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-08-03T19:43:35.904Z"
+    "updatedAt": "2026-08-07T23:13:24.442Z"
   },
   "Gerrero": {
     "characterName": "Gerrero",
@@ -231,7 +231,7 @@
     "hairColor": "#fde047",
     "outfitColor": "#eab308",
     "level": 1,
-    "xp": 0,
+    "xp": 76,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -270,12 +270,29 @@
     "maxHp": 100,
     "mana": 10,
     "maxMana": 10,
-    "inventory": [],
+    "inventory": [
+      {
+        "id": "gold",
+        "name": "Monedas de Oro",
+        "icon": "",
+        "count": 44,
+        "category": "especiales",
+        "weight": 0
+      },
+      {
+        "id": "chicken_egg",
+        "name": "Huevo de Pollo",
+        "icon": "",
+        "count": 1,
+        "category": "recursos",
+        "weight": 1
+      }
+    ],
     "lastPosition": {
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-28T19:06:04.887Z"
+    "updatedAt": "2026-08-07T23:15:07.816Z"
   },
   "Mago": {
     "characterName": "Mago",
@@ -327,10 +344,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 0,
-      "y": 1132
+      "x": -65.18097122674172,
+      "y": 958.7909976136079
     },
-    "updatedAt": "2026-07-29T18:29:49.069Z"
+    "updatedAt": "2026-08-07T23:14:03.356Z"
   },
   "Maga": {
     "characterName": "Maga",
@@ -354,6 +371,6 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-07-29T19:04:17.757Z"
+    "updatedAt": "2026-08-07T23:23:59.995Z"
   }
 }

@@ -2908,9 +2908,7 @@
     const CHARACTER_CLASSES = [
       { id: 'espadachin', name: '⚔️ ESPADACHÍN', desc: 'Guerrero resistente de combate cuerpo a cuerpo' },
       { id: 'arquero', name: '🏹 ARQUERO', desc: 'Tirador ágil con gran alcance y precisión' },
-      { id: 'mago', name: '🔮 MAGO', desc: 'Maestro de las artes místicas y hechizos de zona' },
-      { id: 'amigo_sol', name: '☀️ AMIGO DEL SOL', desc: 'Paladín radiante con coraza bendecida por el sol' },
-      { id: 'amigo_luna', name: '🌙 AMIGO DE LA LUNA', desc: 'Sombra sigilosa con dagas gemelas de medianoche' }
+      { id: 'mago', name: '🔮 MAGO', desc: 'Maestro de las artes místicas y hechizos de zona' }
     ];
 
     let currentClassIndex = 0;
@@ -2958,7 +2956,13 @@
       if (!container) return;
 
       container.innerHTML = '';
-      characters.forEach(c => {
+      const validChars = characters.filter(c => c.characterClass !== 'amigo_sol' && c.characterClass !== 'amigo_luna');
+      if (validChars.length === 0) {
+        openCharacterCreatorView(false);
+        return;
+      }
+
+      validChars.forEach(c => {
         const classObj = CHARACTER_CLASSES.find(cl => cl.id === c.characterClass) || CHARACTER_CLASSES[0];
         const genderIcon = c.gender === 'femenino' ? '♀' : '♂';
         const outfitHex = c.outfitColor || '#0284c7';
@@ -3326,49 +3330,6 @@
           pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22, 3, 3); pCtx.fillRect(35, 22, 3, 3);
 
           pCtx.fillStyle = '#f8fafc'; pCtx.beginPath(); pCtx.ellipse(32, 16, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillRect(19, 17, 5, 24); pCtx.fillRect(39, 17, 5, 24);
-        } else if (clsId === 'amigo_sol') {
-          // Amigo del Sol (Corona Solar Radiante + Emblema Solar en Pecho)
-          pCtx.fillStyle = '#fbbf24'; pCtx.beginPath(); pCtx.arc(32, 22, 16, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#ffffff'; pCtx.beginPath(); pCtx.arc(32, 22, 9, 0, Math.PI * 2); pCtx.fill();
-
-          pCtx.fillStyle = '#1c1917'; pCtx.fillRect(23, 76, 7, 24); pCtx.fillRect(34, 76, 7, 24);
-          pCtx.fillStyle = outfitC || '#ea580c'; pCtx.fillRect(20, 30, 24, 46);
-          pCtx.fillStyle = '#fbbf24'; pCtx.beginPath(); pCtx.arc(32, 42, 6, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#ef4444'; pCtx.beginPath(); pCtx.arc(32, 42, 3, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#fbbf24'; pCtx.fillRect(20, 56, 24, 4);
-
-          pCtx.fillStyle = skinC; pCtx.fillRect(15, 34, 5, 26); pCtx.fillRect(44, 34, 5, 26);
-          pCtx.fillStyle = '#fbbf24'; pCtx.beginPath(); pCtx.arc(17, 34, 4.5, 0, Math.PI * 2); pCtx.arc(47, 34, 4.5, 0, Math.PI * 2); pCtx.fill();
-
-          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.ellipse(32, 22, isFemale ? 7.5 : 9, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22, 3, 3); pCtx.fillRect(35, 22, 3, 3);
-          pCtx.fillStyle = hairC || '#fbbf24'; pCtx.beginPath(); pCtx.ellipse(32, 16, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
-        } else if (clsId === 'amigo_luna') {
-          // Amigo de la Luna (Levitación Flotante Mística + Dagas Gemelas)
-          pCtx.fillStyle = '#38bdf8'; pCtx.beginPath(); pCtx.ellipse(32, 84, 18, 6, 0, 0, Math.PI * 2); pCtx.fill();
-
-          const lev = -8;
-          pCtx.fillStyle = outfitC || '#090d16'; pCtx.beginPath(); pCtx.moveTo(20, 30 + lev); pCtx.lineTo(16, 76 + lev); pCtx.lineTo(48, 76 + lev); pCtx.lineTo(44, 30 + lev); pCtx.closePath(); pCtx.fill();
-          pCtx.fillStyle = '#1e1b4b'; pCtx.fillRect(23, 34 + lev, 18, 42);
-          pCtx.fillStyle = '#cbd5e1'; pCtx.fillRect(21, 52 + lev, 22, 4);
-
-          // Dagas Gemelas
-          pCtx.fillStyle = '#cbd5e1';
-          pCtx.beginPath(); pCtx.moveTo(14, 38 + lev); pCtx.lineTo(12, 58 + lev); pCtx.lineTo(16, 50 + lev); pCtx.closePath(); pCtx.fill();
-          pCtx.beginPath(); pCtx.moveTo(50, 38 + lev); pCtx.lineTo(52, 58 + lev); pCtx.lineTo(48, 50 + lev); pCtx.closePath(); pCtx.fill();
-
-          pCtx.fillStyle = skinC; pCtx.fillRect(16, 34 + lev, 4, 20); pCtx.fillRect(44, 34 + lev, 4, 20);
-          pCtx.fillStyle = skinC; pCtx.beginPath(); pCtx.ellipse(32, 22 + lev, isFemale ? 7.5 : 9, 9.5, 0, 0, Math.PI * 2); pCtx.fill();
-          pCtx.fillStyle = '#0f172a'; pCtx.fillRect(26, 22 + lev, 3, 3); pCtx.fillRect(35, 22 + lev, 3, 3);
-          pCtx.fillStyle = '#38bdf8'; pCtx.fillRect(26.5, 22 + lev, 1.5, 1.5); pCtx.fillRect(35.5, 22 + lev, 1.5, 1.5);
-
-          pCtx.fillStyle = hairC || '#cbd5e1'; pCtx.beginPath(); pCtx.ellipse(32, 16 + lev, 10, 5, 0, 0, Math.PI * 2); pCtx.fill();
-        } else {
-          // Paladines Sol / Luna
-          pCtx.fillStyle = outfitC; pCtx.fillRect(20, 30, 24, 46);
-          pCtx.fillStyle = skinC; pCtx.fillRect(24, 16, 16, 16);
-          pCtx.fillStyle = hairC; pCtx.beginPath(); pCtx.arc(32, 18, 12, Math.PI, Math.PI * 2); pCtx.fill();
         }
 
         // Estampar el canvas offscreen 100% idéntico sobre el pedestal isométrico (escalado 2.2x)

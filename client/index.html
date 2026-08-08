@@ -2926,10 +2926,12 @@
         state.spellPoints--;
         spellState.level++;
         state.spells[spellId] = spellState;
+        saveSpellsState();
       } else if (delta < 0 && spellState.level > 1) { // El nivel mínimo es estrictamente 1
         state.spellPoints++;
         spellState.level--;
         state.spells[spellId] = spellState;
+        saveSpellsState();
       }
       updatePoderesUI();
     }

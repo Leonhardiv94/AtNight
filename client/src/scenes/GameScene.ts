@@ -2835,7 +2835,10 @@ export class GameScene extends Phaser.Scene {
       const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, c.sprite.x, c.sprite.y);
       if (dist <= attackRange) {
         const isCrit = Math.random() < 0.2;
-        const damage = isCrit ? Math.round(this.playerAttackPower * 1.8) : this.playerAttackPower;
+        const fuerzaStat = ((window as any).characterStats?.stats?.fuerza || 0);
+        const statMultiplier = 1 + (fuerzaStat * 0.001);
+        const baseDmg = isCrit ? Math.round(this.playerAttackPower * 1.8) : this.playerAttackPower;
+        const damage = Math.max(1, Math.round(baseDmg * statMultiplier));
 
         c.hp -= damage;
 
@@ -3302,17 +3305,30 @@ export class GameScene extends Phaser.Scene {
         this.playerAttackPower += 8;
         leveledUp = true;
 
-        // Otorgar +5 Puntos de Características por cada nivel ganado
-        if (typeof window !== 'undefined' && (window as any).characterStats) {
-          const stats = (window as any).characterStats;
-          stats.level = this.playerLevel;
-          stats.availablePoints += 5;
-          if ((window as any).updateCaracteristicasUI) {
-            (window as any).updateCaracteristicasUI();
+        // Otorgar +5 Puntos de Características y +1 Punto de Poder por cada nivel ganado
+        if (typeof window !== 'undefined') {
+          if ((window as any).characterStats) {
+            const stats = (window as any).characterStats;
+            stats.level = this.playerLevel;
+            stats.availablePoints += 5;
+            if ((window as any).updateCaracteristicasUI) {
+              (window as any).updateCaracteristicasUI();
+            }
+          }
+
+          if ((window as any).playerSpellsState) {
+            const spellsState = (window as any).playerSpellsState;
+            spellsState.spellPoints = (spellsState.spellPoints || 0) + 1;
+            if (typeof (window as any).saveSpellsState === 'function') {
+              (window as any).saveSpellsState();
+            }
+            if (typeof (window as any).updatePoderesUI === 'function') {
+              (window as any).updatePoderesUI();
+            }
           }
         }
 
-        this.showFloatingText(this.player.x, this.player.y - 50, `¡NIVEL ALCANZADO! LV. ${this.playerLevel} (+5 Puntos)`, '#00f2fe');
+        this.showFloatingText(this.player.x, this.player.y - 50, `¡NIVEL ALCANZADO! LV. ${this.playerLevel} (+5 Carac. / +1 Poder)`, '#00f2fe');
       } else {
         break;
       }

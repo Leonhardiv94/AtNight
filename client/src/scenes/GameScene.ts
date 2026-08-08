@@ -32,6 +32,7 @@ export class GameScene extends Phaser.Scene {
   private wasdKeys!: any;
 
   // Player Stats
+  public characterClass: string = 'arquero';
   private playerLevel: number = 1;
   private playerXp: number = 0;
   private playerHp: number = 100;
@@ -252,6 +253,7 @@ export class GameScene extends Phaser.Scene {
     const gender = p.gender || 'femenino';
 
     this.currentCharacterName = name;
+    this.characterClass = cls;
     this.currentCharacterData = p;
     localStorage.setItem('atnight_active_char', name);
     localStorage.setItem('atnight_active_char_data', JSON.stringify(p));
@@ -2313,6 +2315,17 @@ export class GameScene extends Phaser.Scene {
     this.wasdKeys.skill1.on('down', () => this.handlePlayerAttack());
     this.wasdKeys.skill2.on('down', () => this.handleSpecialSkill());
     this.wasdKeys.gather.on('down', () => this.handleGathering());
+
+    // Hotbar numeric keys 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
+    this.input.keyboard!.on('keydown', (event: KeyboardEvent) => {
+      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+      if (activeTag === 'input' || activeTag === 'select' || activeTag === 'textarea') return;
+
+      const key = event.key;
+      if (['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].includes(key)) {
+        this.triggerHotbarSlot(key);
+      }
+    });
   }
 
   private getTileElevation(gridX: number, gridY: number): number {

@@ -2293,32 +2293,40 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateTileGridMarker(worldX: number, worldY: number) {
-    // Snap world coordinates to exact Isometric Diamond Tile (64x32px)
-    const isoI = Math.round((worldX / 32 + worldY / 16) / 2);
-    const isoJ = Math.round((worldY / 16 - worldX / 32) / 2);
-    const cellX = (isoI - isoJ) * 32;
-    const cellY = (isoI + isoJ) * 16;
+    // Snap world coordinates to exact Isometric Diamond Tile (128x64px) matching createIslandMap
+    const tileW = 128;
+    const tileH = 64;
+    const halfW = tileW / 2; // 64
+    const halfH = tileH / 2; // 32
+    const elevationOffset = -20; // Grass tile elevation offset
+
+    const gridX = Math.round((worldX / halfW + (worldY - elevationOffset) / halfH) / 2);
+    const gridY = Math.round(((worldY - elevationOffset) / halfH - worldX / halfW) / 2);
+
+    const cellX = (gridX - gridY) * halfW;
+    const cellY = (gridX + gridY) * halfH;
 
     if (!this.targetTileGraphic) {
       this.targetTileGraphic = this.add.graphics();
     }
 
-    // Render persistent cyan tile grid highlight
+    // Render persistent cyan tile grid highlight matching 128x64px tiles
     this.targetTileGraphic.clear();
-    this.targetTileGraphic.lineStyle(2, 0x00f2fe, 0.95);
-    this.targetTileGraphic.fillStyle(0x00f2fe, 0.25);
+    this.targetTileGraphic.lineStyle(2.5, 0x00f2fe, 0.95);
+    this.targetTileGraphic.fillStyle(0x00f2fe, 0.3);
 
-    // Draw Isometric Diamond Tile (64x32)
+    // Draw Isometric Diamond Tile matching 128x64px asset bounds exactly
+    const topY = cellY + elevationOffset;
     this.targetTileGraphic.beginPath();
-    this.targetTileGraphic.moveTo(cellX, cellY - 16);
-    this.targetTileGraphic.lineTo(cellX + 32, cellY);
-    this.targetTileGraphic.lineTo(cellX, cellY + 16);
-    this.targetTileGraphic.lineTo(cellX - 32, cellY);
+    this.targetTileGraphic.moveTo(cellX, topY);
+    this.targetTileGraphic.lineTo(cellX + halfW, topY + halfH);
+    this.targetTileGraphic.lineTo(cellX, topY + tileH);
+    this.targetTileGraphic.lineTo(cellX - halfW, topY + halfH);
     this.targetTileGraphic.closePath();
     this.targetTileGraphic.fillPath();
     this.targetTileGraphic.strokePath();
 
-    this.targetTileGraphic.setDepth(cellY - 20);
+    this.targetTileGraphic.setDepth(cellY - 50);
   }
 
   private handlePlayerMovement() {

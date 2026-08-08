@@ -2263,13 +2263,10 @@ export class GameScene extends Phaser.Scene {
 
       sprite.on('pointerover', () => {
         creature.isHovered = true;
-        hoverLabel.setText(`Pollo Niv. ${creature.level}`);
-        hoverLabel.setVisible(true);
       });
 
       sprite.on('pointerout', () => {
         creature.isHovered = false;
-        hoverLabel.setVisible(false);
       });
 
       this.creatures.push(creature);
@@ -2810,18 +2807,18 @@ export class GameScene extends Phaser.Scene {
     }
 
     // Dynamic position above creature
-    const barWidth = 46;
-    const barHeight = 6;
+    const barWidth = 52;
+    const barHeight = 7;
     const x = c.sprite.x - barWidth / 2;
-    const y = c.sprite.y - 34;
+    const y = c.sprite.y - 32;
 
     c.hpBar.clear();
-    c.hpBar.setDepth(c.sprite.y + 100);
+    c.hpBar.setDepth(c.sprite.y + 5000);
 
     // Dark background container with high contrast border
-    c.hpBar.fillStyle(0x0f172a, 0.9);
+    c.hpBar.fillStyle(0x0f172a, 0.95);
     c.hpBar.fillRect(x - 1, y - 1, barWidth + 2, barHeight + 2);
-    c.hpBar.lineStyle(1, isSelected ? 0xef4444 : 0x475569, 1);
+    c.hpBar.lineStyle(1.5, isSelected ? 0xef4444 : 0x475569, 1);
     c.hpBar.strokeRect(x - 1, y - 1, barWidth + 2, barHeight + 2);
 
     // HP Fill
@@ -2837,11 +2834,11 @@ export class GameScene extends Phaser.Scene {
       c.hpBar.fillRect(x, y, fillWidth, barHeight);
     }
 
-    // Floating text label displaying creature level and numerical remaining health: [Pollo Niv. 1  (35/60 HP)]
+    // Floating text label displaying creature level and numerical remaining health: [Pollo Niv. 1  •  43 / 60 HP]
     if (c.hoverLabel) {
-      c.hoverLabel.setPosition(c.sprite.x, y - 4);
-      c.hoverLabel.setDepth(c.sprite.y + 200);
-      c.hoverLabel.setText(`Pollo Niv. ${c.level}  (${c.hp}/${c.maxHp} HP)`);
+      c.hoverLabel.setPosition(c.sprite.x, y - 3);
+      c.hoverLabel.setDepth(c.sprite.y + 10000);
+      c.hoverLabel.setText(`Pollo Niv. ${c.level}  •  ${c.hp} / ${c.maxHp} HP`);
       c.hoverLabel.setVisible(true);
     }
   }

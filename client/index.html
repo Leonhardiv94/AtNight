@@ -1232,7 +1232,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* Pestañas de Nivel (Nivel 1, Nivel 2, Nivel 3) */
+    /* Pestañas de Nivel (Nivel 1, Nivel 2, Nivel 3) - Completamente Estáticas */
     .poderes-tabs-nav {
       display: flex;
       gap: 4px;
@@ -1253,20 +1253,24 @@
       padding: 0.5rem 0.2rem;
       cursor: pointer;
       text-align: center;
-      transition: all 0.15s ease;
+      box-sizing: border-box;
+      transform: none !important;
     }
 
     .poderes-tab-btn:hover {
       background: rgba(14, 165, 233, 0.15);
       color: #ffffff;
+      transform: none !important;
     }
 
     .poderes-tab-btn.active {
       background: rgba(14, 165, 233, 0.25);
-      border-color: rgba(14, 165, 233, 0.6);
-      border-top: 2px solid #00f2fe;
+      border: 1px solid rgba(14, 165, 233, 0.8);
+      border-bottom: none;
       color: #ffffff;
       font-weight: 800;
+      box-shadow: none !important;
+      transform: none !important;
     }
 
     .poderes-detail-row {
@@ -1303,7 +1307,7 @@
       line-height: 1.4;
     }
 
-    /* Pestañas de Navegación del Inventario (Browser-style tabs sin animación de agrandamiento) */
+    /* Pestañas de Navegación del Inventario (Browser-style tabs sin animación de agrandamiento ni deslazamientos) */
     .inv-tabs-nav {
       display: flex;
       gap: 3px;
@@ -1325,8 +1329,8 @@
       padding: 0.45rem 0.2rem;
       cursor: pointer;
       text-align: center;
-      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
       white-space: nowrap;
+      box-sizing: border-box;
       transform: none !important;
     }
 
@@ -1338,8 +1342,8 @@
 
     .inv-tab-btn.active {
       background: rgba(16, 185, 129, 0.25);
-      border-color: rgba(16, 185, 129, 0.6);
-      border-top: 2px solid #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.8);
+      border-bottom: none;
       color: #ffffff;
       font-weight: 800;
       box-shadow: none !important;
@@ -2903,7 +2907,7 @@
                 </div>
               </div>
               <div class="spell-controls-box" onclick="event.stopPropagation()">
-                <button type="button" class="spell-btn" ${spellState.level <= 0 ? 'disabled' : ''} onclick="upgradeSpell('${spellId}', -1)">-</button>
+                <button type="button" class="spell-btn" ${spellState.level <= 1 ? 'disabled' : ''} onclick="upgradeSpell('${spellId}', -1)">-</button>
                 <button type="button" class="spell-btn" ${(spellState.level >= 3 || state.spellPoints <= 0) ? 'disabled' : ''} onclick="upgradeSpell('${spellId}', 1)">+</button>
               </div>
             `;
@@ -2929,13 +2933,13 @@
 
     function upgradeSpell(spellId, delta) {
       const state = window.playerSpellsState;
-      const spellState = state.spells[spellId] || { level: 0 };
+      const spellState = state.spells[spellId] || { level: 1 };
 
       if (delta > 0 && state.spellPoints > 0 && spellState.level < 3) {
         state.spellPoints--;
         spellState.level++;
         state.spells[spellId] = spellState;
-      } else if (delta < 0 && spellState.level > 0) {
+      } else if (delta < 0 && spellState.level > 1) { // El nivel mínimo es estrictamente 1
         state.spellPoints++;
         spellState.level--;
         state.spells[spellId] = spellState;

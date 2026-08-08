@@ -320,8 +320,13 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      cursor: not-allowed;
+      cursor: pointer;
+      user-select: none;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .power-slot * {
+      pointer-events: none;
     }
 
     .power-slot:hover {
@@ -1132,6 +1137,11 @@
       align-items: center;
       justify-content: center;
       cursor: grab;
+      user-select: none;
+    }
+
+    .spell-icon-box * {
+      pointer-events: none;
     }
 
     .spell-icon-box:active {
@@ -2992,6 +3002,8 @@
     }
 
     /* Hotbar 1 a 0 Drag & Drop handlers */
+    window.draggingSpellId = null;
+
     function renderHotbarUI() {
       const grid = document.getElementById('hotbar-powers-grid');
       if (!grid) return;
@@ -3008,10 +3020,11 @@
 
         slotItem.innerHTML = `
           <div class="power-slot ${isAssigned ? '' : 'locked'}" 
+               ondragenter="allowHotbarDrop(event)"
                ondragover="allowHotbarDrop(event)" 
                ondrop="onHotbarDrop(event, '${k}')"
-               onclick="triggerHotbarAction('${k}')"
-               title="${isAssigned ? window.spellDatabase[assignedSpellId].name : 'Casilla Vacía (Arrastra un poder aquí desde la ventana de poderes)'}">
+               onclick="handleHotbarSlotClick('${k}')"
+               title="${isAssigned ? window.spellDatabase[assignedSpellId].name : 'Casilla Vacía (Arrastra un poder aquí desde la ventana de poderes o selecciona uno a la izquierda y haz clic en la casilla)'}">
             ${isAssigned ? `
               <svg viewBox="0 0 32 32" class="spell-arrow-svg">
                 <line x1="4" y1="28" x2="24" y2="8" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round"/>
@@ -3033,24 +3046,55 @@
     window.renderHotbarUI = renderHotbarUI;
 
     function onSpellDragStart(event, spellId) {
-      event.dataTransfer.setData('text/plain', spellId);
+      window.draggingSpellId = spellId;
+      try {
+        event.dataTransfer.effectAllowed = 'copy';
+        event.dataTransfer.setData('text/plain', spellId);
+        event.dataTransfer.setData('spellId', spellId);
+      } catch (_e) {}
     }
     window.onSpellDragStart = onSpellDragStart;
 
     function allowHotbarDrop(event) {
       event.preventDefault();
+      try {
+        event.dataTransfer.dropEffect = 'copy';
+      } catch (_e) {}
     }
     window.allowHotbarDrop = allowHotbarDrop;
 
     function onHotbarDrop(event, slotKey) {
       event.preventDefault();
-      const spellId = event.dataTransfer.getData('text/plain');
+      event.stopPropagation();
+
+      let spellId = null;
+      try {
+        spellId = event.dataTransfer.getData('text/plain') || event.dataTransfer.getData('spellId');
+      } catch (_e) {}
+
+      if (!spellId) spellId = window.draggingSpellId || window.playerSpellsState.selectedSpellId;
+
       if (spellId && window.spellDatabase[spellId]) {
         window.playerSpellsState.hotbar[slotKey] = spellId;
         renderHotbarUI();
       }
+      window.draggingSpellId = null;
     }
     window.onHotbarDrop = onHotbarDrop;
+
+    function handleHotbarSlotClick(slotKey) {
+      const modal = document.getElementById('poderes-modal-window');
+      const isModalActive = modal && modal.classList.contains('active');
+      const selectedId = window.playerSpellsState.selectedSpellId;
+
+      if (isModalActive && selectedId && window.spellDatabase[selectedId]) {
+        window.playerSpellsState.hotbar[slotKey] = selectedId;
+        renderHotbarUI();
+        return;
+      }
+      triggerHotbarAction(slotKey);
+    }
+    window.handleHotbarSlotClick = handleHotbarSlotClick;
 
     function triggerHotbarAction(slotKey) {
       if (window.gameInstance && window.gameInstance.scene) {

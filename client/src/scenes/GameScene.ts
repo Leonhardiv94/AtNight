@@ -3328,7 +3328,9 @@ export class GameScene extends Phaser.Scene {
           }
         }
 
-        this.showFloatingText(this.player.x, this.player.y - 50, `¡NIVEL ALCANZADO! LV. ${this.playerLevel} (+5 Carac. / +1 Poder)`, '#00f2fe');
+        if (typeof window !== 'undefined' && (window as any).showLevelUpModal) {
+          (window as any).showLevelUpModal(this.playerLevel);
+        }
       } else {
         break;
       }

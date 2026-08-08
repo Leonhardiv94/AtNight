@@ -718,6 +718,182 @@
       color: #38bdf8; /* Formato (0) aportado por equipo */
     }
 
+    /* Modal de Subida de Nivel (Level Up Modal) */
+    .level-up-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeInModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .level-up-card {
+      position: relative;
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98));
+      border: 2px solid rgba(251, 191, 36, 0.6);
+      box-shadow: 0 0 40px rgba(251, 191, 36, 0.35), 0 20px 40px rgba(0, 0, 0, 0.6);
+      border-radius: 16px;
+      padding: 2.2rem 2rem;
+      width: 90vw;
+      max-width: 440px;
+      text-align: center;
+      color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      animation: scaleUpModal 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow: hidden;
+    }
+
+    .level-up-header-glow {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.5) 0%, rgba(251, 191, 36, 0) 70%);
+      pointer-events: none;
+    }
+
+    .level-up-icon-box {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 0.75rem auto;
+      filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.7));
+      animation: pulseStar 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulseStar {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.7)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 26px rgba(251, 191, 36, 1)); }
+    }
+
+    .level-up-title {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #fbbf24;
+      text-shadow: 0 2px 10px rgba(251, 191, 36, 0.5);
+      margin: 0 0 0.3rem 0;
+    }
+
+    .level-up-level-badge {
+      display: inline-block;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      color: #fde047;
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 0.35rem 1.2rem;
+      border-radius: 20px;
+      margin-bottom: 1.4rem;
+    }
+
+    .level-up-rewards-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .level-up-rewards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .level-up-reward-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .level-up-reward-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(251, 191, 36, 0.4);
+    }
+
+    .reward-icon-container {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon-bg {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+
+    .power-icon-bg {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .reward-svg-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .reward-info {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .reward-amount {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .reward-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .level-up-confirm-btn {
+      width: 100%;
+      padding: 0.85rem 0;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .level-up-confirm-btn:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+    }
+
     .base-allocated {
       color: #fbbf24; /* Formato +0 aportado por puntos */
       margin-left: 2px;
@@ -2716,9 +2892,80 @@
     </div>
   </div>
 
+  <!-- Modal de Subida de Nivel (Level Up Modal) -->
+  <div id="level-up-modal" class="level-up-overlay" style="display: none;">
+    <div class="level-up-card">
+      <div class="level-up-header-glow"></div>
+      
+      <!-- Sparkle SVG Header Icon -->
+      <div class="level-up-icon-box">
+        <svg viewBox="0 0 64 64" class="level-up-badge-svg">
+          <defs>
+            <linearGradient id="goldStarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fef08a"/>
+              <stop offset="50%" stop-color="#f59e0b"/>
+              <stop offset="100%" stop-color="#b45309"/>
+            </linearGradient>
+          </defs>
+          <path d="M32 4 L39.5 24 L60 25.5 L44.5 39 L49.5 59 L32 48 L14.5 59 L19.5 39 L4 25.5 L24.5 24 Z" fill="url(#goldStarGrad)" stroke="#fff" stroke-width="2.5"/>
+          <circle cx="32" cy="32" r="10" fill="#ffffff" opacity="0.9"/>
+          <path d="M32 25 L34 30 L39 32 L34 34 L32 39 L30 34 L25 32 L30 30 Z" fill="#b45309"/>
+        </svg>
+      </div>
+
+      <h2 class="level-up-title">¡NUEVO NIVEL!</h2>
+      <div class="level-up-level-badge" id="level-up-modal-level-text">¡Has alcanzado el Nivel 2!</div>
+
+      <div class="level-up-rewards-title">RECOMPENSAS RECIBIDAS</div>
+
+      <div class="level-up-rewards-grid">
+        <!-- Recompensa 1: +5 Puntos de Características -->
+        <div class="level-up-reward-item">
+          <div class="reward-icon-container stat-icon-bg">
+            <svg viewBox="0 0 24 24" class="reward-svg-icon">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="reward-info">
+            <span class="reward-amount">+5</span>
+            <span class="reward-label">Puntos de Características</span>
+          </div>
+        </div>
+
+        <!-- Recompensa 2: +1 Punto de Poder -->
+        <div class="level-up-reward-item">
+          <div class="reward-icon-container power-icon-bg">
+            <svg viewBox="0 0 24 24" class="reward-svg-icon">
+              <path d="M12 2L14.5 9H22L16 13.5L18.5 21L12 16.5L5.5 21L8 13.5L2 9H9.5L12 2Z" fill="#ef4444" stroke="#ffffff" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="reward-info">
+            <span class="reward-amount">+1</span>
+            <span class="reward-label">Punto de Poder</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="level-up-confirm-btn" onclick="closeLevelUpModal()">¡EXCELENTE!</button>
+    </div>
+  </div>
+
   <!-- Main JavaScript Entrypoint -->
   <script type="module" src="/src/main.ts"></script>
   <script>
+    function showLevelUpModal(newLevel) {
+      const modal = document.getElementById('level-up-modal');
+      const levelText = document.getElementById('level-up-modal-level-text');
+      if (levelText) levelText.innerText = `¡Has alcanzado el Nivel ${newLevel}!`;
+      if (modal) modal.style.display = 'flex';
+    }
+    window.showLevelUpModal = showLevelUpModal;
+
+    function closeLevelUpModal() {
+      const modal = document.getElementById('level-up-modal');
+      if (modal) modal.style.display = 'none';
+    }
+    window.closeLevelUpModal = closeLevelUpModal;
     // Estado Global del Personaje & Características
     window.characterStats = {
       name: "Héroe de la Noche",

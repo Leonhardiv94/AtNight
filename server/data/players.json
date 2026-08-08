@@ -8,7 +8,7 @@
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
     "level": 2,
-    "xp": 84,
+    "xp": 159,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -60,7 +60,7 @@
         "id": "gold",
         "name": "Monedas de Oro",
         "icon": "",
-        "count": 827,
+        "count": 874,
         "category": "especiales",
         "weight": 0
       },
@@ -68,7 +68,7 @@
         "id": "chicken_egg",
         "name": "Huevo de Pollo",
         "icon": "",
-        "count": 4,
+        "count": 5,
         "category": "recursos",
         "weight": 1
       },
@@ -93,7 +93,7 @@
       "x": 0,
       "y": 1152
     },
-    "updatedAt": "2026-08-08T23:06:59.808Z"
+    "updatedAt": "2026-08-08T23:13:47.263Z"
   },
   "Arquero": {
     "characterName": "Arquero",

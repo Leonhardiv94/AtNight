@@ -2313,8 +2313,6 @@ export class GameScene extends Phaser.Scene {
     });
 
     // Keyboard Shortcuts
-    this.wasdKeys.skill1.on('down', () => this.handlePlayerAttack());
-    this.wasdKeys.skill2.on('down', () => this.handleSpecialSkill());
     this.wasdKeys.gather.on('down', () => this.handleGathering());
 
     // Hotbar numeric keys 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
@@ -2488,17 +2486,17 @@ export class GameScene extends Phaser.Scene {
       onComplete: () => bowContainer.destroy()
     });
 
-    // Range Check Calculation
-    const maxRangeTiles = lvlInfo.range || 5; // 5 casillas en niv 1 y 2, 6 casillas en niv 3
+    // Range Check Calculation: Max 5 tiles (Lvl 1 & 2) or 6 tiles (Lvl 3) ALWAYS
+    const maxRangeTiles = lvlInfo.range || 5;
     const tileWidthPx = 128 * (2 / 3); // ~85.333px por casilla
     const maxRangePx = maxRangeTiles * tileWidthPx;
     const distToTarget = Phaser.Math.Distance.Between(this.player.x, this.player.y - 20, targetX, targetY);
 
-    const isWithinRange = distToTarget <= maxRangePx;
-    const finalDestX = isWithinRange ? targetX : this.player.x + Math.cos(angleRad) * maxRangePx;
-    const finalDestY = isWithinRange ? targetY : (this.player.y - 20) + Math.sin(angleRad) * maxRangePx;
+    const isTargetHitDirectly = !!(this.selectedCreature && this.selectedCreature.sprite.active && this.selectedCreature.hp > 0 && distToTarget <= maxRangePx);
+    const flyDistance = Math.min(distToTarget, maxRangePx);
+    const finalDestX = this.player.x + Math.cos(angleRad) * flyDistance;
+    const finalDestY = (this.player.y - 20) + Math.sin(angleRad) * flyDistance;
 
-    const flyDistance = isWithinRange ? distToTarget : maxRangePx;
     const flyDuration = Math.max(160, Math.min(600, (flyDistance / 650) * 1000));
 
     // Spawn Red Flaming Arrow Projectile 🔥🏹
@@ -2545,9 +2543,21 @@ export class GameScene extends Phaser.Scene {
       onComplete: () => {
         trailTimer.destroy();
 
-        if (isWithinRange) {
-          // --- ALCANZA AL OBJETIVO ---
-          // Impact Spark Visual Effect
+        // Check if there is an actual creature hit at finalDestX, finalDestY
+        let hitCreature: Creature | null = null;
+        if (isTargetHitDirectly) {
+          hitCreature = this.selectedCreature;
+        } else {
+          this.creatures.forEach(c => {
+            if (c.sprite.active && c.hp > 0) {
+              const d = Phaser.Math.Distance.Between(finalDestX, finalDestY, c.sprite.x, c.sprite.y);
+              if (d <= 45) hitCreature = c;
+            }
+          });
+        }
+
+        if (hitCreature && hitCreature.sprite.active && hitCreature.hp > 0) {
+          // --- IMPACTA A UNA CRIATURA ---
           const spark = this.add.circle(finalDestX, finalDestY, 16, 0xef4444, 0.85);
           spark.setDepth(finalDestY + 10);
           this.tweens.add({
@@ -2558,51 +2568,30 @@ export class GameScene extends Phaser.Scene {
             onComplete: () => spark.destroy()
           });
 
-          // Calculate Damage with Equal Probability in Range & Fuego Stat Multiplier
-          // Niv 1: 15, 16, 17, 18 (25% cada uno)
-          // Niv 2: 16, 17, 18, 19 (25% cada uno)
-          // Niv 3: 17, 18, 19, 20 (25% cada uno)
           const minDmg = lvlInfo.minDamage || 15;
           const maxDmg = lvlInfo.maxDamage || 18;
           const baseDamage = Phaser.Math.Between(minDmg, maxDmg);
 
           const fuegoStat = ((window as any).characterStats?.elements?.fuego?.equip || 0) + ((window as any).characterStats?.elements?.fuego?.base || 0);
-          const statMultiplier = 1 + (fuegoStat * 0.001); // 1 * 0.001 por cada punto de Fuego
+          const statMultiplier = 1 + (fuegoStat * 0.001);
           const finalDamage = Math.max(1, Math.round(baseDamage * statMultiplier));
 
-          // Find targeted or closest creature within 50px of impact
-          let hitCreature: Creature | null = this.selectedCreature;
-          if (!hitCreature || !hitCreature.sprite.active || hitCreature.hp <= 0) {
-            this.creatures.forEach(c => {
-              if (c.sprite.active && c.hp > 0) {
-                const d = Phaser.Math.Distance.Between(finalDestX, finalDestY, c.sprite.x, c.sprite.y);
-                if (d <= 50) hitCreature = c;
-              }
-            });
+          hitCreature.hp -= finalDamage;
+          if (!hitCreature.isAggro) {
+            hitCreature.isAggro = true;
+            hitCreature.state = 'PURSUIT';
           }
+          this.showFloatingText(hitCreature.sprite.x, hitCreature.sprite.y - 35, `-${finalDamage} 🔥`, '#ef4444');
+          hitCreature.sprite.setTint(0xff0000);
+          this.time.delayedCall(150, () => hitCreature?.sprite.clearTint());
 
-          if (hitCreature && hitCreature.sprite.active) {
-            hitCreature.hp -= finalDamage;
-            if (!hitCreature.isAggro) {
-              hitCreature.isAggro = true;
-              hitCreature.state = 'PURSUIT';
-            }
-            this.showFloatingText(hitCreature.sprite.x, hitCreature.sprite.y - 35, `-${finalDamage} 🔥`, '#ef4444');
-            hitCreature.sprite.setTint(0xff0000);
-            this.time.delayedCall(150, () => hitCreature?.sprite.clearTint());
-
-            if (hitCreature.hp <= 0) {
-              this.killCreature(hitCreature);
-            }
-          } else {
-            this.showFloatingText(finalDestX, finalDestY - 20, `-${finalDamage} 🔥`, '#ef4444');
+          if (hitCreature.hp <= 0) {
+            this.killCreature(hitCreature);
           }
 
           arrowContainer.destroy();
         } else {
-          // --- FUERA DE ALCANCE: CAE AL SUELO Y DESAPARECE ---
-          this.showFloatingText(finalDestX, finalDestY - 15, `Flecha fuera de alcance (Máx ${maxRangeTiles} casillas)`, '#94a3b8');
-
+          // --- SIN OBJETIVO O FUERA DE ALCANCE: LA FLECHA CAE AL SUELO Y DESAPARECE (SIN DAÑO) ---
           this.tweens.add({
             targets: arrowContainer,
             y: finalDestY + 14,

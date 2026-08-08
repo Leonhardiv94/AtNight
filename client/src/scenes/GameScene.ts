@@ -2143,12 +2143,12 @@ export class GameScene extends Phaser.Scene {
   private getPolloLevelData(level: number) {
     switch (level) {
       case 1:
-        return { maxHp: 100, scale: 0.81, xp: 50 }; // 0.9 * 0.9 = 0.81 relative to Level 3
+        return { maxHp: 60, scale: 0.81, xp: 50 };
       case 2:
-        return { maxHp: 200, scale: 0.90, xp: 75 }; // 0.9 relative to Level 3
+        return { maxHp: 70, scale: 0.90, xp: 75 };
       case 3:
       default:
-        return { maxHp: 300, scale: 1.00, xp: 100 }; // Level 3 base scale
+        return { maxHp: 80, scale: 1.00, xp: 100 };
     }
   }
 

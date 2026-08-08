@@ -2120,12 +2120,35 @@ export class GameScene extends Phaser.Scene {
     this.currentCharacterName = activeData.characterName || 'Leonhard1';
     this.currentCharacterData = activeData;
     this.characterClass = activeData.characterClass || 'arquero';
+    this.playerLevel = activeData.level || 1;
+    this.playerXp = activeData.xp || 0;
 
-    if (typeof (window as any).loadSavedSpellsState === 'function') {
-      (window as any).loadSavedSpellsState();
-    }
-    if (typeof (window as any).renderHotbarUI === 'function') {
-      (window as any).renderHotbarUI();
+    if (typeof window !== 'undefined') {
+      if ((window as any).characterStats) {
+        (window as any).characterStats.level = this.playerLevel;
+        if (activeData.availablePoints !== undefined) {
+          (window as any).characterStats.availablePoints = activeData.availablePoints;
+        }
+        if (activeData.elements) {
+          (window as any).characterStats.elements = activeData.elements;
+        }
+        if ((window as any).updateCaracteristicasUI) {
+          (window as any).updateCaracteristicasUI();
+        }
+      }
+
+      if (typeof (window as any).loadSavedSpellsState === 'function') {
+        (window as any).loadSavedSpellsState();
+      }
+      if (typeof (window as any).syncSpellPointsWithLevel === 'function') {
+        (window as any).syncSpellPointsWithLevel();
+      }
+      if (typeof (window as any).renderHotbarUI === 'function') {
+        (window as any).renderHotbarUI();
+      }
+      if (typeof (window as any).updatePoderesUI === 'function') {
+        (window as any).updatePoderesUI();
+      }
     }
 
     this.generateCustomPlayerTextures(activeData);

@@ -3094,7 +3094,42 @@
     }
     window.togglePoderesModal = togglePoderesModal;
 
+    function syncSpellPointsWithLevel() {
+      const state = window.playerSpellsState;
+      if (!state) return;
+
+      let charLevel = 1;
+      if (window.gameInstance && window.gameInstance.scene) {
+        const gameScene = window.gameInstance.scene.getScene('GameScene');
+        if (gameScene && gameScene.playerLevel) {
+          charLevel = gameScene.playerLevel;
+        }
+      }
+      if (window.characterStats && window.characterStats.level) {
+        charLevel = Math.max(charLevel, window.characterStats.level);
+      }
+
+      let spentPoints = 0;
+      if (state.spells) {
+        Object.keys(state.spells).forEach(sKey => {
+          const sp = state.spells[sKey];
+          if (sp && sp.level) {
+            spentPoints += Math.max(0, sp.level - 1);
+          }
+        });
+      }
+
+      const totalEarnedPoints = Math.max(0, charLevel - 1);
+      const expectedAvailable = Math.max(0, totalEarnedPoints - spentPoints);
+      if ((state.spellPoints || 0) < expectedAvailable) {
+        state.spellPoints = expectedAvailable;
+        saveSpellsState();
+      }
+    }
+    window.syncSpellPointsWithLevel = syncSpellPointsWithLevel;
+
     function updatePoderesUI() {
+      syncSpellPointsWithLevel();
       const state = window.playerSpellsState;
       const pointsVal = document.getElementById('poderes-points-val');
       if (pointsVal) pointsVal.innerText = state.spellPoints;

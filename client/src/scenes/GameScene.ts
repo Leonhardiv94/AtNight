@@ -2461,7 +2461,7 @@ export class GameScene extends Phaser.Scene {
     else if (angleDeg >= -67.5 && angleDeg < -22.5) currentDir = 'up-right';
 
     this.lastDirection = currentDir;
-    this.player.setFlipX(currentDir.includes('left'));
+    this.player.setFlipX(false);
 
     // Play Elfo archery pose frame
     const idleKey = `char-${this.currentCharacterName}-idle-${currentDir}`;
@@ -2473,6 +2473,11 @@ export class GameScene extends Phaser.Scene {
     const bowContainer = this.add.container(this.player.x, this.player.y - 20);
     bowContainer.setDepth(this.player.y + 15);
     bowContainer.setRotation(angleRad);
+
+    const isAimingLeft = Math.abs(angleRad) > Math.PI / 2;
+    if (isAimingLeft) {
+      bowContainer.setScale(1, -1);
+    }
 
     const bowGraphic = this.add.graphics();
     bowGraphic.lineStyle(2.5, 0xd97706, 1);
@@ -2487,8 +2492,8 @@ export class GameScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: bowContainer,
-      scaleX: 1.25,
-      scaleY: 1.25,
+      scaleX: isAimingLeft ? 1.25 : 1.25,
+      scaleY: isAimingLeft ? -1.25 : 1.25,
       duration: 120,
       yoyo: true,
       onComplete: () => bowContainer.destroy()
@@ -2758,6 +2763,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.player.setVelocity(vx * speed, vy * speed);
+    this.player.setFlipX(false);
 
     // Determine 8-Directional Angle & Animation Key
     if (vx !== 0 || vy !== 0) {

@@ -137,10 +137,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 70.61125905380756,
-      "y": 1448.8268262730785
+      "x": 0,
+      "y": 1139
     },
-    "updatedAt": "2026-08-08T00:55:20.300Z"
+    "updatedAt": "2026-08-08T01:09:02.959Z"
   },
   "Guerrera": {
     "characterName": "Guerrera",

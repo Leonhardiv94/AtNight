@@ -2289,16 +2289,17 @@ export class GameScene extends Phaser.Scene {
 
       const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
 
-      // Check if clicking directly on a creature to attack
-      let clickedCreature = false;
+      // Check if clicking directly on a creature to select target or attack
+      let clickedCreature: Creature | null = null;
       this.creatures.forEach(c => {
         if (c.sprite.active && c.sprite.getBounds().contains(worldPoint.x, worldPoint.y)) {
-          clickedCreature = true;
-          this.handlePlayerAttack(worldPoint);
+          clickedCreature = c;
         }
       });
 
-      if (!clickedCreature) {
+      if (clickedCreature) {
+        this.selectedCreature = clickedCreature;
+      } else {
         // Set Click Target Destination snapped dead-center to tile
         const snappedTarget = this.updateTileGridMarker(worldPoint.x, worldPoint.y);
         this.clickTarget = snappedTarget;
@@ -2324,6 +2325,279 @@ export class GameScene extends Phaser.Scene {
       const key = event.key;
       if (['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'].includes(key)) {
         this.triggerHotbarSlot(key);
+      }
+    });
+  }
+
+  // --- Target Selection Visual Reticle ---
+  public selectedCreature: Creature | null = null;
+  public targetReticleGraphic: Phaser.GameObjects.Graphics | null = null;
+
+  private updateTargetReticle() {
+    if (!this.selectedCreature || !this.selectedCreature.sprite.active || this.selectedCreature.hp <= 0) {
+      if (this.targetReticleGraphic) {
+        this.targetReticleGraphic.clear();
+      }
+      this.selectedCreature = null;
+      return;
+    }
+
+    if (!this.targetReticleGraphic) {
+      this.targetReticleGraphic = this.add.graphics();
+    }
+
+    const c = this.selectedCreature;
+    const cx = c.sprite.x;
+    const cy = c.sprite.y + 6;
+
+    this.targetReticleGraphic.clear();
+    this.targetReticleGraphic.lineStyle(2, 0xef4444, 0.95);
+    this.targetReticleGraphic.fillStyle(0xef4444, 0.25);
+
+    // Dynamic Pulsing Target Reticle Ring around selected creature
+    const pulse = Math.sin(this.time.now * 0.008) * 3;
+    const rx = 24 + pulse;
+    const ry = 12 + pulse * 0.5;
+
+    this.targetReticleGraphic.beginPath();
+    this.targetReticleGraphic.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+    this.targetReticleGraphic.strokePath();
+    this.targetReticleGraphic.fillPath();
+
+    this.targetReticleGraphic.setDepth(cy - 2);
+  }
+
+  // --- Hotbar & Spell Execution System ---
+  public triggerHotbarSlot(slotKey: string) {
+    const spellState = (window as any).playerSpellsState;
+    if (!spellState || !spellState.hotbar) return;
+
+    const spellId = spellState.hotbar[slotKey];
+    if (!spellId) {
+      this.showFloatingText(this.player.x, this.player.y - 45, `Casilla ${slotKey} Vacía`, '#94a3b8');
+      return;
+    }
+
+    if (spellId === 'flecha_punzante') {
+      this.castSpellFlechaPunzante();
+    }
+  }
+
+  public castSpellFlechaPunzante() {
+    const time = this.time.now;
+    if (time - this.lastPlayerAttackTime < 450) return;
+
+    // Check player class (Elfo/arquero)
+    if (this.characterClass !== 'arquero') {
+      this.showFloatingText(this.player.x, this.player.y - 45, 'Sólo la clase Elfo puede usar este poder', '#ef4444');
+      return;
+    }
+
+    const state = (window as any).playerSpellsState;
+    const spellData = (window as any).spellDatabase?.flecha_punzante;
+    const spellLevel = state?.spells?.flecha_punzante?.level || 1;
+    const lvlInfo = spellData?.levels?.[spellLevel] || { minDamage: 15, maxDamage: 18, manaCost: 5, range: 5 };
+
+    // Check Mana Cost
+    if (this.playerMana < lvlInfo.manaCost) {
+      this.showFloatingText(this.player.x, this.player.y - 45, '¡Maná Insuficiente!', '#3b82f6');
+      return;
+    }
+
+    this.lastPlayerAttackTime = time;
+    this.playerMana -= lvlInfo.manaCost;
+
+    // Determine target location (selected creature or pointer position)
+    let targetX = 0;
+    let targetY = 0;
+
+    if (this.selectedCreature && this.selectedCreature.sprite.active && this.selectedCreature.hp > 0) {
+      targetX = this.selectedCreature.sprite.x;
+      targetY = this.selectedCreature.sprite.y - 12;
+    } else {
+      const pointer = this.input.activePointer;
+      const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
+      targetX = worldPoint.x;
+      targetY = worldPoint.y;
+    }
+
+    // Stop player movement for shooting animation
+    this.clickTarget = null;
+    if (this.player.body) (this.player.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
+
+    // Calculate 8-directional orientation to face target
+    const dx = targetX - this.player.x;
+    const dy = targetY - (this.player.y - 20);
+    const angleRad = Math.atan2(dy, dx);
+    const angleDeg = Phaser.Math.RadToDeg(angleRad);
+
+    let currentDir = 'down';
+    if (angleDeg >= -22.5 && angleDeg < 22.5) currentDir = 'right';
+    else if (angleDeg >= 22.5 && angleDeg < 67.5) currentDir = 'down-right';
+    else if (angleDeg >= 67.5 && angleDeg < 112.5) currentDir = 'down';
+    else if (angleDeg >= 112.5 && angleDeg < 157.5) currentDir = 'down-left';
+    else if (angleDeg >= 157.5 || angleDeg < -157.5) currentDir = 'left';
+    else if (angleDeg >= -157.5 && angleDeg < -112.5) currentDir = 'up-left';
+    else if (angleDeg >= -112.5 && angleDeg < -67.5) currentDir = 'up';
+    else if (angleDeg >= -67.5 && angleDeg < -22.5) currentDir = 'up-right';
+
+    this.lastDirection = currentDir;
+    this.player.setFlipX(currentDir.includes('left'));
+
+    // Play Elfo archery pose frame
+    const idleKey = `char-${this.currentCharacterName}-idle-${currentDir}`;
+    if (this.anims.exists(idleKey)) {
+      this.player.play(idleKey, true);
+    }
+
+    // Spawn 8-Directional Bow Visual Graphics on Player Hand
+    const bowGraphic = this.add.graphics();
+    bowGraphic.setDepth(this.player.y + 15);
+    bowGraphic.lineStyle(2.5, 0xd97706, 1);
+    bowGraphic.beginPath();
+    bowGraphic.arc(0, 0, 16, -Math.PI / 3, Math.PI / 3, false);
+    bowGraphic.strokePath();
+
+    // Red Flaming Arrow String Draw
+    bowGraphic.lineStyle(1.5, 0xef4444, 0.9);
+    bowGraphic.lineBetween(-10, 0, 8, 0);
+    bowGraphic.setPosition(this.player.x + Math.cos(angleRad) * 12, this.player.y - 20 + Math.sin(angleRad) * 12);
+    bowGraphic.setRotation(angleRad);
+
+    this.tweens.add({
+      targets: bowGraphic,
+      scaleX: 1.2,
+      scaleY: 1.2,
+      duration: 120,
+      yoyo: true,
+      onComplete: () => bowGraphic.destroy()
+    });
+
+    // Range Check Calculation
+    const maxRangeTiles = lvlInfo.range || 5; // 5 casillas en niv 1 y 2, 6 casillas en niv 3
+    const tileWidthPx = 128 * (2 / 3); // ~85.333px por casilla
+    const maxRangePx = maxRangeTiles * tileWidthPx;
+    const distToTarget = Phaser.Math.Distance.Between(this.player.x, this.player.y - 20, targetX, targetY);
+
+    const isWithinRange = distToTarget <= maxRangePx;
+    const finalDestX = isWithinRange ? targetX : this.player.x + Math.cos(angleRad) * maxRangePx;
+    const finalDestY = isWithinRange ? targetY : (this.player.y - 20) + Math.sin(angleRad) * maxRangePx;
+
+    const flyDistance = isWithinRange ? distToTarget : maxRangePx;
+    const flyDuration = Math.max(160, Math.min(600, (flyDistance / 650) * 1000));
+
+    // Spawn Red Flaming Arrow Projectile 🔥🏹
+    const arrowContainer = this.add.container(this.player.x, this.player.y - 20);
+    arrowContainer.setDepth(5000);
+
+    const arrowGraphic = this.add.graphics();
+    arrowGraphic.lineStyle(3, 0xef4444, 1);
+    arrowGraphic.lineBetween(-14, 0, 10, 0);
+    arrowGraphic.fillStyle(0xf87171, 1);
+    arrowGraphic.fillTriangle(14, 0, 8, -4, 8, 4);
+    arrowGraphic.fillStyle(0xf97316, 0.9);
+    arrowGraphic.fillCircle(12, 0, 4);
+
+    arrowContainer.add(arrowGraphic);
+    arrowContainer.setRotation(angleRad);
+
+    // Trail particles
+    const trailTimer = this.time.addEvent({
+      delay: 25,
+      repeat: Math.floor(flyDuration / 25),
+      callback: () => {
+        if (arrowContainer.active) {
+          const particle = this.add.circle(arrowContainer.x, arrowContainer.y, Phaser.Math.Between(2, 4), 0xf97316, 0.8);
+          particle.setDepth(arrowContainer.y - 2);
+          this.tweens.add({
+            targets: particle,
+            alpha: 0,
+            scale: 0.1,
+            duration: 180,
+            onComplete: () => particle.destroy()
+          });
+        }
+      }
+    });
+
+    // Fly Tween
+    this.tweens.add({
+      targets: arrowContainer,
+      x: finalDestX,
+      y: finalDestY,
+      duration: flyDuration,
+      ease: 'Linear',
+      onComplete: () => {
+        trailTimer.destroy();
+
+        if (isWithinRange) {
+          // --- ALCANZA AL OBJETIVO ---
+          // Impact Spark Visual Effect
+          const spark = this.add.circle(finalDestX, finalDestY, 16, 0xef4444, 0.85);
+          spark.setDepth(finalDestY + 10);
+          this.tweens.add({
+            targets: spark,
+            scale: 2.2,
+            alpha: 0,
+            duration: 160,
+            onComplete: () => spark.destroy()
+          });
+
+          // Calculate Damage with Equal Probability in Range & Fuego Stat Multiplier
+          // Niv 1: 15, 16, 17, 18 (25% cada uno)
+          // Niv 2: 16, 17, 18, 19 (25% cada uno)
+          // Niv 3: 17, 18, 19, 20 (25% cada uno)
+          const minDmg = lvlInfo.minDamage || 15;
+          const maxDmg = lvlInfo.maxDamage || 18;
+          const baseDamage = Phaser.Math.Between(minDmg, maxDmg);
+
+          const fuegoStat = ((window as any).characterStats?.elements?.fuego?.equip || 0) + ((window as any).characterStats?.elements?.fuego?.base || 0);
+          const statMultiplier = 1 + (fuegoStat * 0.001); // 1 * 0.001 por cada punto de Fuego
+          const finalDamage = Math.max(1, Math.round(baseDamage * statMultiplier));
+
+          // Find targeted or closest creature within 50px of impact
+          let hitCreature: Creature | null = this.selectedCreature;
+          if (!hitCreature || !hitCreature.sprite.active || hitCreature.hp <= 0) {
+            this.creatures.forEach(c => {
+              if (c.sprite.active && c.hp > 0) {
+                const d = Phaser.Math.Distance.Between(finalDestX, finalDestY, c.sprite.x, c.sprite.y);
+                if (d <= 50) hitCreature = c;
+              }
+            });
+          }
+
+          if (hitCreature && hitCreature.sprite.active) {
+            hitCreature.hp -= finalDamage;
+            if (!hitCreature.isAggro) {
+              hitCreature.isAggro = true;
+              hitCreature.state = 'PURSUIT';
+            }
+            this.showFloatingText(hitCreature.sprite.x, hitCreature.sprite.y - 35, `-${finalDamage} 🔥`, '#ef4444');
+            hitCreature.sprite.setTint(0xff0000);
+            this.time.delayedCall(150, () => hitCreature?.sprite.clearTint());
+
+            if (hitCreature.hp <= 0) {
+              this.killCreature(hitCreature);
+            }
+          } else {
+            this.showFloatingText(finalDestX, finalDestY - 20, `-${finalDamage} 🔥`, '#ef4444');
+          }
+
+          arrowContainer.destroy();
+        } else {
+          // --- FUERA DE ALCANCE: CAE AL SUELO Y DESAPARECE ---
+          this.showFloatingText(finalDestX, finalDestY - 15, `Flecha fuera de alcance (Máx ${maxRangeTiles} casillas)`, '#94a3b8');
+
+          this.tweens.add({
+            targets: arrowContainer,
+            y: finalDestY + 14,
+            rotation: arrowContainer.rotation + 0.35,
+            alpha: 0,
+            duration: 260,
+            ease: 'Quad.easeIn',
+            onComplete: () => arrowContainer.destroy()
+          });
+        }
       }
     });
   }
@@ -2510,6 +2784,8 @@ export class GameScene extends Phaser.Scene {
         this.renderCreatureHpBar(c);
       }
     });
+
+    this.updateTargetReticle();
   }
 
   // --- Real-Time Action Combat ---

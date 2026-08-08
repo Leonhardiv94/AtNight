@@ -2779,9 +2779,9 @@
         shotType: 'Daño único',
         description: 'Este poder dispara una flecha que daña a tu objetivo.',
         levels: {
-          1: { damage: 15, manaCost: 5, range: 5 },
-          2: { damage: 16, manaCost: 5, range: 5 },
-          3: { damage: 17, manaCost: 4, range: 6 }
+          1: { minDamage: 15, maxDamage: 18, damageText: '15 a 18', manaCost: 5, range: 5 },
+          2: { minDamage: 16, maxDamage: 19, damageText: '16 a 19', manaCost: 5, range: 5 },
+          3: { minDamage: 17, maxDamage: 20, damageText: '17 a 20', manaCost: 4, range: 6 }
         }
       }
     };
@@ -2934,7 +2934,7 @@
       });
 
       const dmgEl = document.getElementById('detail-val-damage');
-      if (dmgEl) dmgEl.innerText = `${lvlData.damage} de daño`;
+      if (dmgEl) dmgEl.innerText = `${lvlData.damageText || (lvlData.minDamage + ' a ' + lvlData.maxDamage)} de daño`;
 
       const manaEl = document.getElementById('detail-val-mana');
       if (manaEl) manaEl.innerText = `${lvlData.manaCost} de maná`;

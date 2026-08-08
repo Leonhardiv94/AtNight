@@ -1961,8 +1961,8 @@ export class GameScene extends Phaser.Scene {
         specials: stats.specials || {},
         hp: this.playerHp,
         maxHp: this.playerMaxHp,
-        mana: this.playerMana,
-        maxMana: this.playerMaxMana,
+        mana: Math.min(10, this.playerMana),
+        maxMana: 10,
         inventory: Array.from(this.inventory.values()),
         lastPosition: { x: this.player ? this.player.x : 0, y: this.player ? this.player.y : 0 }
       };
@@ -2122,6 +2122,8 @@ export class GameScene extends Phaser.Scene {
     this.characterClass = activeData.characterClass || 'arquero';
     this.playerLevel = activeData.level || 1;
     this.playerXp = activeData.xp || 0;
+    this.playerMaxMana = 10;
+    this.playerMana = Math.min(10, activeData.mana !== undefined ? activeData.mana : 10);
 
     if (typeof window !== 'undefined') {
       if ((window as any).characterStats) {
@@ -3323,8 +3325,8 @@ export class GameScene extends Phaser.Scene {
         this.playerXp -= req;
         this.playerMaxHp += 25;
         this.playerHp = this.playerMaxHp;
-        this.playerMaxMana += 1;
-        this.playerMana = this.playerMaxMana;
+        this.playerMaxMana = 10;
+        this.playerMana = 10;
         this.playerAttackPower += 8;
         leveledUp = true;
 

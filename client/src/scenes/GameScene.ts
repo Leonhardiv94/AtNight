@@ -1995,10 +1995,6 @@ export class GameScene extends Phaser.Scene {
     this.islandCenterIsoX = 0;
     this.islandCenterIsoY = Math.round((center + center) * (tileH / 2)) - 13;
 
-    // Terreno orgánico continuo sin líneas de cuadrícula visibles
-    const terrainGraphic = this.add.graphics();
-    terrainGraphic.setDepth(-10000);
-
     for (let x = 0; x < mapSize; x++) {
       for (let y = 0; y < mapSize; y++) {
         const dx = x - center;
@@ -2013,54 +2009,25 @@ export class GameScene extends Phaser.Scene {
           const tile = this.add.image(baseIsoX, isoY, 'tile-grass');
           tile.setOrigin(0.5, 0);
           tile.setScale(tileScale);
-          tile.setVisible(false); // Ocultar visualmente las cuadrículas pre-dibujadas
           tile.setDepth(-5000 + baseIsoY);
-
-          // Terreno de prado orgánico continuo
-          terrainGraphic.fillStyle(0x15803d, 1);
-          terrainGraphic.beginPath();
-          terrainGraphic.moveTo(baseIsoX, isoY);
-          terrainGraphic.lineTo(baseIsoX + tileW / 2, isoY + tileH / 2);
-          terrainGraphic.lineTo(baseIsoX, isoY + tileH);
-          terrainGraphic.lineTo(baseIsoX - tileW / 2, isoY + tileH / 2);
-          terrainGraphic.closePath();
-          terrainGraphic.fillPath();
-
         } else if (distFromCenter <= 19.8) {
           const isoY = baseIsoY - 6.6;
           const tile = this.add.image(baseIsoX, isoY, 'tile-sand');
           tile.setOrigin(0.5, 0);
           tile.setScale(tileScale);
-          tile.setVisible(false); // Ocultar cuadrículas de arena
           tile.setDepth(-5000 + baseIsoY);
-
-          // Arena continua
-          terrainGraphic.fillStyle(0xd97706, 1);
-          terrainGraphic.beginPath();
-          terrainGraphic.moveTo(baseIsoX, isoY);
-          terrainGraphic.lineTo(baseIsoX + tileW / 2, isoY + tileH / 2);
-          terrainGraphic.lineTo(baseIsoX, isoY + tileH);
-          terrainGraphic.lineTo(baseIsoX - tileW / 2, isoY + tileH / 2);
-          terrainGraphic.closePath();
-          terrainGraphic.fillPath();
-
         } else {
           const isoY = baseIsoY;
           const waterTile = this.add.image(baseIsoX, isoY, 'tile-water');
           waterTile.setOrigin(0.5, 0);
           waterTile.setScale(tileScale);
-          waterTile.setVisible(false); // Ocultar cuadrículas de agua
           waterTile.setDepth(-5000 + baseIsoY);
 
-          // Agua de océano continua
-          terrainGraphic.fillStyle(0x0284c7, 1);
-          terrainGraphic.beginPath();
-          terrainGraphic.moveTo(baseIsoX, isoY);
-          terrainGraphic.lineTo(baseIsoX + tileW / 2, isoY + tileH / 2);
-          terrainGraphic.lineTo(baseIsoX, isoY + tileH);
-          terrainGraphic.lineTo(baseIsoX - tileW / 2, isoY + tileH / 2);
-          terrainGraphic.closePath();
-          terrainGraphic.fillPath();
+          this.animatedWaterObjects.push({
+            sprite: waterTile,
+            baseIsoY,
+            phaseOffset: (x * 0.3) + (y * 0.2)
+          });
 
           const waterCollider = this.waterTiles.create(baseIsoX, isoY + 11, 'tile-water');
           waterCollider.setVisible(false);

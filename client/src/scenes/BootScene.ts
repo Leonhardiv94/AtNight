@@ -40,18 +40,18 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0x1b4d2e, 1);
+    // Superficie de prado verde continua y perfecta (Sin bordes internos recortados)
+    graphics.fillStyle(0x2d8a4e, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
-    graphics.fillStyle(0x2d8a4e, 1);
-    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
-    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
 
     graphics.fillStyle(0x52b788, 0.85);
     graphics.fillRect(40, 20, 3, 6);
     graphics.fillRect(80, 28, 4, 7);
     graphics.fillRect(56, 38, 3, 6);
     graphics.fillRect(72, 14, 3, 5);
+    graphics.fillRect(28, 30, 3, 6);
+    graphics.fillRect(92, 22, 4, 6);
 
     graphics.generateTexture('tile-grass', 128, 84);
 
@@ -75,12 +75,10 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0xd4b886, 1);
+    // Superficie de arena brillante continua y perfecta (Sin bordes oscuros recortados)
+    graphics.fillStyle(0xf5e6c8, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
-    graphics.fillStyle(0xf5e6c8, 1);
-    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
-    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
 
     // --- BEACH SAND TEXTURE, RIPPLES & DETAILS ---
 
@@ -143,12 +141,10 @@ export class BootScene extends Phaser.Scene {
 
     // 3. Isometric Ocean Water Tile (Bright Daytime HD 128x64)
     graphics.clear();
-    graphics.fillStyle(0x0f5257, 1);
+    graphics.fillStyle(0x0b7a75, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
-    graphics.fillStyle(0x0b7a75, 1);
-    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
-    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
+
     graphics.lineStyle(2, 0x70e4ef, 0.7);
     graphics.beginPath();
     graphics.moveTo(32, 16);

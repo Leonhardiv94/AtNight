@@ -2022,6 +2022,15 @@ export class GameScene extends Phaser.Scene {
         } else {
           // Océano al nivel del mar (0px)
           const isoY = baseIsoY;
+
+          // Si es agua de orilla cercana a la playa, renderizar fondo marino de arena por debajo del agua
+          if (distFromCenter <= 22.5) {
+            const seaBed = this.add.image(baseIsoX, baseIsoY - 6.667, 'tile-sand');
+            seaBed.setOrigin(0.5, 0);
+            seaBed.setScale(tileScale);
+            seaBed.setDepth(-6000 + baseIsoY);
+          }
+
           const waterTile = this.add.image(baseIsoX, isoY, 'tile-water');
           waterTile.setOrigin(0.5, 0);
           waterTile.setScale(tileScale);

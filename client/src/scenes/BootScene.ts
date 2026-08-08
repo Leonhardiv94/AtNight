@@ -55,14 +55,14 @@ export class BootScene extends Phaser.Scene {
 
     graphics.generateTexture('tile-grass', 128, 84);
 
-    // 2. Isometric Shoreline Sand Tile with 3D Sand Wall & Rich Sand Texture (Bright Daytime HD 128x74)
+    // 2. Isometric Shoreline Sand Tile with 3D Sand Wall & Rich Sand Texture (Bright Daytime HD 128x84)
     graphics.clear();
     graphics.fillStyle(0xb39868, 1);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
-    graphics.lineTo(64, 74);
-    graphics.lineTo(0, 42);
+    graphics.lineTo(64, 84);
+    graphics.lineTo(0, 52);
     graphics.closePath();
     graphics.fillPath();
 
@@ -70,8 +70,8 @@ export class BootScene extends Phaser.Scene {
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
-    graphics.lineTo(128, 42);
-    graphics.lineTo(64, 74);
+    graphics.lineTo(128, 52);
+    graphics.lineTo(64, 84);
     graphics.closePath();
     graphics.fillPath();
 
@@ -137,7 +137,7 @@ export class BootScene extends Phaser.Scene {
     graphics.fillStyle(0x94a3b8, 0.85);
     graphics.fillEllipse(40, 48, 4, 2.5);
 
-    graphics.generateTexture('tile-sand', 128, 74);
+    graphics.generateTexture('tile-sand', 128, 84);
 
     // 3. Isometric Ocean Water Tile (Bright Daytime HD 128x64)
     graphics.clear();

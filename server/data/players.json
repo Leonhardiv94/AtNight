@@ -85,7 +85,7 @@
       "x": 0,
       "y": 1132
     },
-    "updatedAt": "2026-08-08T00:52:31.512Z"
+    "updatedAt": "2026-08-08T00:53:21.509Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -137,10 +137,10 @@
     "maxMana": 10,
     "inventory": [],
     "lastPosition": {
-      "x": 800.3643869676549,
-      "y": 1208.4057317506747
+      "x": 70.61125905380756,
+      "y": 1448.8268262730785
     },
-    "updatedAt": "2026-08-07T23:18:17.502Z"
+    "updatedAt": "2026-08-08T00:55:20.300Z"
   },
   "Guerrera": {
     "characterName": "Guerrera",

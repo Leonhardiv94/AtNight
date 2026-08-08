@@ -1986,13 +1986,14 @@ export class GameScene extends Phaser.Scene {
     this.waterTiles = this.physics.add.staticGroup();
     this.animatedWaterObjects = [];
 
-    const mapSize = 36;
+    const mapSize = 54;
     const center = mapSize / 2;
-    const tileW = 128;
-    const tileH = 64;
+    const tileScale = 2 / 3;
+    const tileW = 128 * tileScale; // ~85.33px
+    const tileH = 64 * tileScale;  // ~42.67px
 
     this.islandCenterIsoX = 0;
-    this.islandCenterIsoY = Math.round((center + center) * (tileH / 2)) - 20;
+    this.islandCenterIsoY = Math.round((center + center) * (tileH / 2)) - 13;
 
     for (let x = 0; x < mapSize; x++) {
       for (let y = 0; y < mapSize; y++) {
@@ -2003,20 +2004,23 @@ export class GameScene extends Phaser.Scene {
         const baseIsoX = Math.round((x - y) * (tileW / 2));
         const baseIsoY = Math.round((x + y) * (tileH / 2));
 
-        if (distFromCenter <= 10.2) {
-          const isoY = baseIsoY - 20;
+        if (distFromCenter <= 15.3) {
+          const isoY = baseIsoY - 13;
           const tile = this.add.image(baseIsoX, isoY, 'tile-grass');
           tile.setOrigin(0.5, 0);
+          tile.setScale(tileScale);
           tile.setDepth(-5000 + baseIsoY);
-        } else if (distFromCenter <= 13.2) {
-          const isoY = baseIsoY - 10;
+        } else if (distFromCenter <= 19.8) {
+          const isoY = baseIsoY - 6.6;
           const tile = this.add.image(baseIsoX, isoY, 'tile-sand');
           tile.setOrigin(0.5, 0);
+          tile.setScale(tileScale);
           tile.setDepth(-5000 + baseIsoY);
         } else {
           const isoY = baseIsoY;
           const waterTile = this.add.image(baseIsoX, isoY, 'tile-water');
           waterTile.setOrigin(0.5, 0);
+          waterTile.setScale(tileScale);
           waterTile.setDepth(-5000 + baseIsoY);
 
           this.animatedWaterObjects.push({
@@ -2025,7 +2029,7 @@ export class GameScene extends Phaser.Scene {
             phaseOffset: (x * 0.3) + (y * 0.2)
           });
 
-          const waterCollider = this.waterTiles.create(baseIsoX, isoY + 16, 'tile-water');
+          const waterCollider = this.waterTiles.create(baseIsoX, isoY + 11, 'tile-water');
           waterCollider.setVisible(false);
           waterCollider.refreshBody();
         }
@@ -2293,12 +2297,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateTileGridMarker(worldX: number, worldY: number): { x: number; y: number } {
-    // Snap world coordinates to exact Isometric Diamond Tile (128x64px) matching createIslandMap
-    const tileW = 128;
-    const tileH = 64;
-    const halfW = tileW / 2; // 64
-    const halfH = tileH / 2; // 32
-    const yCenterOffset = 12; // Visual center offset for 128x64 grass tile
+    // Snap world coordinates to exact Isometric Diamond Tile (2/3 scale: ~85.33x42.67px)
+    const tileScale = 2 / 3;
+    const tileW = 128 * tileScale; // ~85.33px
+    const tileH = 64 * tileScale;  // ~42.67px
+    const halfW = tileW / 2;       // ~42.67px
+    const halfH = tileH / 2;       // ~21.33px
+    const yCenterOffset = 12 * tileScale; // 8.0px
+    const topElevation = -20 * tileScale; // -13.33px
 
     const gridX = Math.round((worldX / halfW + (worldY - yCenterOffset) / halfH) / 2);
     const gridY = Math.round(((worldY - yCenterOffset) / halfH - worldX / halfW) / 2);
@@ -2311,13 +2317,13 @@ export class GameScene extends Phaser.Scene {
       this.targetTileGraphic = this.add.graphics();
     }
 
-    // Render persistent cyan tile grid highlight matching 128x64px tiles
+    // Render persistent cyan tile grid highlight matching 2/3 scale tiles
     this.targetTileGraphic.clear();
-    this.targetTileGraphic.lineStyle(2.5, 0x00f2fe, 0.95);
+    this.targetTileGraphic.lineStyle(2, 0x00f2fe, 0.95);
     this.targetTileGraphic.fillStyle(0x00f2fe, 0.3);
 
-    // Draw Isometric Diamond Tile matching 128x64px asset bounds exactly
-    const topY = cellY - 20;
+    // Draw Isometric Diamond Tile matching 2/3 scale asset bounds exactly
+    const topY = cellY + topElevation;
     this.targetTileGraphic.beginPath();
     this.targetTileGraphic.moveTo(cellX, topY);
     this.targetTileGraphic.lineTo(cellX + halfW, topY + halfH);

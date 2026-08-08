@@ -2280,9 +2280,9 @@ export class GameScene extends Phaser.Scene {
       });
 
       if (!clickedCreature) {
-        // Set Click Target Destination
-        this.clickTarget = { x: worldPoint.x, y: worldPoint.y };
-        this.updateTileGridMarker(worldPoint.x, worldPoint.y);
+        // Set Click Target Destination snapped dead-center to tile
+        const snappedTarget = this.updateTileGridMarker(worldPoint.x, worldPoint.y);
+        this.clickTarget = snappedTarget;
       }
     });
 
@@ -2292,19 +2292,20 @@ export class GameScene extends Phaser.Scene {
     this.wasdKeys.gather.on('down', () => this.handleGathering());
   }
 
-  private updateTileGridMarker(worldX: number, worldY: number) {
+  private updateTileGridMarker(worldX: number, worldY: number): { x: number; y: number } {
     // Snap world coordinates to exact Isometric Diamond Tile (128x64px) matching createIslandMap
     const tileW = 128;
     const tileH = 64;
     const halfW = tileW / 2; // 64
     const halfH = tileH / 2; // 32
-    const elevationOffset = -20; // Grass tile elevation offset
+    const yCenterOffset = 12; // Visual center offset for 128x64 grass tile
 
-    const gridX = Math.round((worldX / halfW + (worldY - elevationOffset) / halfH) / 2);
-    const gridY = Math.round(((worldY - elevationOffset) / halfH - worldX / halfW) / 2);
+    const gridX = Math.round((worldX / halfW + (worldY - yCenterOffset) / halfH) / 2);
+    const gridY = Math.round(((worldY - yCenterOffset) / halfH - worldX / halfW) / 2);
 
     const cellX = (gridX - gridY) * halfW;
     const cellY = (gridX + gridY) * halfH;
+    const tileCenterY = cellY + yCenterOffset;
 
     if (!this.targetTileGraphic) {
       this.targetTileGraphic = this.add.graphics();
@@ -2316,7 +2317,7 @@ export class GameScene extends Phaser.Scene {
     this.targetTileGraphic.fillStyle(0x00f2fe, 0.3);
 
     // Draw Isometric Diamond Tile matching 128x64px asset bounds exactly
-    const topY = cellY + elevationOffset;
+    const topY = cellY - 20;
     this.targetTileGraphic.beginPath();
     this.targetTileGraphic.moveTo(cellX, topY);
     this.targetTileGraphic.lineTo(cellX + halfW, topY + halfH);
@@ -2327,6 +2328,8 @@ export class GameScene extends Phaser.Scene {
     this.targetTileGraphic.strokePath();
 
     this.targetTileGraphic.setDepth(cellY - 50);
+
+    return { x: cellX, y: tileCenterY };
   }
 
   private handlePlayerMovement() {
@@ -2364,12 +2367,15 @@ export class GameScene extends Phaser.Scene {
       const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
       const isBlocked = playerBody && (!playerBody.blocked.none || !playerBody.touching.none);
 
-      if (dist > 14 && !isBlocked) {
+      if (dist > 6 && !isBlocked) {
         const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.clickTarget.x, this.clickTarget.y);
         vx = Math.cos(angle);
         vy = Math.sin(angle);
       } else {
-        // Arrived at destination tile OR blocked by solid tree trunk! Clear target & tile marker
+        // Arrived at destination tile OR blocked! Align player dead-center on tile
+        if (!isBlocked) {
+          this.player.setPosition(this.clickTarget.x, this.clickTarget.y);
+        }
         this.clickTarget = null;
         if (this.targetTileGraphic) {
           this.targetTileGraphic.clear();

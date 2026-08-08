@@ -2334,37 +2334,34 @@ export class GameScene extends Phaser.Scene {
   public targetReticleGraphic: Phaser.GameObjects.Graphics | null = null;
 
   private updateTargetReticle() {
-    if (!this.selectedCreature || !this.selectedCreature.sprite.active || this.selectedCreature.hp <= 0) {
-      if (this.targetReticleGraphic) {
-        this.targetReticleGraphic.clear();
+    try {
+      if (!this.selectedCreature || !this.selectedCreature.sprite.active || this.selectedCreature.hp <= 0) {
+        if (this.targetReticleGraphic) {
+          this.targetReticleGraphic.clear();
+        }
+        this.selectedCreature = null;
+        return;
       }
-      this.selectedCreature = null;
-      return;
-    }
 
-    if (!this.targetReticleGraphic) {
-      this.targetReticleGraphic = this.add.graphics();
-    }
+      if (!this.targetReticleGraphic) {
+        this.targetReticleGraphic = this.add.graphics();
+      }
 
-    const c = this.selectedCreature;
-    const cx = c.sprite.x;
-    const cy = c.sprite.y + 6;
+      const c = this.selectedCreature;
+      const cx = c.sprite.x;
+      const cy = c.sprite.y + 6;
 
-    this.targetReticleGraphic.clear();
-    this.targetReticleGraphic.lineStyle(2, 0xef4444, 0.95);
-    this.targetReticleGraphic.fillStyle(0xef4444, 0.25);
+      const pulse = Math.sin(this.time.now * 0.008) * 3;
+      const w = (24 + pulse) * 2;
+      const h = (12 + pulse * 0.5) * 2;
 
-    // Dynamic Pulsing Target Reticle Ring around selected creature
-    const pulse = Math.sin(this.time.now * 0.008) * 3;
-    const rx = 24 + pulse;
-    const ry = 12 + pulse * 0.5;
-
-    this.targetReticleGraphic.beginPath();
-    this.targetReticleGraphic.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-    this.targetReticleGraphic.strokePath();
-    this.targetReticleGraphic.fillPath();
-
-    this.targetReticleGraphic.setDepth(cy - 2);
+      this.targetReticleGraphic.clear();
+      this.targetReticleGraphic.lineStyle(2, 0xef4444, 0.95);
+      this.targetReticleGraphic.fillStyle(0xef4444, 0.25);
+      this.targetReticleGraphic.strokeEllipse(cx, cy, w, h);
+      this.targetReticleGraphic.fillEllipse(cx, cy, w, h);
+      this.targetReticleGraphic.setDepth(cy - 2);
+    } catch (_e) {}
   }
 
   // --- Hotbar & Spell Execution System ---
@@ -2407,7 +2404,7 @@ export class GameScene extends Phaser.Scene {
     this.lastPlayerAttackTime = time;
     this.playerMana -= lvlInfo.manaCost;
 
-    // Determine target location (selected creature or pointer position)
+    // Determine target location (selected creature, pointer position, or facing direction)
     let targetX = 0;
     let targetY = 0;
 
@@ -2416,9 +2413,25 @@ export class GameScene extends Phaser.Scene {
       targetY = this.selectedCreature.sprite.y - 12;
     } else {
       const pointer = this.input.activePointer;
-      const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
-      targetX = worldPoint.x;
-      targetY = worldPoint.y;
+      if (pointer && (pointer.worldX !== undefined && pointer.worldY !== undefined)) {
+        const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
+        targetX = worldPoint.x;
+        targetY = worldPoint.y;
+      } else {
+        const dirOffset: Record<string, {x: number, y: number}> = {
+          'right': {x: 250, y: 0},
+          'down-right': {x: 180, y: 180},
+          'down': {x: 0, y: 250},
+          'down-left': {x: -180, y: 180},
+          'left': {x: -250, y: 0},
+          'up-left': {x: -180, y: -180},
+          'up': {x: 0, y: -250},
+          'up-right': {x: 180, y: -180}
+        };
+        const offset = dirOffset[this.lastDirection] || {x: 0, y: 250};
+        targetX = this.player.x + offset.x;
+        targetY = this.player.y - 20 + offset.y;
+      }
     }
 
     // Stop player movement for shooting animation
@@ -2450,27 +2463,29 @@ export class GameScene extends Phaser.Scene {
       this.player.play(idleKey, true);
     }
 
-    // Spawn 8-Directional Bow Visual Graphics on Player Hand
+    // Spawn 8-Directional Bow Visual Container at Player Hand
+    const bowContainer = this.add.container(this.player.x, this.player.y - 20);
+    bowContainer.setDepth(this.player.y + 15);
+    bowContainer.setRotation(angleRad);
+
     const bowGraphic = this.add.graphics();
-    bowGraphic.setDepth(this.player.y + 15);
     bowGraphic.lineStyle(2.5, 0xd97706, 1);
     bowGraphic.beginPath();
-    bowGraphic.arc(0, 0, 16, -Math.PI / 3, Math.PI / 3, false);
+    bowGraphic.arc(0, 0, 14, -Math.PI / 3, Math.PI / 3, false);
     bowGraphic.strokePath();
 
-    // Red Flaming Arrow String Draw
     bowGraphic.lineStyle(1.5, 0xef4444, 0.9);
     bowGraphic.lineBetween(-10, 0, 8, 0);
-    bowGraphic.setPosition(this.player.x + Math.cos(angleRad) * 12, this.player.y - 20 + Math.sin(angleRad) * 12);
-    bowGraphic.setRotation(angleRad);
+
+    bowContainer.add(bowGraphic);
 
     this.tweens.add({
-      targets: bowGraphic,
-      scaleX: 1.2,
-      scaleY: 1.2,
+      targets: bowContainer,
+      scaleX: 1.25,
+      scaleY: 1.25,
       duration: 120,
       yoyo: true,
-      onComplete: () => bowGraphic.destroy()
+      onComplete: () => bowContainer.destroy()
     });
 
     // Range Check Calculation

@@ -2801,6 +2801,26 @@
       }
     };
 
+    function loadSavedSpellsState() {
+      try {
+        const saved = localStorage.getItem('atnight_player_spells_state');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.hotbar) {
+            window.playerSpellsState = parsed;
+          }
+        }
+      } catch (_e) {}
+    }
+
+    function saveSpellsState() {
+      try {
+        localStorage.setItem('atnight_player_spells_state', JSON.stringify(window.playerSpellsState));
+      } catch (_e) {}
+    }
+
+    loadSavedSpellsState();
+
     function togglePoderesModal() {
       const modal = document.getElementById('poderes-modal-window');
       if (modal) {
@@ -3035,6 +3055,7 @@
               hotbar[targetKey] = spellId;
             }
 
+            saveSpellsState();
             renderHotbarUI();
 
             if (window.gameInstance && window.gameInstance.scene) {
@@ -3114,6 +3135,7 @@
 
       if (isModalActive && selectedId && window.spellDatabase[selectedId]) {
         window.playerSpellsState.hotbar[slotKey] = selectedId;
+        saveSpellsState();
         renderHotbarUI();
         return;
       }

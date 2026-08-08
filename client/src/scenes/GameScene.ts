@@ -2793,6 +2793,59 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  private renderCreatureHpBar(c: Creature) {
+    if (!c.sprite.active || c.hp <= 0) {
+      c.hpBar.clear();
+      if (c.hoverLabel) c.hoverLabel.setVisible(false);
+      return;
+    }
+
+    const isSelected = this.selectedCreature === c;
+    const shouldShow = isSelected || c.isHovered || c.isAggro || c.hp < c.maxHp;
+
+    if (!shouldShow) {
+      c.hpBar.clear();
+      if (c.hoverLabel) c.hoverLabel.setVisible(false);
+      return;
+    }
+
+    // Dynamic position above creature
+    const barWidth = 46;
+    const barHeight = 6;
+    const x = c.sprite.x - barWidth / 2;
+    const y = c.sprite.y - 34;
+
+    c.hpBar.clear();
+    c.hpBar.setDepth(c.sprite.y + 100);
+
+    // Dark background container with high contrast border
+    c.hpBar.fillStyle(0x0f172a, 0.9);
+    c.hpBar.fillRect(x - 1, y - 1, barWidth + 2, barHeight + 2);
+    c.hpBar.lineStyle(1, isSelected ? 0xef4444 : 0x475569, 1);
+    c.hpBar.strokeRect(x - 1, y - 1, barWidth + 2, barHeight + 2);
+
+    // HP Fill
+    const pct = Math.max(0, Math.min(1, c.hp / c.maxHp));
+    const fillWidth = Math.round(barWidth * pct);
+
+    let fillColor = 0x10b981; // Green
+    if (pct <= 0.25) fillColor = 0xef4444; // Red
+    else if (pct <= 0.5) fillColor = 0xf59e0b; // Orange/Yellow
+
+    if (fillWidth > 0) {
+      c.hpBar.fillStyle(fillColor, 1);
+      c.hpBar.fillRect(x, y, fillWidth, barHeight);
+    }
+
+    // Floating text label displaying creature level and numerical remaining health: [Pollo Niv. 1  (35/60 HP)]
+    if (c.hoverLabel) {
+      c.hoverLabel.setPosition(c.sprite.x, y - 4);
+      c.hoverLabel.setDepth(c.sprite.y + 200);
+      c.hoverLabel.setText(`Pollo Niv. ${c.level}  (${c.hp}/${c.maxHp} HP)`);
+      c.hoverLabel.setVisible(true);
+    }
+  }
+
   private updateDepthSorting() {
     this.player.setDepth(this.player.y);
 
@@ -2996,7 +3049,7 @@ export class GameScene extends Phaser.Scene {
       if (c.hoverLabel) {
         c.hoverLabel.setPosition(c.sprite.x, c.sprite.y - 35);
         if (c.isHovered && c.sprite.active) {
-          c.hoverLabel.setText(`Pollo Niv. ${c.level}`);
+          c.hoverLabel.setText(`Pollo Niv. ${c.level}  (${c.hp}/${c.maxHp} HP)`);
           c.hoverLabel.setVisible(true);
         }
       }

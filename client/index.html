@@ -1782,6 +1782,18 @@
   </style>
 </head>
 <body>
+  <!-- Floating Drag & Drop Ghost Icon (Custom Pointer Drag System) -->
+  <div id="drag-ghost-icon" style="position: fixed; top: -100px; left: -100px; width: 44px; height: 44px; background: rgba(13, 17, 23, 0.95); border: 2px solid #00f2fe; box-shadow: 0 0 16px rgba(0, 242, 254, 0.85); display: none; pointer-events: none; z-index: 99999; align-items: center; justify-content: center; transform: translate(-50%, -50%);">
+    <svg viewBox="0 0 32 32" class="spell-arrow-svg" style="width: 32px; height: 32px; filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.9));">
+      <line x1="4" y1="28" x2="24" y2="8" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round"/>
+      <polygon points="4,28 8,28 4,24" fill="#f87171"/>
+      <polygon points="4,28 4,32 8,32" fill="#b91c1c"/>
+      <polygon points="20,4 28,4 28,12 24,8" fill="#ef4444"/>
+      <polygon points="22,6 28,4 26,10" fill="#fef08a"/>
+      <circle cx="25" cy="7" r="3" fill="#f97316" opacity="0.8"/>
+    </svg>
+  </div>
+
   <!-- Auth Screen Overlay (Login & Registro) -->
   <div id="auth-screen-overlay">
     <canvas id="auth-bg-canvas"></canvas>
@@ -2901,7 +2913,7 @@
 
             row.innerHTML = `
               <div class="spell-item-left">
-                <div class="spell-icon-box" draggable="true" ondragstart="onSpellDragStart(event, '${spellId}')" title="Arrastra este poder a la casilla que quieras en la barra de acceso rápido">
+                <div class="spell-icon-box" onmousedown="startCustomDrag(event, '${spellId}', 'modal')" ontouchstart="startCustomDrag(event, '${spellId}', 'modal')" title="Mantén presionado y arrastra este poder a cualquier casilla de la barra inferior">
                   <svg viewBox="0 0 32 32" class="spell-arrow-svg">
                     <line x1="4" y1="28" x2="24" y2="8" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round"/>
                     <polygon points="4,28 8,28 4,24" fill="#f87171"/>
@@ -3001,8 +3013,119 @@
       if (rangeEl) rangeEl.innerText = `${lvlData.range} de alcance`;
     }
 
-    /* Hotbar 1 a 0 Drag & Drop handlers */
-    window.draggingSpellId = null;
+    // ----------------------------------------------------
+    // SISTEMA DE ARRASTRE FLUIDO PERSONALIZADO (POINTER DRAG & DROP)
+    // ----------------------------------------------------
+    window.customDragState = {
+      isDragging: false,
+      spellId: null,
+      sourceType: null, // 'modal' | 'hotbar'
+      sourceKey: null   // '1'..'0' si viene de hotbar
+    };
+
+    function startCustomDrag(event, spellId, sourceType, sourceKey = null) {
+      if (!spellId) return;
+
+      window.customDragState = {
+        isDragging: true,
+        spellId: spellId,
+        sourceType: sourceType,
+        sourceKey: sourceKey
+      };
+
+      const ghost = document.getElementById('drag-ghost-icon');
+      if (ghost) {
+        const clientX = event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : 0);
+        const clientY = event.clientY || (event.touches && event.touches[0] ? event.touches[0].clientY : 0);
+        ghost.style.display = 'flex';
+        ghost.style.left = clientX + 'px';
+        ghost.style.top = clientY + 'px';
+      }
+
+      event.preventDefault();
+    }
+    window.startCustomDrag = startCustomDrag;
+
+    function onHotbarSlotMouseDown(event, slotKey) {
+      const assignedSpellId = window.playerSpellsState.hotbar[slotKey];
+      if (assignedSpellId) {
+        startCustomDrag(event, assignedSpellId, 'hotbar', slotKey);
+      }
+    }
+    window.onHotbarSlotMouseDown = onHotbarSlotMouseDown;
+
+    document.addEventListener('mousemove', function(e) {
+      if (window.customDragState.isDragging) {
+        const ghost = document.getElementById('drag-ghost-icon');
+        if (ghost) {
+          ghost.style.left = e.clientX + 'px';
+          ghost.style.top = e.clientY + 'px';
+        }
+      }
+    });
+
+    document.addEventListener('touchmove', function(e) {
+      if (window.customDragState.isDragging && e.touches.length > 0) {
+        const ghost = document.getElementById('drag-ghost-icon');
+        if (ghost) {
+          ghost.style.left = e.touches[0].clientX + 'px';
+          ghost.style.top = e.touches[0].clientY + 'px';
+        }
+      }
+    });
+
+    function endCustomDrag(e) {
+      if (!window.customDragState.isDragging) return;
+
+      const ghost = document.getElementById('drag-ghost-icon');
+      if (ghost) ghost.style.display = 'none';
+
+      const clientX = e.clientX || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : 0);
+      const clientY = e.clientY || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : 0);
+
+      // Buscar si se soltó sobre alguna casilla de la barra de poderes (Hotbar 1 al 0)
+      const hitElement = document.elementFromPoint(clientX, clientY);
+      if (hitElement) {
+        const slotBox = hitElement.closest('[data-hotbar-key]');
+        if (slotBox) {
+          const targetKey = slotBox.getAttribute('data-hotbar-key');
+          const dragInfo = window.customDragState;
+
+          if (targetKey) {
+            const hotbar = window.playerSpellsState.hotbar;
+            const spellId = dragInfo.spellId;
+
+            if (dragInfo.sourceType === 'hotbar' && dragInfo.sourceKey) {
+              // Intercambiar o Mover entre casillas de la barra de poderes
+              const existingTargetSpell = hotbar[targetKey];
+              hotbar[targetKey] = spellId;
+              hotbar[dragInfo.sourceKey] = existingTargetSpell || null;
+            } else {
+              // Colocar poder nuevo desde la ventana de poderes
+              hotbar[targetKey] = spellId;
+            }
+
+            renderHotbarUI();
+
+            if (window.gameInstance && window.gameInstance.scene) {
+              const gameScene = window.gameInstance.scene.getScene('GameScene');
+              if (gameScene && gameScene.showFloatingText && gameScene.player) {
+                const spellName = window.spellDatabase[spellId]?.name || 'Poder';
+                gameScene.showFloatingText(gameScene.player.x, gameScene.player.y - 45, `✨ ${spellName} colocado en Casilla ${targetKey}`, '#00f2fe');
+              }
+            }
+          }
+        }
+      }
+
+      window.customDragState.isDragging = false;
+      window.customDragState.spellId = null;
+      window.customDragState.sourceType = null;
+      window.customDragState.sourceKey = null;
+    }
+
+    document.addEventListener('mouseup', endCustomDrag);
+    document.addEventListener('touchend', endCustomDrag);
 
     function renderHotbarUI() {
       const grid = document.getElementById('hotbar-powers-grid');
@@ -3020,11 +3143,11 @@
 
         slotItem.innerHTML = `
           <div class="power-slot ${isAssigned ? '' : 'locked'}" 
-               ondragenter="allowHotbarDrop(event)"
-               ondragover="allowHotbarDrop(event)" 
-               ondrop="onHotbarDrop(event, '${k}')"
+               data-hotbar-key="${k}"
+               onmousedown="onHotbarSlotMouseDown(event, '${k}')"
+               ontouchstart="onHotbarSlotMouseDown(event, '${k}')"
                onclick="handleHotbarSlotClick('${k}')"
-               title="${isAssigned ? window.spellDatabase[assignedSpellId].name : 'Casilla Vacía (Arrastra un poder aquí desde la ventana de poderes o selecciona uno a la izquierda y haz clic en la casilla)'}">
+               title="${isAssigned ? window.spellDatabase[assignedSpellId].name : 'Casilla Vacía (Mantén presionado y arrastra un poder aquí desde la ventana de poderes o selecciona uno a la izquierda y haz clic en la casilla)'}">
             ${isAssigned ? `
               <svg viewBox="0 0 32 32" class="spell-arrow-svg">
                 <line x1="4" y1="28" x2="24" y2="8" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round"/>
@@ -3045,44 +3168,10 @@
     }
     window.renderHotbarUI = renderHotbarUI;
 
-    function onSpellDragStart(event, spellId) {
-      window.draggingSpellId = spellId;
-      try {
-        event.dataTransfer.effectAllowed = 'copy';
-        event.dataTransfer.setData('text/plain', spellId);
-        event.dataTransfer.setData('spellId', spellId);
-      } catch (_e) {}
-    }
-    window.onSpellDragStart = onSpellDragStart;
-
-    function allowHotbarDrop(event) {
-      event.preventDefault();
-      try {
-        event.dataTransfer.dropEffect = 'copy';
-      } catch (_e) {}
-    }
-    window.allowHotbarDrop = allowHotbarDrop;
-
-    function onHotbarDrop(event, slotKey) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      let spellId = null;
-      try {
-        spellId = event.dataTransfer.getData('text/plain') || event.dataTransfer.getData('spellId');
-      } catch (_e) {}
-
-      if (!spellId) spellId = window.draggingSpellId || window.playerSpellsState.selectedSpellId;
-
-      if (spellId && window.spellDatabase[spellId]) {
-        window.playerSpellsState.hotbar[slotKey] = spellId;
-        renderHotbarUI();
-      }
-      window.draggingSpellId = null;
-    }
-    window.onHotbarDrop = onHotbarDrop;
-
     function handleHotbarSlotClick(slotKey) {
+      // Si estamos arrastrando activamente, no ejecutar clic
+      if (window.customDragState && window.customDragState.isDragging) return;
+
       const modal = document.getElementById('poderes-modal-window');
       const isModalActive = modal && modal.classList.contains('active');
       const selectedId = window.playerSpellsState.selectedSpellId;

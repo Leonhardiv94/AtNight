@@ -2496,8 +2496,8 @@ export class GameScene extends Phaser.Scene {
 
     // Range Check Calculation: Max 5 tiles (Lvl 1 & 2) or 6 tiles (Lvl 3) ALWAYS
     const maxRangeTiles = lvlInfo.range || 5;
-    const tileWidthPx = 128 * (2 / 3); // ~85.333px por casilla
-    const maxRangePx = maxRangeTiles * tileWidthPx;
+    const tileStepPx = 47.7; // Distancia exacta en píxeles de 1 casilla isométrica
+    const maxRangePx = maxRangeTiles * tileStepPx; // 5 casillas = ~238.5px, 6 casillas = ~286.2px
     const distToTarget = Phaser.Math.Distance.Between(this.player.x, this.player.y - 20, targetX, targetY);
 
     const isTargetHitDirectly = !!(this.selectedCreature && this.selectedCreature.sprite.active && this.selectedCreature.hp > 0 && distToTarget <= maxRangePx);

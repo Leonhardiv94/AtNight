@@ -85,7 +85,7 @@
       "x": 0,
       "y": 1152
     },
-    "updatedAt": "2026-08-08T17:17:47.610Z"
+    "updatedAt": "2026-08-08T20:53:27.551Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -133,7 +133,7 @@
     },
     "hp": 100,
     "maxHp": 100,
-    "mana": 10,
+    "mana": 6,
     "maxMana": 10,
     "inventory": [
       {
@@ -173,7 +173,7 @@
       "x": 0,
       "y": 1152
     },
-    "updatedAt": "2026-08-08T17:24:08.085Z"
+    "updatedAt": "2026-08-08T20:51:30.885Z"
   },
   "Guerrera": {
     "characterName": "Guerrera",

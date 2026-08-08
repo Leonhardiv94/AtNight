@@ -2786,38 +2786,53 @@
       }
     };
 
-    // Estado del Jugador para Hechizos y Hotbar
-    window.playerSpellsState = {
-      spellPoints: 0, // Nivel 1 inicia con 0 puntos de hechizos
-      spells: {
-        flecha_punzante: { level: 1 } // Elfo inicia con Flecha Punzante desbloqueado a Nivel 1
-      },
-      selectedSpellId: null,
-      selectedTabLevel: 1,
-      hotbar: {
-        1: 'flecha_punzante',
-        2: null, 3: null, 4: null, 5: null,
-        6: null, 7: null, 8: null, 9: null, 0: null
-      }
-    };
+    function getSpellsStorageKey() {
+      const charName = localStorage.getItem('atnight_active_char') || window.selectedCharacterName || 'default';
+      return `atnight_player_spells_state_${charName}`;
+    }
+
+    function getDefaultSpellsState() {
+      return {
+        spellPoints: 0, // Nivel 1 inicia con 0 puntos de hechizos
+        spells: {
+          flecha_punzante: { level: 1 } // Elfo inicia con Flecha Punzante desbloqueado a Nivel 1
+        },
+        selectedSpellId: null,
+        selectedTabLevel: 1,
+        hotbar: {
+          1: 'flecha_punzante',
+          2: null, 3: null, 4: null, 5: null,
+          6: null, 7: null, 8: null, 9: null, 0: null
+        }
+      };
+    }
+
+    // Estado del Jugador para Hechizos y Hotbar (Exclusivo por Personaje)
+    window.playerSpellsState = getDefaultSpellsState();
 
     function loadSavedSpellsState() {
       try {
-        const saved = localStorage.getItem('atnight_player_spells_state');
+        const storageKey = getSpellsStorageKey();
+        const saved = localStorage.getItem(storageKey);
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.hotbar) {
             window.playerSpellsState = parsed;
+            return;
           }
         }
       } catch (_e) {}
+      window.playerSpellsState = getDefaultSpellsState();
     }
+    window.loadSavedSpellsState = loadSavedSpellsState;
 
     function saveSpellsState() {
       try {
-        localStorage.setItem('atnight_player_spells_state', JSON.stringify(window.playerSpellsState));
+        const storageKey = getSpellsStorageKey();
+        localStorage.setItem(storageKey, JSON.stringify(window.playerSpellsState));
       } catch (_e) {}
     }
+    window.saveSpellsState = saveSpellsState;
 
     loadSavedSpellsState();
 
@@ -3833,6 +3848,11 @@
     function selectAndEnterGame(characterName) {
       window.selectedCharacterName = characterName;
       localStorage.setItem('atnight_active_char', characterName);
+
+      // Cargar hechizos y hotbar específicos y exclusivos de este personaje
+      loadSavedSpellsState();
+      renderHotbarUI();
+      if (typeof updatePoderesUI === 'function') updatePoderesUI();
 
       try {
         const cachedRaw = localStorage.getItem('atnight_active_char_data');

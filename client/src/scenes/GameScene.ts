@@ -2119,6 +2119,14 @@ export class GameScene extends Phaser.Scene {
 
     this.currentCharacterName = activeData.characterName || 'Leonhard1';
     this.currentCharacterData = activeData;
+    this.characterClass = activeData.characterClass || 'arquero';
+
+    if (typeof (window as any).loadSavedSpellsState === 'function') {
+      (window as any).loadSavedSpellsState();
+    }
+    if (typeof (window as any).renderHotbarUI === 'function') {
+      (window as any).renderHotbarUI();
+    }
 
     this.generateCustomPlayerTextures(activeData);
 

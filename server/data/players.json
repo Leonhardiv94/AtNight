@@ -85,7 +85,7 @@
       "x": 0,
       "y": 1139
     },
-    "updatedAt": "2026-08-08T01:14:17.205Z"
+    "updatedAt": "2026-08-08T01:14:47.395Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -138,9 +138,9 @@
     "inventory": [],
     "lastPosition": {
       "x": 0,
-      "y": 1139
+      "y": 1152
     },
-    "updatedAt": "2026-08-08T01:09:32.959Z"
+    "updatedAt": "2026-08-08T01:20:08.306Z"
   },
   "Guerrera": {
     "characterName": "Guerrera",

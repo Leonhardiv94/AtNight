@@ -20,27 +20,8 @@ export class BootScene extends Phaser.Scene {
   private createProceduralTextures() {
     const graphics = this.make.graphics({ x: 0, y: 0 });
 
-    // 1. Isometric Grass Tile with 3D Cliff Wall (Bright Daytime HD 128x84)
+    // 1. Isometric Grass Tile (Bright Daytime HD 128x64)
     graphics.clear();
-    graphics.fillStyle(0x3f2212, 1);
-    graphics.beginPath();
-    graphics.moveTo(0, 32);
-    graphics.lineTo(64, 64);
-    graphics.lineTo(64, 84);
-    graphics.lineTo(0, 52);
-    graphics.closePath();
-    graphics.fillPath();
-
-    graphics.fillStyle(0x27140a, 1);
-    graphics.beginPath();
-    graphics.moveTo(64, 64);
-    graphics.lineTo(128, 32);
-    graphics.lineTo(128, 52);
-    graphics.lineTo(64, 84);
-    graphics.closePath();
-    graphics.fillPath();
-
-    // Superficie de prado verde continua y perfecta (Sin bordes internos recortados)
     graphics.fillStyle(0x2d8a4e, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
@@ -53,29 +34,10 @@ export class BootScene extends Phaser.Scene {
     graphics.fillRect(28, 30, 3, 6);
     graphics.fillRect(92, 22, 4, 6);
 
-    graphics.generateTexture('tile-grass', 128, 84);
+    graphics.generateTexture('tile-grass', 128, 64);
 
-    // 2. Isometric Shoreline Sand Tile with 3D Sand Wall & Rich Sand Texture (Bright Daytime HD 128x76)
+    // 2. Isometric Shoreline Sand Tile (Bright Daytime HD 128x64)
     graphics.clear();
-    graphics.fillStyle(0xb39868, 1);
-    graphics.beginPath();
-    graphics.moveTo(0, 32);
-    graphics.lineTo(64, 64);
-    graphics.lineTo(64, 76);
-    graphics.lineTo(0, 44);
-    graphics.closePath();
-    graphics.fillPath();
-
-    graphics.fillStyle(0x8a7249, 1);
-    graphics.beginPath();
-    graphics.moveTo(64, 64);
-    graphics.lineTo(128, 32);
-    graphics.lineTo(128, 44);
-    graphics.lineTo(64, 76);
-    graphics.closePath();
-    graphics.fillPath();
-
-    // Superficie de arena brillante continua y perfecta (Sin bordes oscuros recortados)
     graphics.fillStyle(0xf5e6c8, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
@@ -137,7 +99,7 @@ export class BootScene extends Phaser.Scene {
     graphics.fillStyle(0x94a3b8, 0.85);
     graphics.fillEllipse(40, 48, 4, 2.5);
 
-    graphics.generateTexture('tile-sand', 128, 76);
+    graphics.generateTexture('tile-sand', 128, 64);
 
     // 3. Isometric Ocean Water Tile (Bright Daytime HD 128x64)
     graphics.clear();

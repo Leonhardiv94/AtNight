@@ -17,7 +17,6 @@ interface Creature {
   isAggro: boolean;
   hpBar: Phaser.GameObjects.Graphics;
   hoverLabel: Phaser.GameObjects.Text;
-  hpText?: Phaser.GameObjects.Text;
   isHovered: boolean;
   lastAttackTime: number;
   patrolTarget: Phaser.Math.Vector2;
@@ -2236,22 +2235,13 @@ export class GameScene extends Phaser.Scene {
       const hpBar = this.add.graphics();
       hpBar.setDepth(5000);
 
-      const hoverLabel = this.add.text(spawn.x, spawn.y - 35, `Pollo Niv. ${level} • ${stats.maxHp} HP`, {
+      const hoverLabel = this.add.text(spawn.x, spawn.y - 35, `Pollo Niv. ${level}`, {
         fontFamily: 'Outfit, sans-serif',
         fontSize: '12px',
         color: '#ffffff',
         backgroundColor: 'rgba(15, 23, 42, 0.85)',
         padding: { x: 6, y: 3 }
       }).setOrigin(0.5, 1).setDepth(10000).setVisible(false);
-
-      const hpText = this.add.text(spawn.x, spawn.y, `${stats.maxHp}`, {
-        fontFamily: 'Outfit, sans-serif',
-        fontSize: '11px',
-        fontStyle: 'bold',
-        color: '#ffffff',
-        stroke: '#0f172a',
-        strokeThickness: 3
-      }).setOrigin(0, 0.5).setDepth(12000).setVisible(false);
 
       const creature: Creature = {
         sprite,
@@ -2263,7 +2253,6 @@ export class GameScene extends Phaser.Scene {
         isAggro: false,
         hpBar,
         hoverLabel,
-        hpText,
         isHovered: false,
         lastAttackTime: 0,
         patrolTarget: new Phaser.Math.Vector2(spawn.x + Phaser.Math.Between(-30, 30), spawn.y + Phaser.Math.Between(-30, 30)),
@@ -2274,10 +2263,13 @@ export class GameScene extends Phaser.Scene {
 
       sprite.on('pointerover', () => {
         creature.isHovered = true;
+        hoverLabel.setText(`Pollo Niv. ${creature.level}`);
+        hoverLabel.setVisible(true);
       });
 
       sprite.on('pointerout', () => {
         creature.isHovered = false;
+        hoverLabel.setVisible(false);
       });
 
       this.creatures.push(creature);
@@ -2801,77 +2793,6 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private renderCreatureHpBar(c: Creature) {
-    if (!c.sprite.active || c.hp <= 0) {
-      c.hpBar.clear();
-      if (c.hoverLabel) c.hoverLabel.setVisible(false);
-      if (c.hpText) c.hpText.setVisible(false);
-      return;
-    }
-
-    const isSelected = this.selectedCreature === c;
-    const shouldShowBar = isSelected || c.isAggro || c.hp < c.maxHp;
-
-    // 1. Top Hover Label: ONLY visible when mouse pointer is directly over the creature
-    if (c.hoverLabel) {
-      if (c.isHovered) {
-        const stats = this.getPolloLevelData(c.level);
-        const currentHp = Math.max(0, Math.ceil(c.hp));
-        c.hoverLabel.setPosition(c.sprite.x, c.sprite.y - 38);
-        c.hoverLabel.setDepth(c.sprite.y + 10000);
-        c.hoverLabel.setText(`${c.name} Niv. ${c.level} • ${currentHp} HP • ${stats.xp} XP`);
-        c.hoverLabel.setVisible(true);
-      } else {
-        c.hoverLabel.setVisible(false);
-      }
-    }
-
-    // 2. Bottom HP Bar & Small Numerical HP Text right beside the bar
-    if (!shouldShowBar) {
-      c.hpBar.clear();
-      if (c.hpText) c.hpText.setVisible(false);
-      return;
-    }
-
-    const barWidth = 40;
-    const barHeight = 6;
-
-    // Position HP Bar at the bottom of the chicken (where the red target circle is)
-    const barX = c.sprite.x - barWidth / 2 - 6;
-    const barY = c.sprite.y + 8;
-
-    c.hpBar.clear();
-    c.hpBar.setDepth(c.sprite.y + 5000);
-
-    // Dark background container with high contrast border
-    c.hpBar.fillStyle(0x0f172a, 0.95);
-    c.hpBar.fillRect(barX - 1, barY - 1, barWidth + 2, barHeight + 2);
-    c.hpBar.lineStyle(1.5, isSelected ? 0xef4444 : 0x475569, 1);
-    c.hpBar.strokeRect(barX - 1, barY - 1, barWidth + 2, barHeight + 2);
-
-    // HP Fill
-    const pct = Math.max(0, Math.min(1, c.hp / c.maxHp));
-    const fillWidth = Math.round(barWidth * pct);
-
-    let fillColor = 0x10b981; // Green
-    if (pct <= 0.25) fillColor = 0xef4444; // Red
-    else if (pct <= 0.5) fillColor = 0xf59e0b; // Orange/Yellow
-
-    if (fillWidth > 0) {
-      c.hpBar.fillStyle(fillColor, 1);
-      c.hpBar.fillRect(barX, barY, fillWidth, barHeight);
-    }
-
-    // Tiny Numerical HP Number RIGHT BESIDE the bottom bar! (solo el número, ej: 43)
-    if (c.hpText) {
-      c.hpText.setPosition(barX + barWidth + 5, barY + barHeight / 2);
-      c.hpText.setDepth(c.sprite.y + 6000);
-      c.hpText.setText(`${Math.max(0, Math.ceil(c.hp))}`);
-      c.hpText.setColor(pct <= 0.25 ? '#ef4444' : (pct <= 0.5 ? '#f59e0b' : '#ffffff'));
-      c.hpText.setVisible(true);
-    }
-  }
-
   private updateDepthSorting() {
     this.player.setDepth(this.player.y);
 
@@ -3075,7 +2996,7 @@ export class GameScene extends Phaser.Scene {
       if (c.hoverLabel) {
         c.hoverLabel.setPosition(c.sprite.x, c.sprite.y - 35);
         if (c.isHovered && c.sprite.active) {
-          c.hoverLabel.setText(`Pollo Niv. ${c.level}  (${c.hp}/${c.maxHp} HP)`);
+          c.hoverLabel.setText(`Pollo Niv. ${c.level}`);
           c.hoverLabel.setVisible(true);
         }
       }
@@ -3142,7 +3063,6 @@ export class GameScene extends Phaser.Scene {
     if (c.sprite.body) c.sprite.body.stop();
     c.hpBar.clear();
     if (c.hoverLabel) c.hoverLabel.setVisible(false);
-    if (c.hpText) c.hpText.setVisible(false);
 
     // 1. Calculate Drops
     const dropsToSpawn: Array<{ id: string; name: string; count: number }> = [];

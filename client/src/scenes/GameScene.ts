@@ -2812,12 +2812,14 @@ export class GameScene extends Phaser.Scene {
     const isSelected = this.selectedCreature === c;
     const shouldShowBar = isSelected || c.isAggro || c.hp < c.maxHp;
 
-    // 1. Top Hover Label: Only visible when mouse pointer is directly over the creature
+    // 1. Top Hover Label: ONLY visible when mouse pointer is directly over the creature
     if (c.hoverLabel) {
       if (c.isHovered) {
+        const stats = this.getPolloLevelData(c.level);
+        const currentHp = Math.max(0, Math.ceil(c.hp));
         c.hoverLabel.setPosition(c.sprite.x, c.sprite.y - 38);
         c.hoverLabel.setDepth(c.sprite.y + 10000);
-        c.hoverLabel.setText(`${c.name} Niv. ${c.level} • ${Math.max(0, Math.ceil(c.hp))} HP`);
+        c.hoverLabel.setText(`${c.name} Niv. ${c.level} • ${currentHp} HP • ${stats.xp} XP`);
         c.hoverLabel.setVisible(true);
       } else {
         c.hoverLabel.setVisible(false);
@@ -2831,11 +2833,11 @@ export class GameScene extends Phaser.Scene {
       return;
     }
 
-    const barWidth = 42;
+    const barWidth = 40;
     const barHeight = 6;
 
     // Position HP Bar at the bottom of the chicken (where the red target circle is)
-    const barX = c.sprite.x - barWidth / 2 - 8;
+    const barX = c.sprite.x - barWidth / 2 - 6;
     const barY = c.sprite.y + 8;
 
     c.hpBar.clear();
@@ -2860,7 +2862,7 @@ export class GameScene extends Phaser.Scene {
       c.hpBar.fillRect(barX, barY, fillWidth, barHeight);
     }
 
-    // Tiny Numerical HP Number RIGHT BESIDE the bar! (al ladito de la barra)
+    // Tiny Numerical HP Number RIGHT BESIDE the bottom bar! (solo el número, ej: 43)
     if (c.hpText) {
       c.hpText.setPosition(barX + barWidth + 5, barY + barHeight / 2);
       c.hpText.setDepth(c.sprite.y + 6000);

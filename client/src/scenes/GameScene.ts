@@ -2001,22 +2001,28 @@ export class GameScene extends Phaser.Scene {
         const dy = y - center;
         const distFromCenter = Math.sqrt(dx * dx + dy * dy);
 
-        // Precision subpixel floating point coordinates (Prevents rounding gaps/seams)
+        // Precision subpixel floating point coordinates
         const baseIsoX = (x - y) * (tileW / 2);
         const baseIsoY = (x + y) * (tileH / 2);
 
         if (distFromCenter <= 15.3) {
-          const tile = this.add.image(baseIsoX, baseIsoY, 'tile-grass');
+          // Prado verde elevado en nivel alto (-13.33px)
+          const isoY = baseIsoY - 13.333;
+          const tile = this.add.image(baseIsoX, isoY, 'tile-grass');
           tile.setOrigin(0.5, 0);
           tile.setScale(tileScale);
           tile.setDepth(-5000 + baseIsoY);
         } else if (distFromCenter <= 19.8) {
-          const tile = this.add.image(baseIsoX, baseIsoY, 'tile-sand');
+          // Arena de playa elevada en nivel medio (-6.67px)
+          const isoY = baseIsoY - 6.667;
+          const tile = this.add.image(baseIsoX, isoY, 'tile-sand');
           tile.setOrigin(0.5, 0);
           tile.setScale(tileScale);
           tile.setDepth(-5000 + baseIsoY);
         } else {
-          const waterTile = this.add.image(baseIsoX, baseIsoY, 'tile-water');
+          // Océano al nivel del mar (0px)
+          const isoY = baseIsoY;
+          const waterTile = this.add.image(baseIsoX, isoY, 'tile-water');
           waterTile.setOrigin(0.5, 0);
           waterTile.setScale(tileScale);
           waterTile.setDepth(-5000 + baseIsoY);
@@ -2300,6 +2306,23 @@ export class GameScene extends Phaser.Scene {
     this.wasdKeys.gather.on('down', () => this.handleGathering());
   }
 
+  private getTileElevation(gridX: number, gridY: number): number {
+    const mapSize = 54;
+    const center = mapSize / 2;
+    const dx = gridX - center;
+    const dy = gridY - center;
+    const distFromCenter = Math.sqrt(dx * dx + dy * dy);
+    const tileScale = 2 / 3;
+
+    if (distFromCenter <= 15.3) {
+      return -20 * tileScale; // Prado verde elevado: -13.333px
+    } else if (distFromCenter <= 19.8) {
+      return -10 * tileScale; // Arena de playa elevada: -6.667px
+    } else {
+      return 0;               // Nivel del mar océano: 0px
+    }
+  }
+
   private hoverTileGraphic: Phaser.GameObjects.Graphics | null = null;
 
   private updateHoverTileMarker(worldX: number, worldY: number) {
@@ -2308,19 +2331,19 @@ export class GameScene extends Phaser.Scene {
     const tileH = 64 * tileScale;  // ~42.667px
     const halfW = tileW / 2;       // ~42.667px
     const halfH = tileH / 2;       // ~21.333px
-    const yCenterOffset = halfH;   // Center of 128x64 flat tile top face
 
-    const gridX = Math.round((worldX / halfW + (worldY - yCenterOffset) / halfH) / 2);
-    const gridY = Math.round(((worldY - yCenterOffset) / halfH - worldX / halfW) / 2);
+    const gridX = Math.round((worldX / halfW + worldY / halfH) / 2);
+    const gridY = Math.round((worldY / halfH - worldX / halfW) / 2);
 
+    const elevation = this.getTileElevation(gridX, gridY);
     const cellX = (gridX - gridY) * halfW;
-    const cellY = (gridX + gridY) * halfH;
+    const cellY = (gridX + gridY) * halfH + elevation;
 
     if (!this.hoverTileGraphic) {
       this.hoverTileGraphic = this.add.graphics();
     }
 
-    // Contorno fino refinado y tenue (1.2px cian con relleno suave al pasar el mouse)
+    // Contorno fino refinado adaptado dinámicamente a la elevación de cada suelo
     this.hoverTileGraphic.clear();
     this.hoverTileGraphic.lineStyle(1.2, 0x38bdf8, 0.85);
     this.hoverTileGraphic.fillStyle(0x38bdf8, 0.15);
@@ -2338,31 +2361,29 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateTileGridMarker(worldX: number, worldY: number): { x: number; y: number } {
-    // Snap world coordinates to exact Isometric Diamond Tile (2/3 scale: ~85.33x42.67px)
     const tileScale = 2 / 3;
     const tileW = 128 * tileScale; // ~85.333px
     const tileH = 64 * tileScale;  // ~42.667px
     const halfW = tileW / 2;       // ~42.667px
     const halfH = tileH / 2;       // ~21.333px
-    const yCenterOffset = halfH;   // Center of 128x64 flat tile top face
 
-    const gridX = Math.round((worldX / halfW + (worldY - yCenterOffset) / halfH) / 2);
-    const gridY = Math.round(((worldY - yCenterOffset) / halfH - worldX / halfW) / 2);
+    const gridX = Math.round((worldX / halfW + worldY / halfH) / 2);
+    const gridY = Math.round((worldY / halfH - worldX / halfW) / 2);
 
+    const elevation = this.getTileElevation(gridX, gridY);
     const cellX = (gridX - gridY) * halfW;
-    const cellY = (gridX + gridY) * halfH;
-    const tileCenterY = cellY + yCenterOffset;
+    const cellY = (gridX + gridY) * halfH + elevation;
+    const tileCenterY = cellY + halfH;
 
     if (!this.targetTileGraphic) {
       this.targetTileGraphic = this.add.graphics();
     }
 
-    // Render persistent cyan tile grid highlight matching 2/3 scale tiles
+    // Resaltado cian de destino adaptado dinámicamente a la elevación del suelo
     this.targetTileGraphic.clear();
     this.targetTileGraphic.lineStyle(2, 0x00f2fe, 0.95);
     this.targetTileGraphic.fillStyle(0x00f2fe, 0.3);
 
-    // Draw Isometric Diamond Tile matching 2/3 scale asset bounds exactly
     this.targetTileGraphic.beginPath();
     this.targetTileGraphic.moveTo(cellX, cellY);
     this.targetTileGraphic.lineTo(cellX + halfW, cellY + halfH);

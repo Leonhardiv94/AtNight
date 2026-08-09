@@ -2121,7 +2121,12 @@ export class GameScene extends Phaser.Scene {
     this.currentCharacterData = activeData;
     this.characterClass = activeData.characterClass || 'arquero';
     this.playerLevel = activeData.level || 1;
-    this.playerXp = activeData.xp || 0;
+    let loadedXp = activeData.xp || 0;
+    const baseLevelThreshold = this.getXpThresholdForLevel(this.playerLevel);
+    if (loadedXp < baseLevelThreshold) {
+      loadedXp = baseLevelThreshold + loadedXp;
+    }
+    this.playerXp = loadedXp;
     this.playerMaxMana = 10;
     this.playerMana = Math.min(10, activeData.mana !== undefined ? activeData.mana : 10);
 

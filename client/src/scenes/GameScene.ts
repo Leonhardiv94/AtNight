@@ -2104,24 +2104,24 @@ export class GameScene extends Phaser.Scene {
     const templeX = (templeCenterX - templeCenterY) * (tileW / 2);
     const templeY = (templeCenterX + templeCenterY) * (tileH / 2) - 13.333;
 
-    // Sprite del Templo Antiguo orientado con la puerta hacia abajo a la derecha
+    // Sprite del Templo Antiguo orientado con la puerta hacia abajo a la derecha (escala a 3/4 del tamaño anterior)
     const temple = this.add.sprite(templeX, templeY, 'temple-building');
     temple.setOrigin(0.5, 0.82);
-    temple.setScale(0.85);
+    temple.setScale(0.64);
     temple.setDepth(templeY + 120);
 
-    // Colisionador Físico Estático para la Base de Piedra del Templo
-    const templeCollider = this.rockGroup.create(templeX, templeY - 10, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    // Colisionador Físico Estático ajustado al tamaño 3/4 de la base
+    const templeCollider = this.rockGroup.create(templeX, templeY - 8, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeCollider.setVisible(false);
     const cBody = templeCollider.body as Phaser.Physics.Arcade.StaticBody;
     if (cBody) {
-      cBody.setSize(240, 160);
-      cBody.setOffset(-105, -70);
+      cBody.setSize(180, 120);
+      cBody.setOffset(-78, -50);
     }
     templeCollider.refreshBody();
 
-    // Antorchas Místicas flanqueando la entrada con luz cálida
-    const torchLeft = this.add.circle(templeX + 35, templeY + 25, 8, 0xf59e0b, 0.7);
+    // Antorchas Místicas flanqueando la entrada orientada hacia abajo-derecha
+    const torchLeft = this.add.circle(templeX + 26, templeY + 18, 6, 0xf59e0b, 0.7);
     torchLeft.setDepth(templeY + 130);
     this.tweens.add({
       targets: torchLeft,
@@ -2133,7 +2133,7 @@ export class GameScene extends Phaser.Scene {
       ease: 'Sine.easeInOut'
     });
 
-    const torchRight = this.add.circle(templeX + 75, templeY + 45, 8, 0xf59e0b, 0.7);
+    const torchRight = this.add.circle(templeX + 56, templeY + 34, 6, 0xf59e0b, 0.7);
     torchRight.setDepth(templeY + 130);
     this.tweens.add({
       targets: torchRight,

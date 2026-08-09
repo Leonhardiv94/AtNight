@@ -20,9 +20,10 @@ export class BootScene extends Phaser.Scene {
   private createProceduralTextures() {
     const graphics = this.make.graphics({ x: 0, y: 0 });
 
-    // 1. Isometric Grass Tile with 3D Cliff Wall (Bright Daytime HD 128x84)
+    // 1. Isometric Grass Tile with 3D Cliff Wall (Lush Meadow HD 128x84)
     graphics.clear();
-    graphics.fillStyle(0x3f2212, 1);
+    // Paredes de Acantilado de Tierra Cálida Orgánica
+    graphics.fillStyle(0x6d4c41, 1);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
@@ -31,7 +32,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0x27140a, 1);
+    graphics.fillStyle(0x5d4037, 1);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
@@ -40,12 +41,22 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    // Superficie de prado verde continua y perfecta (Sin bordes internos recortados)
-    graphics.fillStyle(0x2d8a4e, 1);
+    // Superficie de Prado Verde Rico y Cálido
+    graphics.fillStyle(0x388e3c, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    graphics.fillStyle(0x52b788, 0.85);
+    // Gradiente Interior Suave y Cuestiones de Luz
+    graphics.fillStyle(0x43a047, 0.9);
+    graphics.fillTriangle(64, 4, 120, 32, 64, 60);
+    graphics.fillTriangle(64, 4, 8, 32, 64, 60);
+
+    graphics.fillStyle(0x4caf50, 0.7);
+    graphics.fillTriangle(64, 10, 108, 32, 64, 54);
+    graphics.fillTriangle(64, 10, 20, 32, 64, 54);
+
+    // Detalles Suaves de Briznas de Hierba y Flores Silvestres
+    graphics.fillStyle(0x81c784, 0.85);
     graphics.fillRect(40, 20, 3, 6);
     graphics.fillRect(80, 28, 4, 7);
     graphics.fillRect(56, 38, 3, 6);
@@ -53,11 +64,26 @@ export class BootScene extends Phaser.Scene {
     graphics.fillRect(28, 30, 3, 6);
     graphics.fillRect(92, 22, 4, 6);
 
+    graphics.fillStyle(0xa5d6a7, 0.9);
+    graphics.fillRect(48, 16, 2, 5);
+    graphics.fillRect(84, 36, 2, 5);
+    graphics.fillRect(34, 42, 2, 4);
+
+    // Micro-Flores Silvestres Amarillas y Rosadas Dispersas
+    graphics.fillStyle(0xfbc02d, 0.9);
+    graphics.fillCircle(52, 24, 2);
+    graphics.fillCircle(88, 18, 1.8);
+    graphics.fillCircle(38, 36, 2);
+    graphics.fillStyle(0xf48fb1, 0.85);
+    graphics.fillCircle(70, 44, 1.8);
+    graphics.fillCircle(100, 30, 2);
+
     graphics.generateTexture('tile-grass', 128, 84);
 
-    // 2. Isometric Shoreline Sand Tile with 3D Sand Wall & Rich Sand Texture (Bright Daytime HD 128x84)
+    // 2. Isometric Shoreline Sand Tile with Rich Golden Beach Texture (HD 128x84)
     graphics.clear();
-    graphics.fillStyle(0xb39868, 1);
+    // Paredes de Arena Dorada Cálida
+    graphics.fillStyle(0xc49026, 1);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
@@ -66,7 +92,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0x8a7249, 1);
+    graphics.fillStyle(0xb07d1a, 1);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
@@ -75,82 +101,91 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    // Superficie de arena brillante continua y perfecta (Sin bordes oscuros recortados)
-    graphics.fillStyle(0xf5e6c8, 1);
+    // Superficie de Arena Dorada Cálida y Uniforme
+    graphics.fillStyle(0xe5b842, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    // --- BEACH SAND TEXTURE, RIPPLES & DETAILS ---
+    // Luz Soleada de Arena
+    graphics.fillStyle(0xf5d061, 0.9);
+    graphics.fillTriangle(64, 4, 120, 32, 64, 60);
+    graphics.fillTriangle(64, 4, 8, 32, 64, 60);
 
-    // 1. Soft Dune Ripple Lines (Ondulaciones de arena de playa)
-    graphics.lineStyle(1.5, 0xdfc494, 0.65);
+    graphics.fillStyle(0xffe082, 0.6);
+    graphics.fillTriangle(64, 10, 108, 32, 64, 54);
+    graphics.fillTriangle(64, 10, 20, 32, 64, 54);
+
+    // Ondulaciones Orgánicas de Arena Suave
+    graphics.lineStyle(1.5, 0xd4a337, 0.55);
     graphics.beginPath();
-    graphics.moveTo(30, 20);
-    graphics.lineTo(50, 25);
-    graphics.lineTo(75, 22);
+    graphics.moveTo(30, 20); graphics.lineTo(50, 25); graphics.lineTo(75, 22);
     graphics.strokePath();
 
-    graphics.lineStyle(1.5, 0xcfa970, 0.5);
+    graphics.lineStyle(1.5, 0xc49026, 0.45);
     graphics.beginPath();
-    graphics.moveTo(48, 34);
-    graphics.lineTo(70, 40);
-    graphics.lineTo(95, 36);
+    graphics.moveTo(48, 34); graphics.lineTo(70, 40); graphics.lineTo(95, 36);
     graphics.strokePath();
 
-    graphics.lineStyle(1, 0xfff4d6, 0.7);
+    graphics.lineStyle(1, 0xfff8e1, 0.65);
     graphics.beginPath();
-    graphics.moveTo(25, 32);
-    graphics.lineTo(45, 36);
-    graphics.lineTo(65, 34);
+    graphics.moveTo(25, 32); graphics.lineTo(45, 36); graphics.lineTo(65, 34);
     graphics.strokePath();
 
-    // 2. Sand Grains (Grano y texturizado de arena disperso)
-    const sandGrains = [
-      { x: 42, y: 15, color: 0xcfa970, size: 2 },
-      { x: 78, y: 18, color: 0xfff4d6, size: 2.5 },
-      { x: 34, y: 28, color: 0xb3945b, size: 2 },
-      { x: 62, y: 24, color: 0xe6cd9c, size: 3 },
-      { x: 88, y: 28, color: 0xcfa970, size: 2 },
-      { x: 50, y: 44, color: 0xfff4d6, size: 2.5 },
-      { x: 74, y: 40, color: 0xb3945b, size: 2 },
-      { x: 96, y: 46, color: 0xe6cd9c, size: 2 },
-      { x: 30, y: 40, color: 0xcfa970, size: 2 },
-      { x: 64, y: 52, color: 0xfff4d6, size: 3 },
-      { x: 80, y: 50, color: 0xb3945b, size: 2 },
-      { x: 20, y: 24, color: 0xe6cd9c, size: 2 },
-    ];
+    // Granos de Arena y Conchitas Dispersas
+    graphics.fillStyle(0xfff8e1, 0.85);
+    graphics.fillRect(42, 15, 2, 2);
+    graphics.fillRect(78, 18, 2.5, 2.5);
+    graphics.fillRect(62, 24, 2, 2);
+    graphics.fillRect(50, 44, 2.5, 2.5);
 
-    sandGrains.forEach(g => {
-      graphics.fillStyle(g.color, 0.85);
-      graphics.fillRect(g.x, g.y, g.size, g.size);
-    });
+    graphics.fillStyle(0xd4a337, 0.7);
+    graphics.fillRect(34, 28, 2, 2);
+    graphics.fillRect(88, 28, 2, 2);
+    graphics.fillRect(74, 40, 2, 2);
 
-    // 3. Tiny Beach Seashells & Golden Pebbles (Conchitas y piedritas de playa)
+    // Conchitas de Playa
     graphics.fillStyle(0xffedd5, 0.95);
     graphics.fillCircle(54, 18, 2.5);
     graphics.fillStyle(0xfb7185, 0.7);
     graphics.fillRect(53, 18, 2, 1);
-
-    graphics.fillStyle(0xfde047, 0.9);
-    graphics.fillCircle(82, 34, 2);
 
     graphics.fillStyle(0x94a3b8, 0.85);
     graphics.fillEllipse(40, 48, 4, 2.5);
 
     graphics.generateTexture('tile-sand', 128, 84);
 
-    // 3. Isometric Ocean Water Tile (Bright Daytime HD 128x64)
+    // 3. Isometric Tropical Ocean Water Tile (Rich Azure Blue HD 128x64)
     graphics.clear();
-    graphics.fillStyle(0x0b7a75, 1);
+    // Agua Océano Profundo Base
+    graphics.fillStyle(0x006677, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    graphics.lineStyle(2, 0x70e4ef, 0.7);
+    // Superficie Turquesa Tropical Iluminada
+    graphics.fillStyle(0x008899, 0.92);
+    graphics.fillTriangle(64, 3, 122, 32, 64, 61);
+    graphics.fillTriangle(64, 3, 6, 32, 64, 61);
+
+    graphics.fillStyle(0x00a8b5, 0.75);
+    graphics.fillTriangle(64, 8, 110, 32, 64, 56);
+    graphics.fillTriangle(64, 8, 18, 32, 64, 56);
+
+    // Olas e Isoclinas de Espuma Cristalina
+    graphics.lineStyle(2, 0x4dd0e1, 0.75);
     graphics.beginPath();
-    graphics.moveTo(32, 16);
-    graphics.lineTo(64, 8);
-    graphics.lineTo(96, 16);
+    graphics.moveTo(32, 18); graphics.lineTo(64, 10); graphics.lineTo(96, 18);
     graphics.strokePath();
+
+    graphics.lineStyle(2, 0x80deea, 0.85);
+    graphics.beginPath();
+    graphics.moveTo(24, 34); graphics.lineTo(64, 26); graphics.lineTo(104, 34);
+    graphics.strokePath();
+
+    graphics.lineStyle(1.5, 0xe0f7fa, 0.90);
+    graphics.beginPath();
+    graphics.moveTo(40, 48); graphics.lineTo(64, 42); graphics.lineTo(88, 48);
+    graphics.strokePath();
+
     graphics.generateTexture('tile-water', 128, 64);
 
     // 4. Realistic Wild Island Fowl / Chick Creature (HD 64x64, 4 Directions x 3 Frames + 2 Pecking Frames)

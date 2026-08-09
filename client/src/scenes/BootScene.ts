@@ -41,22 +41,22 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    // Superficie de Prado Verde Pastillo Suave y Elegante
-    graphics.fillStyle(0x72c07b, 1);
+    // Superficie de Prado Verde Vivo y Vibrante (Lush Fresh Island Grass)
+    graphics.fillStyle(0x388e3c, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    // Gradiente Interior Suave y Cuestiones de Luz Pastel
-    graphics.fillStyle(0x8fd392, 0.9);
+    // Gradiente Interior de Luz Verde Viva
+    graphics.fillStyle(0x43a047, 0.95);
     graphics.fillTriangle(64, 4, 120, 32, 64, 60);
     graphics.fillTriangle(64, 4, 8, 32, 64, 60);
 
-    graphics.fillStyle(0xa8e6ab, 0.7);
+    graphics.fillStyle(0x66bb6a, 0.75);
     graphics.fillTriangle(64, 10, 108, 32, 64, 54);
     graphics.fillTriangle(64, 10, 20, 32, 64, 54);
 
-    // Margen Poligonal Ultra-Fino (Estilo Templo Románico)
-    graphics.lineStyle(1.0, 0x418947, 0.45);
+    // Margen Poligonal Ultra-Fino Elegante (Estilo Templo Románico)
+    graphics.lineStyle(1.0, 0x2e7d32, 0.40);
     graphics.beginPath();
     graphics.moveTo(64, 0);
     graphics.lineTo(128, 32);
@@ -65,8 +65,8 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.strokePath();
 
-    // Detalles Suaves de Briznas de Hierba y Flores Silvestres
-    graphics.fillStyle(0xb9f6ca, 0.85);
+    // Detalles Vivos de Briznas de Hierba Fresca
+    graphics.fillStyle(0x81c784, 0.90);
     graphics.fillRect(40, 20, 3, 6);
     graphics.fillRect(80, 28, 4, 7);
     graphics.fillRect(56, 38, 3, 6);

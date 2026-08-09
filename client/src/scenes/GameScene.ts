@@ -42,6 +42,9 @@ export class GameScene extends Phaser.Scene {
   private playerAttackPower: number = 25;
   private lastPlayerAttackTime: number = 0;
 
+  // Player Inventory Map
+  public inventory: Map<string, ItemDrop> = new Map();
+
   // Game Groups
   private creatures: Creature[] = [];
   private lootBags!: Phaser.Physics.Arcade.Group;
@@ -166,6 +169,8 @@ export class GameScene extends Phaser.Scene {
       }
     } catch (_e) {}
 
+    if (!this.inventory) this.inventory = new Map();
+    this.renderInventoryHtml();
     this.loadSavedCharacter(initialChar);
 
     // Auto-Save Player Progress to Server every 10 seconds

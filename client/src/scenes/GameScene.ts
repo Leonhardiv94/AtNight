@@ -2039,8 +2039,13 @@ export class GameScene extends Phaser.Scene {
             seaBed.setScale(tileScale);
             seaBed.setDepth(-6000 + baseIsoY);
 
-            const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY + 11, 'tile-water');
+            const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY, 'tile-water') as Phaser.Physics.Arcade.Sprite;
             waterCollider.setVisible(false);
+            const wBody = waterCollider.body as Phaser.Physics.Arcade.StaticBody;
+            if (wBody) {
+              wBody.setSize(42, 16);
+              wBody.setOffset(21, 24);
+            }
             waterCollider.refreshBody();
           }
 

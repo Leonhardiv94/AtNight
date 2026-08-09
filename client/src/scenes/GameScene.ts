@@ -2110,8 +2110,41 @@ export class GameScene extends Phaser.Scene {
     temple.setScale(0.85);
     temple.setDepth(templeY - 25);
 
-    // Colisionadores Físicos Estáticos Compuestos ajustados ÚNICA Y EXCLUSIVAMENTE a la línea exterior (Figura Roja)
-    // 1. Muro Trasero e Izquierdo (Bloquea sobre el césped antes de la pared trasera)
+    // Anillo Perimetral de Piedras Decorativas con Colisionadores Físicos
+    const perimeterRockOffsets: Array<{ dx: number; dy: number }> = [
+      // Frente y Escaleras de Entrada (Abajo-Derecha)
+      { dx: 100, dy: 35 }, { dx: 82, dy: 45 }, { dx: 64, dy: 52 }, { dx: 46, dy: 58 },
+      { dx: 28, dy: 62 }, { dx: 10, dy: 62 }, { dx: -8, dy: 58 },
+      
+      // Muro Frontal Izquierdo (Abajo-Izquierda)
+      { dx: -26, dy: 52 }, { dx: -44, dy: 44 }, { dx: -62, dy: 35 }, { dx: -80, dy: 26 },
+      { dx: -98, dy: 17 }, { dx: -116, dy: 8 }, { dx: -134, dy: -2 }, { dx: -148, dy: -14 },
+
+      // Muro Trasero e Izquierdo (Arriba-Izquierda y Arriba)
+      { dx: -156, dy: -30 }, { dx: -158, dy: -50 }, { dx: -152, dy: -70 }, { dx: -140, dy: -88 },
+      { dx: -124, dy: -104 }, { dx: -104, dy: -118 }, { dx: -82, dy: -128 }, { dx: -60, dy: -132 },
+      { dx: -38, dy: -128 }, { dx: -16, dy: -118 },
+
+      // Fachada Derecha y Campanario (Arriba-Derecha)
+      { dx: 6, dy: -106 }, { dx: 28, dy: -92 }, { dx: 50, dy: -76 }, { dx: 70, dy: -58 },
+      { dx: 86, dy: -38 }, { dx: 98, dy: -16 }, { dx: 104, dy: 10 }
+    ];
+
+    perimeterRockOffsets.forEach(pos => {
+      const rx = templeX + pos.dx;
+      const ry = templeY + pos.dy;
+      const rock = this.rockGroup.create(rx, ry, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+      rock.setVisible(true);
+      rock.setDepth(ry + 10);
+      const rBody = rock.body as Phaser.Physics.Arcade.StaticBody;
+      if (rBody) {
+        rBody.setSize(22, 16);
+        rBody.setOffset(5, 10);
+      }
+      rock.refreshBody();
+    });
+
+    // Colisionadores Físicos Estáticos Compuestos de Respaldo para la Base
     const templeBackCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeBackCollider.setVisible(false);
     const cBodyBack = templeBackCollider.body as Phaser.Physics.Arcade.StaticBody;
@@ -2121,7 +2154,6 @@ export class GameScene extends Phaser.Scene {
     }
     templeBackCollider.refreshBody();
 
-    // 2. Cuerpo Central Base de la Catedral (Cobertura completa de la base)
     const templeCenterCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeCenterCollider.setVisible(false);
     const cBodyCenter = templeCenterCollider.body as Phaser.Physics.Arcade.StaticBody;

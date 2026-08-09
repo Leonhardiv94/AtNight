@@ -2108,26 +2108,46 @@ export class GameScene extends Phaser.Scene {
     const temple = this.add.sprite(templeX, templeY, 'temple-building');
     temple.setOrigin(0.5, 0.85);
     temple.setScale(0.85);
-    temple.setDepth(templeY + 120);
+    temple.setDepth(templeY - 25);
 
-    // Colisionadores Físicos Estáticos ajustados ÚNICA Y EXCLUSIVAMENTE a la huella base del suelo (Figura Roja)
-    // 1. Colisionador del Cuerpo Principal de la Base de Piedra
-    const templeMainCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
-    templeMainCollider.setVisible(false);
-    const cBodyMain = templeMainCollider.body as Phaser.Physics.Arcade.StaticBody;
-    if (cBodyMain) {
-      cBodyMain.setSize(240, 110);
-      cBodyMain.setOffset(-120, -55);
+    // Colisionadores Físicos Estáticos Compuestos ajustados al perímetro exacto de la base de piedra
+    // 1. Muro Trasero e Izquierdo del Templo
+    const templeBackCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    templeBackCollider.setVisible(false);
+    const cBodyBack = templeBackCollider.body as Phaser.Physics.Arcade.StaticBody;
+    if (cBodyBack) {
+      cBodyBack.setSize(220, 100);
+      cBodyBack.setOffset(-140, -100);
     }
-    templeMainCollider.refreshBody();
+    templeBackCollider.refreshBody();
 
-    // 2. Colisionador de la Extensión de las Escaleras y Portal de Entrada (Abajo a la Derecha)
+    // 2. Cuerpo Central Base de la Catedral
+    const templeCenterCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    templeCenterCollider.setVisible(false);
+    const cBodyCenter = templeCenterCollider.body as Phaser.Physics.Arcade.StaticBody;
+    if (cBodyCenter) {
+      cBodyCenter.setSize(260, 130);
+      cBodyCenter.setOffset(-130, -70);
+    }
+    templeCenterCollider.refreshBody();
+
+    // 3. Fachada Frontal y Muro Derecho
+    const templeFrontCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    templeFrontCollider.setVisible(false);
+    const cBodyFront = templeFrontCollider.body as Phaser.Physics.Arcade.StaticBody;
+    if (cBodyFront) {
+      cBodyFront.setSize(200, 90);
+      cBodyFront.setOffset(-70, -35);
+    }
+    templeFrontCollider.refreshBody();
+
+    // 4. Escaleras de Entrada y Portal (Abajo a la Derecha)
     const templeStairsCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeStairsCollider.setVisible(false);
     const cBodyStairs = templeStairsCollider.body as Phaser.Physics.Arcade.StaticBody;
     if (cBodyStairs) {
-      cBodyStairs.setSize(90, 55);
-      cBodyStairs.setOffset(25, -15);
+      cBodyStairs.setSize(120, 70);
+      cBodyStairs.setOffset(15, -15);
     }
     templeStairsCollider.refreshBody();
 

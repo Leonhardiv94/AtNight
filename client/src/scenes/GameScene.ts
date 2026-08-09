@@ -94,8 +94,6 @@ export class GameScene extends Phaser.Scene {
     goldG.generateTexture('gold', 32, 32);
     goldG.destroy();
 
-    this.generateProceduralTempleTexture();
-
     this.createIslandMap();
     this.createTempleBuilding();
     this.createGatheringNodes();
@@ -2095,98 +2093,6 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private generateProceduralTempleTexture() {
-    if (this.textures.exists('temple-building')) {
-      this.textures.remove('temple-building');
-    }
-
-    const g = this.make.graphics({ x: 0, y: 0 });
-    const w = 260;
-    const h = 230;
-
-    const drawFilledPoly = (pts: number[], color: number, alpha: number = 1) => {
-      g.fillStyle(color, alpha);
-      g.beginPath();
-      g.moveTo(pts[0], pts[1]);
-      for (let i = 2; i < pts.length; i += 2) {
-        g.lineTo(pts[i], pts[i + 1]);
-      }
-      g.closePath();
-      g.fillPath();
-    };
-
-    const drawStrokedPoly = (pts: number[], color: number, width: number = 1.5, alpha: number = 0.9) => {
-      g.lineStyle(width, color, alpha);
-      g.beginPath();
-      g.moveTo(pts[0], pts[1]);
-      for (let i = 2; i < pts.length; i += 2) {
-        g.lineTo(pts[i], pts[i + 1]);
-      }
-      g.closePath();
-      g.strokePath();
-    };
-
-    // 1. Sombra suave de la base del templo en el suelo
-    g.fillStyle(0x0f172a, 0.22);
-    g.fillTriangle(130, 205, 10, 140, 250, 140);
-    g.fillTriangle(130, 205, 250, 140, 130, 90);
-
-    // 2. Base de Piedra Tallada (Muro Izquierdo Sombreado)
-    drawFilledPoly([30, 140, 130, 190, 130, 135, 30, 85], 0x64748b);
-
-    // 3. Base de Piedra Tallada (Muro Derecho Iluminado - Fachada Principal)
-    drawFilledPoly([130, 190, 230, 140, 230, 85, 130, 135], 0x94a3b8);
-
-    // Detalle de Bloques de Piedra en la fachada
-    g.lineStyle(1.5, 0x475569, 0.7);
-    g.beginPath();
-    g.moveTo(30, 115); g.lineTo(130, 165); g.lineTo(230, 115);
-    g.moveTo(30, 98);  g.lineTo(130, 148); g.lineTo(230, 98);
-    g.strokePath();
-
-    // 4. Escaleras de Piedra de Entrada (Orientadas hacia Abajo a la Derecha)
-    drawFilledPoly([158, 176, 192, 159, 200, 163, 166, 180], 0xcbd5e1);
-    drawFilledPoly([166, 180, 200, 163, 208, 167, 174, 184], 0xcbd5e1);
-    drawFilledPoly([174, 184, 208, 167, 216, 171, 182, 188], 0x94a3b8);
-
-    // 5. Arco y Puerta de Madera de Entrada (Fachada Derecha, mirando hacia Abajo-Derecha)
-    drawFilledPoly([152, 154, 188, 136, 188, 104, 152, 122], 0xe2e8f0);
-    drawFilledPoly([155, 151, 185, 136, 185, 109, 155, 124], 0x92400e);
-
-    // Remaches de Hierro de la Puerta
-    g.fillStyle(0x334155, 1);
-    g.fillCircle(162, 143, 1.5);
-    g.fillCircle(178, 135, 1.5);
-    g.fillCircle(162, 129, 1.5);
-    g.fillCircle(178, 121, 1.5);
-
-    // 6. Techo de Paja Dorada (Thatched Roof)
-    drawFilledPoly([20, 85, 130, 140, 130, 45, 20, 20], 0xb45309);
-    drawFilledPoly([130, 140, 240, 85, 240, 20, 130, 45], 0xf59e0b);
-    drawFilledPoly([16, 18, 130, 42, 244, 18, 130, 38], 0x78350f);
-    drawFilledPoly([130, 136, 236, 85, 236, 24, 130, 48], 0xfbbf24);
-
-    // 7. Torre / Campanario Superior de Piedra
-    g.fillStyle(0x64748b, 1);
-    g.fillRect(118, 20, 24, 20);
-    g.fillStyle(0x94a3b8, 1);
-    g.fillRect(130, 20, 12, 20);
-    g.fillStyle(0x78350f, 1);
-    g.fillTriangle(114, 20, 142, 20, 130, 6);
-
-    // Banderín / Estandarte Dorado Flameando
-    g.lineStyle(2, 0x475569, 1);
-    g.lineBetween(130, 6, 130, -6);
-    g.fillStyle(0xf59e0b, 1);
-    g.fillTriangle(130, -6, 148, -2, 130, 2);
-
-    // Contornos limpios idénticos al estilo de los árboles y rocas del juego
-    drawStrokedPoly([30, 140, 130, 190, 230, 140, 230, 85, 240, 20, 130, 45, 20, 20, 30, 85], 0x334155, 1.5, 0.9);
-
-    g.generateTexture('temple-building', w, h);
-    g.destroy();
-  }
-
   private createTempleBuilding() {
     const templeCenterX = 16;
     const templeCenterY = 38;
@@ -2198,24 +2104,24 @@ export class GameScene extends Phaser.Scene {
     const templeX = (templeCenterX - templeCenterY) * (tileW / 2);
     const templeY = (templeCenterX + templeCenterY) * (tileH / 2) - 13.333;
 
-    // Sprite del Templo Antiguo generado proceduralmente en Canva / Phaser WebGL (Escala limpia 1.0)
+    // Sprite del Templo de la Natividad (Diseño Isométrico Románico sin líneas negras, puerta hacia abajo a la derecha)
     const temple = this.add.sprite(templeX, templeY, 'temple-building');
-    temple.setOrigin(0.5, 0.82);
-    temple.setScale(1.0);
+    temple.setOrigin(0.5, 0.85);
+    temple.setScale(0.80);
     temple.setDepth(templeY + 120);
 
-    // Colisionador Físico Estático ajustado al tamaño de la base
-    const templeCollider = this.rockGroup.create(templeX, templeY - 8, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    // Colisionador Físico Estático para la Base de Piedra de la Catedral Románica
+    const templeCollider = this.rockGroup.create(templeX, templeY - 10, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeCollider.setVisible(false);
     const cBody = templeCollider.body as Phaser.Physics.Arcade.StaticBody;
     if (cBody) {
-      cBody.setSize(180, 120);
-      cBody.setOffset(-78, -50);
+      cBody.setSize(260, 160);
+      cBody.setOffset(-115, -70);
     }
     templeCollider.refreshBody();
 
-    // Antorchas Místicas flanqueando la entrada orientada hacia abajo-derecha
-    const torchLeft = this.add.circle(templeX + 26, templeY + 18, 6, 0xf59e0b, 0.7);
+    // Antorchas Místicas flanqueando la entrada orientada hacia abajo a la derecha
+    const torchLeft = this.add.circle(templeX + 30, templeY + 20, 7, 0xf59e0b, 0.7);
     torchLeft.setDepth(templeY + 130);
     this.tweens.add({
       targets: torchLeft,
@@ -2227,7 +2133,7 @@ export class GameScene extends Phaser.Scene {
       ease: 'Sine.easeInOut'
     });
 
-    const torchRight = this.add.circle(templeX + 56, templeY + 34, 6, 0xf59e0b, 0.7);
+    const torchRight = this.add.circle(templeX + 65, templeY + 40, 7, 0xf59e0b, 0.7);
     torchRight.setDepth(templeY + 130);
     this.tweens.add({
       targets: torchRight,

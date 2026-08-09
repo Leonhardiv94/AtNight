@@ -20,10 +20,10 @@ export class BootScene extends Phaser.Scene {
   private createProceduralTextures() {
     const graphics = this.make.graphics({ x: 0, y: 0 });
 
-    // 1. Isometric Grass Tile with Ultra-Fine Polygon Outlines (Soft Pastel Meadow HD 128x84)
+    // 1. Isometric Grass Tile (Lush Meadow HD 128x84 - Continuous Seamless Surface)
     graphics.clear();
-    // Paredes de Acantilado de Tierra Suave Orgánica
-    graphics.fillStyle(0x795548, 1);
+    // Paredes de Acantilado de Tierra Orgánica Suave
+    graphics.fillStyle(0x5d4037, 1);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
@@ -32,7 +32,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0x6d4c41, 1);
+    graphics.fillStyle(0x4e342e, 1);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
@@ -41,32 +41,22 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    // Superficie de Prado Verde Vivo y Vibrante (Lush Fresh Island Grass)
-    graphics.fillStyle(0x388e3c, 1);
+    // Superficie de Césped Verde Vivo Continua (Pura hierba verde sin luminosidad amarilla)
+    graphics.fillStyle(0x2e7d32, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    // Gradiente Interior de Luz Verde Viva
-    graphics.fillStyle(0x43a047, 0.95);
-    graphics.fillTriangle(64, 4, 120, 32, 64, 60);
-    graphics.fillTriangle(64, 4, 8, 32, 64, 60);
+    // Gradiente Interior Suave Verde Natural (Sin amarillos)
+    graphics.fillStyle(0x388e3c, 0.95);
+    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
+    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
 
-    graphics.fillStyle(0x66bb6a, 0.75);
-    graphics.fillTriangle(64, 10, 108, 32, 64, 54);
-    graphics.fillTriangle(64, 10, 20, 32, 64, 54);
+    graphics.fillStyle(0x4caf50, 0.65);
+    graphics.fillTriangle(64, 8, 112, 32, 64, 56);
+    graphics.fillTriangle(64, 8, 16, 32, 64, 56);
 
-    // Margen Poligonal Ultra-Fino Elegante (Estilo Templo Románico)
-    graphics.lineStyle(1.0, 0x2e7d32, 0.40);
-    graphics.beginPath();
-    graphics.moveTo(64, 0);
-    graphics.lineTo(128, 32);
-    graphics.lineTo(64, 64);
-    graphics.lineTo(0, 32);
-    graphics.closePath();
-    graphics.strokePath();
-
-    // Detalles Vivos de Briznas de Hierba Fresca
-    graphics.fillStyle(0x81c784, 0.90);
+    // Detalles Suaves de Briznas de Hierba Fresca (Verde Esmeralda Natural)
+    graphics.fillStyle(0x81c784, 0.85);
     graphics.fillRect(40, 20, 3, 6);
     graphics.fillRect(80, 28, 4, 7);
     graphics.fillRect(56, 38, 3, 6);
@@ -74,26 +64,17 @@ export class BootScene extends Phaser.Scene {
     graphics.fillRect(28, 30, 3, 6);
     graphics.fillRect(92, 22, 4, 6);
 
-    graphics.fillStyle(0xd4e157, 0.85);
+    graphics.fillStyle(0xa5d6a7, 0.85);
     graphics.fillRect(48, 16, 2, 5);
     graphics.fillRect(84, 36, 2, 5);
     graphics.fillRect(34, 42, 2, 4);
 
-    // Micro-Flores Silvestres Amarillas y Rosadas Dispersas
-    graphics.fillStyle(0xffeb3b, 0.9);
-    graphics.fillCircle(52, 24, 2);
-    graphics.fillCircle(88, 18, 1.8);
-    graphics.fillCircle(38, 36, 2);
-    graphics.fillStyle(0xf8bbd0, 0.85);
-    graphics.fillCircle(70, 44, 1.8);
-    graphics.fillCircle(100, 30, 2);
-
     graphics.generateTexture('tile-grass', 128, 84);
 
-    // 2. Isometric Shoreline Sand Tile with Soft Creamy Beach Texture (HD 128x84)
+    // 2. Isometric Shoreline Sand Tile (Soft Creamy Beach Sand HD 128x84 - Continuous Surface)
     graphics.clear();
     // Paredes de Arena Cálida Suave
-    graphics.fillStyle(0xd97706, 0.9);
+    graphics.fillStyle(0xd97706, 0.8);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
@@ -102,7 +83,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0xb45309, 0.9);
+    graphics.fillStyle(0xb45309, 0.8);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
@@ -111,42 +92,27 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    // Superficie de Arena Crema Dorada Suave (Combina con la piedra beige del templo)
+    // Superficie de Arena Crema Dorada Suave y Continua
     graphics.fillStyle(0xfde68a, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    // Luz Soleada de Arena Crema
+    // Luz Suave de Arena
     graphics.fillStyle(0xfef3c7, 0.9);
-    graphics.fillTriangle(64, 4, 120, 32, 64, 60);
-    graphics.fillTriangle(64, 4, 8, 32, 64, 60);
+    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
+    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
 
-    graphics.fillStyle(0xfffbeb, 0.7);
-    graphics.fillTriangle(64, 10, 108, 32, 64, 54);
-    graphics.fillTriangle(64, 10, 20, 32, 64, 54);
+    graphics.fillStyle(0xfffbeb, 0.65);
+    graphics.fillTriangle(64, 8, 112, 32, 64, 56);
+    graphics.fillTriangle(64, 8, 16, 32, 64, 56);
 
-    // Margen Poligonal Ultra-Fino (Estilo Templo Románico)
-    graphics.lineStyle(1.0, 0xd97706, 0.35);
-    graphics.beginPath();
-    graphics.moveTo(64, 0);
-    graphics.lineTo(128, 32);
-    graphics.lineTo(64, 64);
-    graphics.lineTo(0, 32);
-    graphics.closePath();
-    graphics.strokePath();
-
-    // Ondulaciones Orgánicas de Arena Suave
-    graphics.lineStyle(1.5, 0xfcd34d, 0.55);
+    // Ondulaciones Orgánicas Suaves de Arena
+    graphics.lineStyle(1.5, 0xfcd34d, 0.45);
     graphics.beginPath();
     graphics.moveTo(30, 20); graphics.lineTo(50, 25); graphics.lineTo(75, 22);
     graphics.strokePath();
 
-    graphics.lineStyle(1.5, 0xf59e0b, 0.45);
-    graphics.beginPath();
-    graphics.moveTo(48, 34); graphics.lineTo(70, 40); graphics.lineTo(95, 36);
-    graphics.strokePath();
-
-    graphics.lineStyle(1, 0xfffef0, 0.75);
+    graphics.lineStyle(1, 0xfffef0, 0.65);
     graphics.beginPath();
     graphics.moveTo(25, 32); graphics.lineTo(45, 36); graphics.lineTo(65, 34);
     graphics.strokePath();
@@ -157,11 +123,6 @@ export class BootScene extends Phaser.Scene {
     graphics.fillRect(78, 18, 2.5, 2.5);
     graphics.fillRect(62, 24, 2, 2);
     graphics.fillRect(50, 44, 2.5, 2.5);
-
-    graphics.fillStyle(0xf59e0b, 0.6);
-    graphics.fillRect(34, 28, 2, 2);
-    graphics.fillRect(88, 28, 2, 2);
-    graphics.fillRect(74, 40, 2, 2);
 
     // Conchitas de Playa
     graphics.fillStyle(0xffedd5, 0.95);
@@ -174,7 +135,7 @@ export class BootScene extends Phaser.Scene {
 
     graphics.generateTexture('tile-sand', 128, 84);
 
-    // 3. Isometric Tropical Ocean Water Tile (Rich Azure Blue HD 128x64)
+    // 3. Isometric Tropical Ocean Water Tile (Continuous Azure Sea HD 128x64)
     graphics.clear();
     // Agua Océano Profundo Base
     graphics.fillStyle(0x006677, 1);
@@ -182,23 +143,13 @@ export class BootScene extends Phaser.Scene {
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
     // Superficie Turquesa Tropical Iluminada
-    graphics.fillStyle(0x008899, 0.92);
-    graphics.fillTriangle(64, 3, 122, 32, 64, 61);
-    graphics.fillTriangle(64, 3, 6, 32, 64, 61);
+    graphics.fillStyle(0x008899, 0.95);
+    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
+    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
 
     graphics.fillStyle(0x00a8b5, 0.75);
-    graphics.fillTriangle(64, 8, 110, 32, 64, 56);
-    graphics.fillTriangle(64, 8, 18, 32, 64, 56);
-
-    // Margen Poligonal Ultra-Fino (Estilo Templo Románico)
-    graphics.lineStyle(1.0, 0x0288d1, 0.40);
-    graphics.beginPath();
-    graphics.moveTo(64, 0);
-    graphics.lineTo(128, 32);
-    graphics.lineTo(64, 64);
-    graphics.lineTo(0, 32);
-    graphics.closePath();
-    graphics.strokePath();
+    graphics.fillTriangle(64, 8, 112, 32, 64, 56);
+    graphics.fillTriangle(64, 8, 16, 32, 64, 56);
 
     // Olas e Isoclinas de Espuma Cristalina
     graphics.lineStyle(2, 0x4dd0e1, 0.75);

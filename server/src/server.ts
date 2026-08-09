@@ -480,6 +480,12 @@ app.get('/api/player/:characterName', async (req, res) => {
     return res.json({ success: true, player: localPlayersDb[foundKey] });
   }
 
+  // Fallback por clase si se consulta por 'arquero', 'espadachin', 'mago'
+  const fallbackByClass = Object.values(localPlayersDb).find(p => normalizeStr(p.characterClass) === targetNorm);
+  if (fallbackByClass) {
+    return res.json({ success: true, player: fallbackByClass });
+  }
+
   return res.status(404).json({ success: false, message: 'Personaje no encontrado' });
 });
 
@@ -496,9 +502,19 @@ app.post('/api/player/save', async (req, res) => {
   const foundKey = Object.keys(localPlayersDb).find(k => normalizeStr(k) === normalizeStr(name)) || name;
 
   const existing = localPlayersDb[foundKey] || {};
+
+  // Proteger inventario: Si el cliente envía inventario vacío pero ya existían ítems, conservar los ítems guardados
+  let finalInventory = playerData.inventory;
+  if (Array.isArray(existing.inventory) && existing.inventory.length > 0) {
+    if (!Array.isArray(playerData.inventory) || playerData.inventory.length === 0) {
+      finalInventory = existing.inventory;
+    }
+  }
+
   const mergedPlayer: PlayerRecord = {
     ...existing,
     ...playerData,
+    inventory: finalInventory || existing.inventory || [],
     characterName: existing.characterName || name,
     characterClass: playerData.characterClass || existing.characterClass || 'espadachin',
     gender: playerData.gender || existing.gender || 'masculino',

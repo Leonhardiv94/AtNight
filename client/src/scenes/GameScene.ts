@@ -98,6 +98,7 @@ export class GameScene extends Phaser.Scene {
     this.lootBags = this.physics.add.group();
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(1.15);
+    this.cameras.main.setBackgroundColor('#008899');
     this.setupInputs();
 
     // Physics Colliders: Player and Animals Collide with Ocean Water & Small Rocks 🌊🪨
@@ -1993,19 +1994,20 @@ export class GameScene extends Phaser.Scene {
     this.waterTiles = this.physics.add.staticGroup();
     this.animatedWaterObjects = [];
 
-    const mapSize = 54;
-    const center = mapSize / 2;
+    const islandCenterIndex = 27;
+    const minMapIndex = -45;
+    const maxMapIndex = 100;
     const tileScale = 2 / 3;
     const tileW = 128 * tileScale; // ~85.333px
     const tileH = 64 * tileScale;  // ~42.667px
 
     this.islandCenterIsoX = 0;
-    this.islandCenterIsoY = (center + center) * (tileH / 2);
+    this.islandCenterIsoY = (islandCenterIndex + islandCenterIndex) * (tileH / 2);
 
-    for (let x = 0; x < mapSize; x++) {
-      for (let y = 0; y < mapSize; y++) {
-        const dx = x - center;
-        const dy = y - center;
+    for (let x = minMapIndex; x <= maxMapIndex; x++) {
+      for (let y = minMapIndex; y <= maxMapIndex; y++) {
+        const dx = x - islandCenterIndex;
+        const dy = y - islandCenterIndex;
         const distFromCenter = Math.sqrt(dx * dx + dy * dy);
 
         // Precision subpixel floating point coordinates
@@ -2030,12 +2032,16 @@ export class GameScene extends Phaser.Scene {
           // Océano al nivel del mar (0px)
           const isoY = baseIsoY;
 
-          // Si es agua de orilla cercana a la playa, renderizar fondo marino de arena por debajo del agua
+          // Si es agua de orilla cercana a la playa, renderizar fondo marino de arena y colisionador
           if (distFromCenter <= 22.5) {
             const seaBed = this.add.image(baseIsoX, baseIsoY - 6.667, 'tile-sand');
             seaBed.setOrigin(0.5, 0);
             seaBed.setScale(tileScale);
             seaBed.setDepth(-6000 + baseIsoY);
+
+            const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY + 11, 'tile-water');
+            waterCollider.setVisible(false);
+            waterCollider.refreshBody();
           }
 
           const waterTile = this.add.image(baseIsoX, isoY, 'tile-water');
@@ -2043,15 +2049,13 @@ export class GameScene extends Phaser.Scene {
           waterTile.setScale(tileScale);
           waterTile.setDepth(-5000 + baseIsoY);
 
-          this.animatedWaterObjects.push({
-            sprite: waterTile,
-            baseIsoY,
-            phaseOffset: (x * 0.3) + (y * 0.2)
-          });
-
-          const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY + 11, 'tile-water');
-          waterCollider.setVisible(false);
-          waterCollider.refreshBody();
+          if (distFromCenter <= 45) {
+            this.animatedWaterObjects.push({
+              sprite: waterTile,
+              baseIsoY,
+              phaseOffset: (x * 0.3) + (y * 0.2)
+            });
+          }
         }
       }
     }

@@ -7,8 +7,8 @@
     "skinColor": "#cbd5e1",
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
-    "level": 2,
-    "xp": 1936,
+    "level": 3,
+    "xp": 2387,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -29,7 +29,7 @@
       },
       "fuego": {
         "equip": 0,
-        "base": 5
+        "base": 10
       },
       "agua": {
         "equip": 0,
@@ -43,8 +43,8 @@
       "defensa": 0,
       "ataque": 0
     },
-    "hp": 125,
-    "maxHp": 125,
+    "hp": 150,
+    "maxHp": 150,
     "mana": 10,
     "maxMana": 10,
     "inventory": [
@@ -52,7 +52,7 @@
         "id": "chicken_feather",
         "name": "Pluma de Pollo",
         "icon": "",
-        "count": 15,
+        "count": 18,
         "category": "recursos",
         "weight": 1
       },
@@ -60,7 +60,7 @@
         "id": "gold",
         "name": "Monedas de Oro",
         "icon": "",
-        "count": 1401,
+        "count": 1687,
         "category": "especiales",
         "weight": 0
       },
@@ -76,7 +76,7 @@
         "id": "chicken_beak",
         "name": "Pico de Pollo",
         "icon": "",
-        "count": 12,
+        "count": 13,
         "category": "recursos",
         "weight": 1
       },
@@ -93,7 +93,7 @@
       "x": 0,
       "y": 1152
     },
-    "updatedAt": "2026-08-09T01:54:52.697Z"
+    "updatedAt": "2026-08-09T02:10:23.504Z"
   },
   "Arquero": {
     "characterName": "Arquero",

@@ -2215,8 +2215,8 @@ export class GameScene extends Phaser.Scene {
       this.pendingTempleEnter = true;
     });
 
-    // Cargar Offsets de Piedras Guardadas en localStorage (Conserva las piedras organizadas por el usuario)
-    let perimeterRockOffsets: Array<{ dx: number; dy: number }> = [
+    // Posiciones Perimetrales Fijas e Inamovibles de Colisionadores Físicos Alrededor del Templo
+    const perimeterRockOffsets: Array<{ dx: number; dy: number }> = [
       // Frente y Escaleras de Entrada (Abajo-Derecha)
       { dx: 100, dy: 35 }, { dx: 82, dy: 45 }, { dx: 64, dy: 52 }, { dx: 46, dy: 58 },
       { dx: 28, dy: 62 }, { dx: 10, dy: 62 }, { dx: -8, dy: 58 },
@@ -2232,30 +2232,15 @@ export class GameScene extends Phaser.Scene {
 
       // Fachada Derecha y Campanario (Arriba-Derecha)
       { dx: 6, dy: -106 }, { dx: 28, dy: -92 }, { dx: 50, dy: -76 }, { dx: 70, dy: -58 },
-      { dx: 86, dy: -38 }, { dx: 98, dy: -16 }, { dx: 104, dy: 10 },
-
-      // 2 Piedras Adicionales Solicitadas sobre Césped Verde
-      { dx: -120, dy: 60 }, { dx: 110, dy: 50 }
+      { dx: 86, dy: -38 }, { dx: 98, dy: -16 }, { dx: 104, dy: 10 }
     ];
 
-    try {
-      const savedRocks = localStorage.getItem('atnight_temple_rock_offsets');
-      if (savedRocks) {
-        const parsed = JSON.parse(savedRocks);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          perimeterRockOffsets = parsed;
-        }
-      }
-    } catch (e) {
-      // Fallback a defecto
-    }
-
-    // Creación de Piedras Físicas con Textura Invisible en las Ubicaciones Exactas Acomodadas
+    // Creación de Colisionadores Físicos Invisibles e Inamovibles en el Perímetro del Templo
     perimeterRockOffsets.forEach(pos => {
       const rx = templeX + pos.dx;
       const ry = templeY + pos.dy;
       const rock = this.rockGroup.create(rx, ry, 'small-rock') as Phaser.Physics.Arcade.Sprite;
-      rock.setVisible(false); // Texturas invisibles por solicitud del usuario
+      rock.setVisible(false); // 100% Invisible y totalmente inamovible
       rock.setDepth(ry + 10);
       const rBody = rock.body as Phaser.Physics.Arcade.StaticBody;
       if (rBody) {

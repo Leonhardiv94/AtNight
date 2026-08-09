@@ -94,6 +94,8 @@ export class GameScene extends Phaser.Scene {
     goldG.generateTexture('gold', 32, 32);
     goldG.destroy();
 
+    this.generateProceduralTempleTexture();
+
     this.createIslandMap();
     this.createTempleBuilding();
     this.createGatheringNodes();
@@ -2093,6 +2095,123 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  private generateProceduralTempleTexture() {
+    if (this.textures.exists('temple-building')) {
+      this.textures.remove('temple-building');
+    }
+
+    const g = this.make.graphics({ x: 0, y: 0 });
+    const w = 260;
+    const h = 230;
+
+    // 1. Sombra suave de la base del templo en el suelo
+    g.fillStyle(0x0f172a, 0.22);
+    g.fillTriangle(130, 205, 10, 140, 250, 140);
+    g.fillTriangle(130, 205, 250, 140, 130, 90);
+
+    // 2. Base de Piedra Tallada (Muro Izquierdo Sombreado)
+    g.fillStyle(0x64748b, 1);
+    g.fillPolygon([
+      { x: 30, y: 140 },
+      { x: 130, y: 190 },
+      { x: 130, y: 135 },
+      { x: 30, y: 85 }
+    ]);
+
+    // 3. Base de Piedra Tallada (Muro Derecho Iluminado - Fachada Principal)
+    g.fillStyle(0x94a3b8, 1);
+    g.fillPolygon([
+      { x: 130, y: 190 },
+      { x: 230, y: 140 },
+      { x: 230, y: 85 },
+      { x: 130, y: 135 }
+    ]);
+
+    // Detalle de Bloques de Piedra en la fachada
+    g.lineStyle(1.5, 0x475569, 0.7);
+    g.beginPath();
+    g.moveTo(30, 115); g.lineTo(130, 165); g.lineTo(230, 115);
+    g.moveTo(30, 98); g.lineTo(130, 148); g.lineTo(230, 98);
+    g.strokePath();
+
+    // 4. Escaleras de Piedra de Entrada (Orientadas hacia Abajo a la Derecha)
+    g.fillStyle(0xcbd5e1, 1);
+    g.fillPolygon([
+      { x: 158, y: 176 }, { x: 192, y: 159 }, { x: 200, y: 163 }, { x: 166, y: 180 }
+    ]);
+    g.fillPolygon([
+      { x: 166, y: 180 }, { x: 200, y: 163 }, { x: 208, y: 167 }, { x: 174, y: 184 }
+    ]);
+    g.fillStyle(0x94a3b8, 1);
+    g.fillPolygon([
+      { x: 174, y: 184 }, { x: 208, y: 167 }, { x: 216, y: 171 }, { x: 182, y: 188 }
+    ]);
+
+    // 5. Arco y Puerta de Madera de Entrada (Fachada Derecha, mirando hacia Abajo-Derecha)
+    g.fillStyle(0xe2e8f0, 1);
+    g.fillPolygon([
+      { x: 152, y: 154 }, { x: 188, y: 136 }, { x: 188, y: 104 }, { x: 152, y: 122 }
+    ]);
+    g.fillStyle(0x92400e, 1);
+    g.fillPolygon([
+      { x: 155, y: 151 }, { x: 185, y: 136 }, { x: 185, y: 109 }, { x: 155, y: 124 }
+    ]);
+    g.fillStyle(0x334155, 1);
+    g.fillCircle(162, 143, 1.5);
+    g.fillCircle(178, 135, 1.5);
+    g.fillCircle(162, 129, 1.5);
+    g.fillCircle(178, 121, 1.5);
+
+    // 6. Techo de Paja Dorada (Thatched Roof)
+    g.fillStyle(0xb45309, 1);
+    g.fillPolygon([
+      { x: 20, y: 85 },
+      { x: 130, y: 140 },
+      { x: 130, y: 45 },
+      { x: 20, y: 20 }
+    ]);
+
+    g.fillStyle(0xf59e0b, 1);
+    g.fillPolygon([
+      { x: 130, y: 140 },
+      { x: 240, y: 85 },
+      { x: 240, y: 20 },
+      { x: 130, y: 45 }
+    ]);
+
+    g.fillStyle(0x78350f, 1);
+    g.fillPolygon([
+      { x: 16, y: 18 }, { x: 130, y: 42 }, { x: 244, y: 18 }, { x: 130, y: 38 }
+    ]);
+
+    g.fillStyle(0xfbbf24, 1);
+    g.fillPolygon([
+      { x: 130, y: 136 }, { x: 236, y: 85 }, { x: 236, y: 24 }, { x: 130, y: 48 }
+    ]);
+
+    // 7. Torre / Campanario Superior de Piedra
+    g.fillStyle(0x64748b, 1);
+    g.fillRect(118, 20, 24, 20);
+    g.fillStyle(0x94a3b8, 1);
+    g.fillRect(130, 20, 12, 20);
+    g.fillStyle(0x78350f, 1);
+    g.fillTriangle(114, 20, 142, 20, 130, 6);
+
+    g.lineStyle(2, 0x475569, 1);
+    g.lineBetween(130, 6, 130, -6);
+    g.fillStyle(0xf59e0b, 1);
+    g.fillTriangle(130, -6, 148, -2, 130, 2);
+
+    g.lineStyle(1.5, 0x334155, 0.9);
+    g.strokePolygon([
+      { x: 30, y: 140 }, { x: 130, y: 190 }, { x: 230, y: 140 }, { x: 230, y: 85 },
+      { x: 240, y: 20 }, { x: 130, y: 45 }, { x: 20, y: 20 }, { x: 30, y: 85 }
+    ]);
+
+    g.generateTexture('temple-building', w, h);
+    g.destroy();
+  }
+
   private createTempleBuilding() {
     const templeCenterX = 16;
     const templeCenterY = 38;
@@ -2104,13 +2223,13 @@ export class GameScene extends Phaser.Scene {
     const templeX = (templeCenterX - templeCenterY) * (tileW / 2);
     const templeY = (templeCenterX + templeCenterY) * (tileH / 2) - 13.333;
 
-    // Sprite del Templo Antiguo orientado con la puerta hacia abajo a la derecha (escala a 3/4 del tamaño anterior)
+    // Sprite del Templo Antiguo generado proceduralmente en Canva / Phaser WebGL (Escala limpia 1.0)
     const temple = this.add.sprite(templeX, templeY, 'temple-building');
     temple.setOrigin(0.5, 0.82);
-    temple.setScale(0.64);
+    temple.setScale(1.0);
     temple.setDepth(templeY + 120);
 
-    // Colisionador Físico Estático ajustado al tamaño 3/4 de la base
+    // Colisionador Físico Estático ajustado al tamaño de la base
     const templeCollider = this.rockGroup.create(templeX, templeY - 8, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeCollider.setVisible(false);
     const cBody = templeCollider.body as Phaser.Physics.Arcade.StaticBody;

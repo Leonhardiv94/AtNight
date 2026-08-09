@@ -3787,10 +3787,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getTextureSrc(key: string): string {
-    if (!this.textures.exists(key)) return '';
+    if (!key || !this.textures || !this.textures.exists(key)) return '';
     try {
       const texture = this.textures.get(key);
-      const image = texture.getSourceImage() as HTMLCanvasElement | HTMLImageElement;
+      if (!texture) return '';
+      const image = texture.getSourceImage();
+      if (!image) return '';
       if (image instanceof HTMLCanvasElement) {
         return image.toDataURL();
       } else if (image instanceof HTMLImageElement) {
@@ -3802,7 +3804,7 @@ export class GameScene extends Phaser.Scene {
         return canvas.toDataURL();
       }
     } catch (_e) {
-      // Fallback
+      // Safe Silent Catch
     }
     return '';
   }

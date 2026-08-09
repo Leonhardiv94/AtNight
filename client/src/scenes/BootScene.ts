@@ -186,6 +186,62 @@ export class BootScene extends Phaser.Scene {
 
     graphics.generateTexture('tile-carpet', 128, 64);
 
+    // 7. Iconos de Recursos e Ítems del Inventario (Pluma, Huevo, Pico, Ojo, Madera, Manzana)
+    // A. Pluma de Pollo
+    graphics.clear();
+    graphics.fillStyle(0xf8fafc, 1);
+    graphics.beginPath();
+    graphics.moveTo(16, 4);
+    graphics.quadraticCurveTo(28, 12, 22, 28);
+    graphics.lineTo(16, 22);
+    graphics.closePath();
+    graphics.fillPath();
+    graphics.lineStyle(1.5, 0xf59e0b, 1);
+    graphics.lineBetween(16, 4, 16, 28);
+    graphics.generateTexture('chicken_feather', 32, 32);
+
+    // B. Huevo de Pollo
+    graphics.clear();
+    graphics.fillStyle(0xfef3c7, 1);
+    graphics.fillEllipse(16, 16, 12, 16);
+    graphics.fillStyle(0xffffff, 0.7);
+    graphics.fillCircle(14, 12, 3);
+    graphics.generateTexture('chicken_egg', 32, 32);
+
+    // C. Pico de Pollo
+    graphics.clear();
+    graphics.fillStyle(0xf97316, 1);
+    graphics.fillTriangle(6, 10, 26, 16, 6, 22);
+    graphics.generateTexture('chicken_beak', 32, 32);
+
+    // D. Ojo de Pollo
+    graphics.clear();
+    graphics.fillStyle(0x0f172a, 1);
+    graphics.fillCircle(16, 16, 10);
+    graphics.fillStyle(0x38bdf8, 1);
+    graphics.fillCircle(16, 16, 6);
+    graphics.fillStyle(0xffffff, 1);
+    graphics.fillCircle(18, 14, 2);
+    graphics.generateTexture('chicken_eye', 32, 32);
+
+    // E. Madera
+    graphics.clear();
+    graphics.fillStyle(0x78350f, 1);
+    graphics.fillRect(6, 10, 20, 12);
+    graphics.fillStyle(0x92400e, 1);
+    graphics.fillEllipse(26, 16, 4, 6);
+    graphics.generateTexture('wood', 32, 32);
+    graphics.generateTexture('wood_apple', 32, 32);
+
+    // F. Manzana
+    graphics.clear();
+    graphics.fillStyle(0xdc2626, 1);
+    graphics.fillCircle(16, 18, 10);
+    graphics.fillStyle(0x15803d, 1);
+    graphics.fillRect(15, 6, 2, 5);
+    graphics.generateTexture('apple', 32, 32);
+    graphics.generateTexture('apple_fruit', 32, 32);
+
     // 4. Realistic Wild Island Fowl / Chick Creature (HD 64x64, 4 Directions x 3 Frames + 2 Pecking Frames)
     const birdDirs = ['down', 'up', 'right', 'left'];
 

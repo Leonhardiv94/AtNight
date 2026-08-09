@@ -2021,30 +2021,31 @@ export class GameScene extends Phaser.Scene {
           tile.setOrigin(0.5, 0);
           tile.setScale(tileScale);
           tile.setDepth(-5000 + baseIsoY);
-        } else if (distFromCenter <= 19.8) {
-          // Arena de playa elevada en nivel medio (-6.67px)
+        } else if (distFromCenter <= 21.5) {
+          // Arena de playa de la isla (100% tierra caminable sin colisionadores de agua)
           const isoY = baseIsoY - 6.667;
           const tile = this.add.image(baseIsoX, isoY, 'tile-sand');
           tile.setOrigin(0.5, 0);
           tile.setScale(tileScale);
           tile.setDepth(-5000 + baseIsoY);
         } else {
-          // Océano al nivel del mar (0px)
+          // Océano al nivel del mar (0px) - Agua y Colisionadores Marítimos
           const isoY = baseIsoY;
 
-          // Si es agua de orilla cercana a la playa, renderizar fondo marino de arena y colisionador
-          if (distFromCenter <= 22.5) {
+          // Fondo marino de arena bajo el agua cerca de la orilla
+          if (distFromCenter <= 25.0) {
             const seaBed = this.add.image(baseIsoX, baseIsoY - 6.667, 'tile-sand');
             seaBed.setOrigin(0.5, 0);
             seaBed.setScale(tileScale);
             seaBed.setDepth(-6000 + baseIsoY);
 
-            const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY, 'tile-water') as Phaser.Physics.Arcade.Sprite;
+            // Colisionador marítimo ubicado estrictamente en casillas de agua
+            const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY + 6, 'tile-water') as Phaser.Physics.Arcade.Sprite;
             waterCollider.setVisible(false);
             const wBody = waterCollider.body as Phaser.Physics.Arcade.StaticBody;
             if (wBody) {
-              wBody.setSize(42, 16);
-              wBody.setOffset(21, 24);
+              wBody.setSize(44, 16);
+              wBody.setOffset(20, 22);
             }
             waterCollider.refreshBody();
           }

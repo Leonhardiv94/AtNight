@@ -24,22 +24,12 @@ export class BootScene extends Phaser.Scene {
     graphics.clear();
     // Borde de Acantilado de Tierra Uniforme (Mismo tono suave en ambas caras)
     graphics.fillStyle(0x4e342e, 1);
-    graphics.beginPath();
-    graphics.moveTo(0, 32);
-    graphics.lineTo(64, 64);
-    graphics.lineTo(64, 84);
-    graphics.lineTo(0, 52);
-    graphics.closePath();
-    graphics.fillPath();
+    graphics.fillTriangle(0, 32, 64, 64, 64, 84);
+    graphics.fillTriangle(0, 32, 64, 84, 0, 52);
 
     graphics.fillStyle(0x4e342e, 1);
-    graphics.beginPath();
-    graphics.moveTo(64, 64);
-    graphics.lineTo(128, 32);
-    graphics.lineTo(128, 52);
-    graphics.lineTo(64, 84);
-    graphics.closePath();
-    graphics.fillPath();
+    graphics.fillTriangle(64, 64, 128, 32, 128, 52);
+    graphics.fillTriangle(64, 64, 128, 52, 64, 84);
 
     // Superficie de Césped Verde Vivo Continua (Pura hierba verde sin marcos interiores ni divisiones)
     graphics.fillStyle(0x388e3c, 1);
@@ -66,22 +56,12 @@ export class BootScene extends Phaser.Scene {
     graphics.clear();
     // Borde de Acantilado de Playa de COLOR UNIFORMEMENTE HOMOGÉNEO (Mismo color de arena cálida en ambas caras)
     graphics.fillStyle(0xd97706, 0.85);
-    graphics.beginPath();
-    graphics.moveTo(0, 32);
-    graphics.lineTo(64, 64);
-    graphics.lineTo(64, 84);
-    graphics.lineTo(0, 52);
-    graphics.closePath();
-    graphics.fillPath();
+    graphics.fillTriangle(0, 32, 64, 64, 64, 84);
+    graphics.fillTriangle(0, 32, 64, 84, 0, 52);
 
     graphics.fillStyle(0xd97706, 0.85);
-    graphics.beginPath();
-    graphics.moveTo(64, 64);
-    graphics.lineTo(128, 32);
-    graphics.lineTo(128, 52);
-    graphics.lineTo(64, 84);
-    graphics.closePath();
-    graphics.fillPath();
+    graphics.fillTriangle(64, 64, 128, 32, 128, 52);
+    graphics.fillTriangle(64, 64, 128, 52, 64, 84);
 
     // Superficie de Arena Crema Dorada 100% Continua (Sin bordes ni divisiones)
     graphics.fillStyle(0xfde68a, 1);
@@ -146,14 +126,12 @@ export class BootScene extends Phaser.Scene {
     // 5. Isometric Temple Interior Stone Wall Tile (Pared de Piedra del Templo 128x84)
     graphics.clear();
     graphics.fillStyle(0xc2a370, 1);
-    graphics.beginPath();
-    graphics.moveTo(0, 32); graphics.lineTo(64, 64); graphics.lineTo(64, 84); graphics.lineTo(0, 52); graphics.closePath();
-    graphics.fillPath();
+    graphics.fillTriangle(0, 32, 64, 64, 64, 84);
+    graphics.fillTriangle(0, 32, 64, 84, 0, 52);
 
     graphics.fillStyle(0xb3925c, 1);
-    graphics.beginPath();
-    graphics.moveTo(64, 64); graphics.lineTo(128, 32); graphics.lineTo(128, 52); graphics.lineTo(64, 84); graphics.closePath();
-    graphics.fillPath();
+    graphics.fillTriangle(64, 64, 128, 32, 128, 52);
+    graphics.fillTriangle(64, 64, 128, 52, 64, 84);
 
     graphics.fillStyle(0xd4b886, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
@@ -190,12 +168,8 @@ export class BootScene extends Phaser.Scene {
     // A. Pluma de Pollo
     graphics.clear();
     graphics.fillStyle(0xf8fafc, 1);
-    graphics.beginPath();
-    graphics.moveTo(16, 4);
-    graphics.quadraticCurveTo(28, 12, 22, 28);
-    graphics.lineTo(16, 22);
-    graphics.closePath();
-    graphics.fill();
+    graphics.fillTriangle(16, 4, 26, 20, 16, 28);
+    graphics.fillTriangle(16, 4, 6, 20, 16, 28);
     graphics.lineStyle(1.5, 0xf59e0b, 1);
     graphics.lineBetween(16, 4, 16, 28);
     graphics.generateTexture('chicken_feather', 32, 32);

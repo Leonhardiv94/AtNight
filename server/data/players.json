@@ -8,7 +8,7 @@
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
     "level": 2,
-    "xp": 936,
+    "xp": 1936,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -93,7 +93,7 @@
       "x": 0,
       "y": 1152
     },
-    "updatedAt": "2026-08-09T01:51:28.988Z"
+    "updatedAt": "2026-08-09T01:54:52.697Z"
   },
   "Arquero": {
     "characterName": "Arquero",

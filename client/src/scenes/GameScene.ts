@@ -182,11 +182,16 @@ export class GameScene extends Phaser.Scene {
         this.currentCharacterData = p;
         localStorage.setItem('atnight_active_char_data', JSON.stringify(p));
         this.playerLevel = p.level || 1;
-        this.playerXp = p.xp || 0;
+        let loadedXp = p.xp || 0;
+        const threshold = this.getXpThresholdForLevel(this.playerLevel);
+        if (loadedXp < threshold) {
+          loadedXp = threshold + loadedXp;
+        }
+        this.playerXp = loadedXp;
         this.playerHp = p.hp || 100;
         this.playerMaxHp = p.maxHp || 100;
         this.playerMana = p.mana || 10;
-        this.playerMaxMana = p.maxMana || 10;
+        this.playerMaxMana = 10;
 
         // Cargar inventario guardado en la base de datos entre sesiones
         this.inventory.clear();

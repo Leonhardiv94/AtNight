@@ -2039,13 +2039,13 @@ export class GameScene extends Phaser.Scene {
             seaBed.setScale(tileScale);
             seaBed.setDepth(-6000 + baseIsoY);
 
-            // Colisionador marítimo ubicado estrictamente en casillas de agua
-            const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY + 6, 'tile-water') as Phaser.Physics.Arcade.Sprite;
+            // Colisionador marítimo ubicado estrictamente dentro de casillas de agua
+            const waterCollider = this.waterTiles.create(baseIsoX, baseIsoY + 16, 'tile-water') as Phaser.Physics.Arcade.Sprite;
             waterCollider.setVisible(false);
             const wBody = waterCollider.body as Phaser.Physics.Arcade.StaticBody;
             if (wBody) {
-              wBody.setSize(44, 16);
-              wBody.setOffset(20, 22);
+              wBody.setSize(44, 14);
+              wBody.setOffset(20, 20);
             }
             waterCollider.refreshBody();
           }
@@ -2665,8 +2665,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private getTileElevation(gridX: number, gridY: number): number {
-    const mapSize = 54;
-    const center = mapSize / 2;
+    const center = 27;
     const dx = gridX - center;
     const dy = gridY - center;
     const distFromCenter = Math.sqrt(dx * dx + dy * dy);
@@ -2674,7 +2673,7 @@ export class GameScene extends Phaser.Scene {
 
     if (distFromCenter <= 15.3) {
       return -20 * tileScale; // Prado verde elevado: -13.333px
-    } else if (distFromCenter <= 19.8) {
+    } else if (distFromCenter <= 21.5) {
       return -10 * tileScale; // Arena de playa elevada: -6.667px
     } else {
       return 0;               // Nivel del mar océano: 0px

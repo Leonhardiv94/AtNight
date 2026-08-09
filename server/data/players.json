@@ -90,10 +90,10 @@
       }
     ],
     "lastPosition": {
-      "x": -936.6261250465928,
-      "y": 1248.3797466902483
+      "x": 0,
+      "y": 1152
     },
-    "updatedAt": "2026-08-09T03:17:47.632Z"
+    "updatedAt": "2026-08-09T16:28:45.733Z"
   },
   "Arquero": {
     "characterName": "Arquero",
@@ -181,7 +181,7 @@
       "x": 0,
       "y": 1152
     },
-    "updatedAt": "2026-08-09T16:20:55.157Z"
+    "updatedAt": "2026-08-09T16:22:45.149Z"
   },
   "Guerrera": {
     "characterName": "Guerrera",

@@ -94,6 +94,8 @@ export class GameScene extends Phaser.Scene {
     goldG.generateTexture('gold', 32, 32);
     goldG.destroy();
 
+    this.generateProceduralNatividadTempleTexture();
+
     this.createIslandMap();
     this.createTempleBuilding();
     this.createGatheringNodes();
@@ -2093,6 +2095,150 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
+  private generateProceduralNatividadTempleTexture() {
+    if (this.textures.exists('temple-building')) {
+      this.textures.remove('temple-building');
+    }
+
+    const g = this.make.graphics({ x: 0, y: 0 });
+    const w = 380;
+    const h = 320;
+
+    const drawFilledPoly = (pts: number[], color: number, alpha: number = 1) => {
+      g.fillStyle(color, alpha);
+      g.beginPath();
+      g.moveTo(pts[0], pts[1]);
+      for (let i = 2; i < pts.length; i += 2) {
+        g.lineTo(pts[i], pts[i + 1]);
+      }
+      g.closePath();
+      g.fillPath();
+    };
+
+    const drawStrokedPoly = (pts: number[], color: number, width: number = 1.2, alpha: number = 0.5) => {
+      g.lineStyle(width, color, alpha);
+      g.beginPath();
+      g.moveTo(pts[0], pts[1]);
+      for (let i = 2; i < pts.length; i += 2) {
+        g.lineTo(pts[i], pts[i + 1]);
+      }
+      g.closePath();
+      g.strokePath();
+    };
+
+    // 1. Sombra Suave en el Suelo
+    g.fillStyle(0x0f172a, 0.20);
+    g.fillEllipse(190, 280, 290, 70);
+
+    // Paleta de Colores Románicos del Templo de la Natividad
+    const stoneLight = 0xfef3c7; // Cream Sandstone Sunlit
+    const stoneMid   = 0xfde68a; // Warm Beige Base
+    const stoneDark  = 0xd7c09c; // Shaded Wall Tone
+    const stoneShade = 0xb49a78; // Deep Shadow Wall Tone
+    const roofLight  = 0xe06d53; // Terracotta Orange Sunlit Roof
+    const roofDark   = 0xb94a34; // Terracotta Red Shaded Roof
+    const roofRidge  = 0x852d1b; // Dark Terracotta Ridge
+    const woodDoor   = 0x5c2c16; // Dark Walnut Wood Door
+    const windowDark = 0x1e293b; // Deep Slate Window Backing
+
+    // 2. Muros de la Nave Principal (Estructura Base)
+    // Muro Izquierdo en Sombra
+    drawFilledPoly([50, 200, 190, 275, 190, 155, 50, 80], stoneDark);
+    drawStrokedPoly([50, 200, 190, 275, 190, 155, 50, 80], stoneShade);
+
+    // Muro Derecho Iluminado (Fachada de la Entrada)
+    drawFilledPoly([190, 275, 320, 210, 320, 90, 190, 155], stoneLight);
+    drawStrokedPoly([190, 275, 320, 210, 320, 90, 190, 155], stoneShade);
+
+    // 3. Portal de Entrada Saliente (Orientado hacia Abajo a la Derecha)
+    // Muro frontal del portal
+    drawFilledPoly([210, 260, 280, 225, 280, 175, 210, 210], stoneMid);
+    // Tejadillo del portal
+    drawFilledPoly([205, 210, 285, 170, 285, 155, 205, 195], roofLight);
+
+    // Escaleras de Piedra del Portal (Dirección Abajo-Derecha)
+    drawFilledPoly([235, 252, 275, 232, 283, 236, 243, 256], 0xe2e8f0);
+    drawFilledPoly([243, 256, 283, 236, 291, 240, 251, 260], 0xcbd5e1);
+    drawFilledPoly([251, 260, 291, 240, 299, 244, 259, 264], 0x94a3b8);
+
+    // Puerta de Madera Doble del Portal
+    drawFilledPoly([232, 242, 262, 227, 262, 195, 232, 210], woodDoor);
+    // Marco de Piedra Arqueado sobre la puerta
+    drawFilledPoly([228, 244, 266, 225, 266, 190, 228, 209], stoneLight, 0.4);
+
+    // Remaches y manijas doradas
+    g.fillStyle(0xfbbf24, 0.9);
+    g.fillCircle(244, 228, 2);
+    g.fillCircle(252, 222, 2);
+
+    // 4. Rosetón Circular de Piedra (Rose Window sobre el Portal)
+    const rx = 245;
+    const ry = 145;
+    g.fillStyle(stoneShade, 1);
+    g.fillCircle(rx, ry, 18);
+    g.fillStyle(windowDark, 1);
+    g.fillCircle(rx, ry, 15);
+    g.fillStyle(stoneLight, 1);
+    g.fillCircle(rx, ry, 5);
+
+    // Pétalos radiales del Rosetón Románico (8 radios)
+    g.lineStyle(2, stoneLight, 1);
+    for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+      g.lineBetween(rx, ry, rx + Math.cos(a) * 14, ry + Math.sin(a) * 14);
+    }
+
+    // Ventanas de Arco en los Muros
+    const drawArchWindow = (wx: number, wy: number) => {
+      g.fillStyle(windowDark, 1);
+      g.fillRect(wx - 4, wy - 8, 8, 14);
+      g.fillCircle(wx, wy - 8, 4);
+      g.lineStyle(1, stoneShade, 0.8);
+      g.strokeRect(wx - 5, wy - 9, 10, 16);
+    };
+    drawArchWindow(100, 150);
+    drawArchWindow(140, 170);
+    drawArchWindow(110, 110);
+    drawArchWindow(150, 130);
+
+    // 5. Tejados Principal y Transepto de Terracota
+    // Techo Izquierdo (Sombra)
+    drawFilledPoly([40, 80, 190, 155, 190, 100, 40, 25], roofDark);
+    // Techo Derecho (Luz)
+    drawFilledPoly([190, 155, 330, 85, 330, 30, 190, 100], roofLight);
+    // Viga Cumbrera del Techo
+    drawFilledPoly([35, 22, 190, 97, 335, 27, 190, 93], roofRidge);
+
+    // 6. Cúpula Octogonal Central (Torre del Cimborrio)
+    drawFilledPoly([170, 75, 210, 75, 210, 40, 170, 40], stoneDark);
+    drawFilledPoly([190, 75, 225, 58, 225, 23, 190, 40], stoneLight);
+    // Ventanas del Cimborrio
+    drawArchWindow(180, 55);
+    drawArchWindow(205, 48);
+    // Tejado Piramidal Octogonal de la Cúpula
+    drawFilledPoly([165, 40, 190, 15, 230, 23, 190, 40], roofLight);
+    drawFilledPoly([165, 40, 190, 15, 170, 40], roofDark);
+
+    // 7. Campanario Alto Románico (Torre Derecha)
+    const bx = 300;
+    const by = 130;
+    const bw = 35;
+    const bh = 130;
+    // Muro Izquierdo de la Torre
+    drawFilledPoly([bx, by, bx + bw, by + 18, bx + bw, by - bh + 18, bx, by - bh], stoneDark);
+    // Muro Derecho de la Torre
+    drawFilledPoly([bx + bw, by + 18, bx + bw * 2, by, bx + bw * 2, by - bh, bx + bw, by - bh + 18], stoneLight);
+    // Ventanales del Campanario (Belfry Openings)
+    drawArchWindow(bx + 18, by - 80);
+    drawArchWindow(bx + 52, by - 88);
+    drawArchWindow(bx + 18, by - 40);
+    drawArchWindow(bx + 52, by - 48);
+    // Tejado Piramidal del Campanario
+    drawFilledPoly([bx - 4, by - bh, bx + bw, by - bh - 30, bx + bw * 2 + 4, by - bh, bx + bw, by - bh + 18], roofLight);
+
+    g.generateTexture('temple-building', w, h);
+    g.destroy();
+  }
+
   private createTempleBuilding() {
     const templeCenterX = 16;
     const templeCenterY = 38;
@@ -2104,10 +2250,10 @@ export class GameScene extends Phaser.Scene {
     const templeX = (templeCenterX - templeCenterY) * (tileW / 2);
     const templeY = (templeCenterX + templeCenterY) * (tileH / 2) - 13.333;
 
-    // Sprite del Templo de la Natividad (Diseño Isométrico Románico sin líneas negras, puerta hacia abajo a la derecha)
+    // Sprite del Templo de la Natividad dibujado proceduralmente en Canva / Phaser WebGL (Escala limpia 1.0)
     const temple = this.add.sprite(templeX, templeY, 'temple-building');
     temple.setOrigin(0.5, 0.85);
-    temple.setScale(0.80);
+    temple.setScale(1.0);
     temple.setDepth(templeY + 120);
 
     // Colisionador Físico Estático para la Base de Piedra de la Catedral Románica

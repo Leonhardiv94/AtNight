@@ -2215,8 +2215,8 @@ export class GameScene extends Phaser.Scene {
       this.pendingTempleEnter = true;
     });
 
-    // Posiciones Perimetrales Fijas e Inamovibles de Colisionadores Físicos Alrededor del Templo
-    const perimeterRockOffsets: Array<{ dx: number; dy: number }> = [
+    // Cargar Offsets de Piedras Personalizadas por el usuario guardadas en localStorage
+    let perimeterRockOffsets: Array<{ dx: number; dy: number }> = [
       // Frente y Escaleras de Entrada (Abajo-Derecha)
       { dx: 100, dy: 35 }, { dx: 82, dy: 45 }, { dx: 64, dy: 52 }, { dx: 46, dy: 58 },
       { dx: 28, dy: 62 }, { dx: 10, dy: 62 }, { dx: -8, dy: 58 },
@@ -2235,12 +2235,22 @@ export class GameScene extends Phaser.Scene {
       { dx: 86, dy: -38 }, { dx: 98, dy: -16 }, { dx: 104, dy: 10 }
     ];
 
-    // Creación de Colisionadores Físicos Invisibles e Inamovibles en el Perímetro del Templo
+    try {
+      const savedRocks = localStorage.getItem('atnight_temple_rock_offsets');
+      if (savedRocks) {
+        const parsed = JSON.parse(savedRocks);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          perimeterRockOffsets = parsed;
+        }
+      }
+    } catch (e) {}
+
+    // Creación de Colisionadores Físicos Invisibles e Inamovibles en las Ubicaciones Personalizadas por el Usuario
     perimeterRockOffsets.forEach(pos => {
       const rx = templeX + pos.dx;
       const ry = templeY + pos.dy;
       const rock = this.rockGroup.create(rx, ry, 'small-rock') as Phaser.Physics.Arcade.Sprite;
-      rock.setVisible(false); // 100% Invisible y totalmente inamovible
+      rock.setVisible(false); // 100% Invisible y totalmente inamovible (Sin interactividad ni arrastre)
       rock.setDepth(ry + 10);
       const rBody = rock.body as Phaser.Physics.Arcade.StaticBody;
       if (rBody) {

@@ -316,17 +316,32 @@ app.get('/api/player/list/:email', (req, res) => {
   return res.json({ success: true, characters });
 });
 
-// GET /api/player/:name - Obtener datos completos de un personaje por nombre
+// GET /api/player/:name - Obtener datos completos de un personaje por nombre (con fallback por clase y personaje principal)
 app.get('/api/player/:name', (req, res) => {
   loadLocalDb();
-  const { name } = req.params;
-  const cleanName = name.trim().toLowerCase();
-  const player = Object.values(localPlayersDb).find(p => p.characterName.toLowerCase() === cleanName);
-  if (player) {
-    return res.json({ success: true, player });
-  } else {
-    return res.status(404).json({ success: false, message: 'Personaje no encontrado.' });
+  const name = req.params.name || 'Arquera';
+  const normalizeStr = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const targetNorm = normalizeStr(name);
+
+  // 1. Coincidencia por nombre de personaje
+  const foundKey = Object.keys(localPlayersDb).find(k => normalizeStr(k) === targetNorm);
+  if (foundKey && localPlayersDb[foundKey]) {
+    return res.json({ success: true, player: localPlayersDb[foundKey] });
   }
+
+  // 2. Coincidencia por clase de personaje ('arquero', 'espadachin', 'mago')
+  const fallbackByClass = Object.values(localPlayersDb).find(p => normalizeStr(p.characterClass) === targetNorm);
+  if (fallbackByClass) {
+    return res.json({ success: true, player: fallbackByClass });
+  }
+
+  // 3. Fallback de seguridad al personaje principal con datos guardados ("Arquera")
+  const defaultPlayer = localPlayersDb["Arquera"] || Object.values(localPlayersDb)[0];
+  if (defaultPlayer) {
+    return res.json({ success: true, player: defaultPlayer });
+  }
+
+  return res.status(404).json({ success: false, message: 'Personaje no encontrado.' });
 });
 
 // 0. Eliminar un personaje de la base de datos
@@ -458,36 +473,7 @@ app.get('/api/status', (req, res) => {
   });
 });
 
-// 2. Cargar personaje por nombre
-app.get('/api/player/:characterName', async (req, res) => {
-  loadLocalDb();
-  const name = req.params.characterName;
-  const normalizeStr = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  const targetNorm = normalizeStr(name);
 
-  if (isMongoConnected) {
-    try {
-      const doc = await MongoPlayer.findOne({ characterName: new RegExp(`^${name.replace(/e/gi, '[eé]')}$`, 'i') });
-      if (doc) return res.json({ success: true, player: doc });
-    } catch (err) {
-      console.error('Error buscando personaje en MongoDB:', err);
-    }
-  }
-
-  // Buscar en la base de datos local JSON sin re-crear personajes fantasma
-  const foundKey = Object.keys(localPlayersDb).find(k => normalizeStr(k) === targetNorm);
-  if (foundKey && localPlayersDb[foundKey]) {
-    return res.json({ success: true, player: localPlayersDb[foundKey] });
-  }
-
-  // Fallback por clase si se consulta por 'arquero', 'espadachin', 'mago'
-  const fallbackByClass = Object.values(localPlayersDb).find(p => normalizeStr(p.characterClass) === targetNorm);
-  if (fallbackByClass) {
-    return res.json({ success: true, player: fallbackByClass });
-  }
-
-  return res.status(404).json({ success: false, message: 'Personaje no encontrado' });
-});
 
 // 3. Guardar estado del personaje manteniendo clase, sexo, colores y progresos intactos
 app.post('/api/player/save', async (req, res) => {

@@ -2250,22 +2250,12 @@ export class GameScene extends Phaser.Scene {
       // Fallback a defecto
     }
 
-    // Etiqueta flotante para mostrar las coordenadas en tiempo real al arrastrar con el ratón
-    const dragLabel = this.add.text(templeX, templeY - 180, '', {
-      fontFamily: 'sans-serif',
-      fontSize: '14px',
-      color: '#fde047',
-      backgroundColor: 'rgba(0,0,0,0.85)',
-      padding: { x: 8, y: 4 }
-    }).setOrigin(0.5).setDepth(templeY + 1000).setVisible(false);
-
-    const activeRockSprites: Phaser.Physics.Arcade.Sprite[] = [];
-
+    // Creación de Piedras Físicas con Textura Invisible en las Ubicaciones Exactas Acomodadas
     perimeterRockOffsets.forEach(pos => {
       const rx = templeX + pos.dx;
       const ry = templeY + pos.dy;
       const rock = this.rockGroup.create(rx, ry, 'small-rock') as Phaser.Physics.Arcade.Sprite;
-      rock.setVisible(true);
+      rock.setVisible(false); // Texturas invisibles por solicitud del usuario
       rock.setDepth(ry + 10);
       const rBody = rock.body as Phaser.Physics.Arcade.StaticBody;
       if (rBody) {
@@ -2273,74 +2263,6 @@ export class GameScene extends Phaser.Scene {
         rBody.setOffset(5, 10);
       }
       rock.refreshBody();
-
-      // Permitir Arrastre Interactivo Directo con el Mouse
-      rock.setInteractive({ useHandCursor: true });
-      this.input.setDraggable(rock);
-      activeRockSprites.push(rock);
-    });
-
-    // Indicador Flotante Arrastrable con el Ratón para la Puerta del Templo en Modo Debug
-    const doorDragHandle = this.add.text(doorZoneX, doorZoneY, '🚪 PUERTA (Arrastrar)', {
-      fontFamily: 'sans-serif',
-      fontSize: '12px',
-      color: '#0f172a',
-      backgroundColor: '#fde047',
-      padding: { x: 6, y: 3 }
-    }).setOrigin(0.5).setDepth(templeY + 2000).setInteractive({ useHandCursor: true });
-    this.input.setDraggable(doorDragHandle);
-
-    // Escuchador de Eventos de Arrastre con el Ratón (Guarda la posición organizada en localStorage automáticamente)
-    this.input.on('drag', (_pointer: Phaser.Input.Pointer, gameObject: any, dragX: number, dragY: number) => {
-      if (gameObject === doorDragHandle) {
-        doorZoneX = dragX;
-        doorZoneY = dragY;
-        doorDragHandle.setPosition(doorZoneX, doorZoneY);
-
-        const curDx = Math.round(doorZoneX - templeX);
-        const curDy = Math.round(doorZoneY - templeY);
-
-        doorHighlight.setPosition(doorZoneX, doorZoneY);
-        doorHighlight.setVisible(true);
-        doorLabel.setPosition(doorZoneX, doorZoneY - 75);
-        doorLabel.setVisible(true);
-        doorHitZone.setPosition(doorZoneX, doorZoneY);
-        this.templeDoorZone = { x: doorZoneX, y: doorZoneY + 70 };
-
-        dragLabel.setPosition(doorZoneX, doorZoneY - 110);
-        dragLabel.setText(`🚪 PUERTA DEL TEMPLO: { dx: ${curDx}, dy: ${curDy} }`);
-        dragLabel.setVisible(true);
-
-        const newDoorOffset = { dx: curDx, dy: curDy };
-        localStorage.setItem('atnight_temple_door_offset', JSON.stringify(newDoorOffset));
-        console.log(`[PUERTA DEL TEMPLO GUARDADA]`, JSON.stringify(newDoorOffset));
-        return;
-      }
-
-      gameObject.setPosition(dragX, dragY);
-      gameObject.setDepth(dragY + 10);
-      if (gameObject.body) {
-        gameObject.body.updateFromGameObject();
-      }
-      const relX = Math.round(gameObject.x - templeX);
-      const relY = Math.round(gameObject.y - templeY);
-
-      dragLabel.setPosition(gameObject.x, gameObject.y - 30);
-      dragLabel.setText(`Piedra Movida: { dx: ${relX}, dy: ${relY} }`);
-      dragLabel.setVisible(true);
-
-      // Guardar arreglo actualizado de posiciones en localStorage
-      const updatedOffsets = activeRockSprites.map(r => ({
-        dx: Math.round(r.x - templeX),
-        dy: Math.round(r.y - templeY)
-      }));
-      localStorage.setItem('atnight_temple_rock_offsets', JSON.stringify(updatedOffsets));
-
-      console.log(`[POSICIÓN GUARDADA PERMANENTEMENTE]`, JSON.stringify(updatedOffsets));
-    });
-
-    this.input.on('dragend', () => {
-      this.time.delayedCall(2000, () => dragLabel.setVisible(false));
     });
 
     // Colisionadores Físicos Estáticos Compuestos de Respaldo para la Base

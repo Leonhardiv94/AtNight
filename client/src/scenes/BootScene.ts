@@ -20,10 +20,10 @@ export class BootScene extends Phaser.Scene {
   private createProceduralTextures() {
     const graphics = this.make.graphics({ x: 0, y: 0 });
 
-    // 1. Isometric Grass Tile (Lush Meadow HD 128x84 - Continuous Seamless Surface)
+    // 1. Isometric Grass Tile (Lush Meadow HD 128x84 - 100% Seamless Continuous Grass)
     graphics.clear();
-    // Paredes de Acantilado de Tierra Orgánica Suave
-    graphics.fillStyle(0x5d4037, 1);
+    // Paredes de Acantilado de Tierra Orgánica
+    graphics.fillStyle(0x4e342e, 1);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
@@ -32,7 +32,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0x4e342e, 1);
+    graphics.fillStyle(0x3e2723, 1);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
@@ -41,40 +41,31 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    // Superficie de Césped Verde Vivo Continua (Pura hierba verde sin luminosidad amarilla)
-    graphics.fillStyle(0x2e7d32, 1);
+    // Superficie de Césped Verde Vivo Continua (Pura hierba verde sin marcos interiores ni divisiones)
+    graphics.fillStyle(0x388e3c, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    // Gradiente Interior Suave Verde Natural (Sin amarillos)
-    graphics.fillStyle(0x388e3c, 0.95);
-    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
-    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
-
-    graphics.fillStyle(0x4caf50, 0.65);
-    graphics.fillTriangle(64, 8, 112, 32, 64, 56);
-    graphics.fillTriangle(64, 8, 16, 32, 64, 56);
-
-    // Detalles Suaves de Briznas de Hierba Fresca (Verde Esmeralda Natural)
-    graphics.fillStyle(0x81c784, 0.85);
-    graphics.fillRect(40, 20, 3, 6);
-    graphics.fillRect(80, 28, 4, 7);
-    graphics.fillRect(56, 38, 3, 6);
+    // Detalles Orgánicos Dispersos de Briznas de Hierba Fresca (Sin bordes en los límites)
+    graphics.fillStyle(0x4caf50, 0.7);
+    graphics.fillRect(40, 20, 3, 5);
+    graphics.fillRect(80, 28, 4, 6);
+    graphics.fillRect(56, 38, 3, 5);
     graphics.fillRect(72, 14, 3, 5);
-    graphics.fillRect(28, 30, 3, 6);
-    graphics.fillRect(92, 22, 4, 6);
+    graphics.fillRect(28, 30, 3, 5);
+    graphics.fillRect(92, 22, 4, 5);
 
-    graphics.fillStyle(0xa5d6a7, 0.85);
-    graphics.fillRect(48, 16, 2, 5);
-    graphics.fillRect(84, 36, 2, 5);
+    graphics.fillStyle(0x81c784, 0.6);
+    graphics.fillRect(48, 16, 2, 4);
+    graphics.fillRect(84, 36, 2, 4);
     graphics.fillRect(34, 42, 2, 4);
 
     graphics.generateTexture('tile-grass', 128, 84);
 
-    // 2. Isometric Shoreline Sand Tile (Soft Creamy Beach Sand HD 128x84 - Continuous Surface)
+    // 2. Isometric Shoreline Sand Tile (Soft Creamy Beach Sand HD 128x84 - 100% Seamless Surface)
     graphics.clear();
-    // Paredes de Arena Cálida Suave
-    graphics.fillStyle(0xd97706, 0.8);
+    // Paredes de Arena Cálida
+    graphics.fillStyle(0xd97706, 0.7);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
@@ -83,7 +74,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0xb45309, 0.8);
+    graphics.fillStyle(0xb45309, 0.7);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
@@ -92,79 +83,42 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    // Superficie de Arena Crema Dorada Suave y Continua
+    // Superficie de Arena Crema Dorada 100% Continua (Sin bordes ni divisiones)
     graphics.fillStyle(0xfde68a, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    // Luz Suave de Arena
-    graphics.fillStyle(0xfef3c7, 0.9);
-    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
-    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
-
-    graphics.fillStyle(0xfffbeb, 0.65);
-    graphics.fillTriangle(64, 8, 112, 32, 64, 56);
-    graphics.fillTriangle(64, 8, 16, 32, 64, 56);
-
-    // Ondulaciones Orgánicas Suaves de Arena
-    graphics.lineStyle(1.5, 0xfcd34d, 0.45);
-    graphics.beginPath();
-    graphics.moveTo(30, 20); graphics.lineTo(50, 25); graphics.lineTo(75, 22);
-    graphics.strokePath();
-
-    graphics.lineStyle(1, 0xfffef0, 0.65);
-    graphics.beginPath();
-    graphics.moveTo(25, 32); graphics.lineTo(45, 36); graphics.lineTo(65, 34);
-    graphics.strokePath();
-
-    // Granos de Arena y Conchitas Dispersas
-    graphics.fillStyle(0xfffef0, 0.90);
+    // Granos y Detalle Sutil de Arena Dispersa
+    graphics.fillStyle(0xfffef0, 0.80);
     graphics.fillRect(42, 15, 2, 2);
-    graphics.fillRect(78, 18, 2.5, 2.5);
+    graphics.fillRect(78, 18, 2, 2);
     graphics.fillRect(62, 24, 2, 2);
-    graphics.fillRect(50, 44, 2.5, 2.5);
+    graphics.fillRect(50, 44, 2, 2);
 
     // Conchitas de Playa
-    graphics.fillStyle(0xffedd5, 0.95);
-    graphics.fillCircle(54, 18, 2.5);
-    graphics.fillStyle(0xfb7185, 0.7);
+    graphics.fillStyle(0xffedd5, 0.90);
+    graphics.fillCircle(54, 18, 2);
+    graphics.fillStyle(0xfb7185, 0.6);
     graphics.fillRect(53, 18, 2, 1);
-
-    graphics.fillStyle(0x94a3b8, 0.85);
-    graphics.fillEllipse(40, 48, 4, 2.5);
 
     graphics.generateTexture('tile-sand', 128, 84);
 
     // 3. Isometric Tropical Ocean Water Tile (Continuous Azure Sea HD 128x64)
     graphics.clear();
-    // Agua Océano Profundo Base
-    graphics.fillStyle(0x006677, 1);
+    // Agua Océano 100% Continua
+    graphics.fillStyle(0x008899, 1);
     graphics.fillTriangle(64, 0, 128, 32, 64, 64);
     graphics.fillTriangle(64, 0, 0, 32, 64, 64);
 
-    // Superficie Turquesa Tropical Iluminada
-    graphics.fillStyle(0x008899, 0.95);
-    graphics.fillTriangle(64, 2, 124, 32, 64, 62);
-    graphics.fillTriangle(64, 2, 4, 32, 64, 62);
-
-    graphics.fillStyle(0x00a8b5, 0.75);
-    graphics.fillTriangle(64, 8, 112, 32, 64, 56);
-    graphics.fillTriangle(64, 8, 16, 32, 64, 56);
-
-    // Olas e Isoclinas de Espuma Cristalina
-    graphics.lineStyle(2, 0x4dd0e1, 0.75);
+    // Olas Suaves de Espuma Cristalina
+    graphics.lineStyle(1.5, 0x4dd0e1, 0.6);
     graphics.beginPath();
     graphics.moveTo(32, 18); graphics.lineTo(64, 10); graphics.lineTo(96, 18);
     graphics.strokePath();
 
-    graphics.lineStyle(2, 0x80deea, 0.85);
+    graphics.lineStyle(1.5, 0x80deea, 0.7);
     graphics.beginPath();
     graphics.moveTo(24, 34); graphics.lineTo(64, 26); graphics.lineTo(104, 34);
-    graphics.strokePath();
-
-    graphics.lineStyle(1.5, 0xe0f7fa, 0.90);
-    graphics.beginPath();
-    graphics.moveTo(40, 48); graphics.lineTo(64, 42); graphics.lineTo(88, 48);
     graphics.strokePath();
 
     graphics.generateTexture('tile-water', 128, 64);

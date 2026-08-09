@@ -2130,6 +2130,15 @@ export class GameScene extends Phaser.Scene {
       { dx: 86, dy: -38 }, { dx: 98, dy: -16 }, { dx: 104, dy: 10 }
     ];
 
+    // Etiqueta flotante para mostrar las coordenadas en tiempo real al arrastrar con el ratón
+    const dragLabel = this.add.text(templeX, templeY - 180, '', {
+      fontFamily: 'sans-serif',
+      fontSize: '14px',
+      color: '#fde047',
+      backgroundColor: 'rgba(0,0,0,0.85)',
+      padding: { x: 8, y: 4 }
+    }).setOrigin(0.5).setDepth(templeY + 1000).setVisible(false);
+
     perimeterRockOffsets.forEach(pos => {
       const rx = templeX + pos.dx;
       const ry = templeY + pos.dy;
@@ -2142,6 +2151,31 @@ export class GameScene extends Phaser.Scene {
         rBody.setOffset(5, 10);
       }
       rock.refreshBody();
+
+      // Permitir Arrastre Interactivo Directo con el Mouse
+      rock.setInteractive({ useHandCursor: true });
+      this.input.setDraggable(rock);
+    });
+
+    // Escuchador de Eventos de Arrastre con el Ratón (Drag & Drop en tiempo real)
+    this.input.on('drag', (_pointer: Phaser.Input.Pointer, gameObject: any, dragX: number, dragY: number) => {
+      gameObject.setPosition(dragX, dragY);
+      gameObject.setDepth(dragY + 10);
+      if (gameObject.body) {
+        gameObject.body.updateFromGameObject();
+      }
+      const relX = Math.round(gameObject.x - templeX);
+      const relY = Math.round(gameObject.y - templeY);
+
+      dragLabel.setPosition(gameObject.x, gameObject.y - 30);
+      dragLabel.setText(`Piedra Movida: { dx: ${relX}, dy: ${relY} }`);
+      dragLabel.setVisible(true);
+
+      console.log(`[PIEDRA MOVIDA CON MOUSE] { dx: ${relX}, dy: ${relY} }`);
+    });
+
+    this.input.on('dragend', () => {
+      this.time.delayedCall(2000, () => dragLabel.setVisible(false));
     });
 
     // Colisionadores Físicos Estáticos Compuestos de Respaldo para la Base

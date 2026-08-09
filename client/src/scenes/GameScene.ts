@@ -2135,12 +2135,28 @@ export class GameScene extends Phaser.Scene {
     temple.setScale(0.85);
     temple.setDepth(templeY - 25);
 
-    // Zona de Interacción Clic en la Puerta del Templo (Resaltado Dorado y Entrada al Mapa Interior)
-    const doorZoneX = templeX + 40;
-    const doorZoneY = templeY + 30;
+    // Zona de Interacción y Resaltado Dorado EXCLUSIVAMENTE para la Puerta de Entrada
+    const doorZoneX = templeX + 45;
+    const doorZoneY = templeY + 25;
     this.templeDoorZone = { x: doorZoneX, y: doorZoneY };
 
-    const doorLabel = this.add.text(doorZoneX, doorZoneY - 70, '🚪 Entrar al Templo de la Natividad', {
+    // Arco Dorado Resaltado sobre la Puerta (NO resalta todo el templo, solo el arco de madera)
+    const doorHighlight = this.add.graphics();
+    doorHighlight.setPosition(doorZoneX, doorZoneY);
+    doorHighlight.setDepth(templeY + 1100);
+    doorHighlight.setVisible(false);
+
+    doorHighlight.lineStyle(3.5, 0xffea00, 1);
+    doorHighlight.fillStyle(0xfde047, 0.40);
+    doorHighlight.beginPath();
+    doorHighlight.arc(0, -25, 22, Math.PI, 0, false);
+    doorHighlight.lineTo(22, 10);
+    doorHighlight.lineTo(-22, 10);
+    doorHighlight.closePath();
+    doorHighlight.fillPath();
+    doorHighlight.strokePath();
+
+    const doorLabel = this.add.text(doorZoneX, doorZoneY - 75, '🚪 Entrar al Templo de la Natividad', {
       fontFamily: 'sans-serif',
       fontSize: '14px',
       color: '#fef08a',
@@ -2148,26 +2164,28 @@ export class GameScene extends Phaser.Scene {
       padding: { x: 10, y: 5 }
     }).setOrigin(0.5).setDepth(templeY + 1200).setVisible(false);
 
-    temple.setInteractive({ useHandCursor: true });
+    // Zona interactiva del ratón en la puerta
+    const doorHitZone = this.add.zone(doorZoneX, doorZoneY - 10, 65, 85);
+    doorHitZone.setInteractive({ useHandCursor: true });
 
-    temple.on('pointerover', () => {
-      temple.setTint(0xffea00); // Resaltado dorado al pasar el cursor sobre la puerta
+    doorHitZone.on('pointerover', () => {
+      doorHighlight.setVisible(true); // Resalta ÚNICA Y EXCLUSIVAMENTE el portal de madera
       doorLabel.setVisible(true);
     });
 
-    temple.on('pointerout', () => {
-      temple.clearTint();
+    doorHitZone.on('pointerout', () => {
+      doorHighlight.setVisible(false);
       doorLabel.setVisible(false);
     });
 
-    temple.on('pointerdown', (pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: any) => {
+    doorHitZone.on('pointerdown', (pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: any) => {
       if (event && event.stopPropagation) event.stopPropagation();
       this.clickTarget = new Phaser.Math.Vector2(doorZoneX, doorZoneY);
       this.pendingTempleEnter = true;
     });
 
-    // Anillo Perimetral de Piedras Decorativas con Colisionadores Físicos
-    const perimeterRockOffsets: Array<{ dx: number; dy: number }> = [
+    // Cargar Offsets de Piedras Guardadas en localStorage (Conserva las piedras organizadas por el usuario)
+    let perimeterRockOffsets: Array<{ dx: number; dy: number }> = [
       // Frente y Escaleras de Entrada (Abajo-Derecha)
       { dx: 100, dy: 35 }, { dx: 82, dy: 45 }, { dx: 64, dy: 52 }, { dx: 46, dy: 58 },
       { dx: 28, dy: 62 }, { dx: 10, dy: 62 }, { dx: -8, dy: 58 },
@@ -2189,6 +2207,18 @@ export class GameScene extends Phaser.Scene {
       { dx: -120, dy: 60 }, { dx: 110, dy: 50 }
     ];
 
+    try {
+      const savedRocks = localStorage.getItem('atnight_temple_rock_offsets');
+      if (savedRocks) {
+        const parsed = JSON.parse(savedRocks);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          perimeterRockOffsets = parsed;
+        }
+      }
+    } catch (e) {
+      // Fallback a defecto
+    }
+
     // Etiqueta flotante para mostrar las coordenadas en tiempo real al arrastrar con el ratón
     const dragLabel = this.add.text(templeX, templeY - 180, '', {
       fontFamily: 'sans-serif',
@@ -2197,6 +2227,8 @@ export class GameScene extends Phaser.Scene {
       backgroundColor: 'rgba(0,0,0,0.85)',
       padding: { x: 8, y: 4 }
     }).setOrigin(0.5).setDepth(templeY + 1000).setVisible(false);
+
+    const activeRockSprites: Phaser.Physics.Arcade.Sprite[] = [];
 
     perimeterRockOffsets.forEach(pos => {
       const rx = templeX + pos.dx;
@@ -2214,9 +2246,10 @@ export class GameScene extends Phaser.Scene {
       // Permitir Arrastre Interactivo Directo con el Mouse
       rock.setInteractive({ useHandCursor: true });
       this.input.setDraggable(rock);
+      activeRockSprites.push(rock);
     });
 
-    // Escuchador de Eventos de Arrastre con el Ratón (Drag & Drop en tiempo real)
+    // Escuchador de Eventos de Arrastre con el Ratón (Guarda la posición organizada en localStorage automáticamente)
     this.input.on('drag', (_pointer: Phaser.Input.Pointer, gameObject: any, dragX: number, dragY: number) => {
       gameObject.setPosition(dragX, dragY);
       gameObject.setDepth(dragY + 10);
@@ -2230,7 +2263,14 @@ export class GameScene extends Phaser.Scene {
       dragLabel.setText(`Piedra Movida: { dx: ${relX}, dy: ${relY} }`);
       dragLabel.setVisible(true);
 
-      console.log(`[PIEDRA MOVIDA CON MOUSE] { dx: ${relX}, dy: ${relY} }`);
+      // Guardar arreglo actualizado de posiciones en localStorage
+      const updatedOffsets = activeRockSprites.map(r => ({
+        dx: Math.round(r.x - templeX),
+        dy: Math.round(r.y - templeY)
+      }));
+      localStorage.setItem('atnight_temple_rock_offsets', JSON.stringify(updatedOffsets));
+
+      console.log(`[POSICIÓN GUARDADA PERMANENTEMENTE]`, JSON.stringify(updatedOffsets));
     });
 
     this.input.on('dragend', () => {

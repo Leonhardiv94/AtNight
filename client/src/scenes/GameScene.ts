@@ -2153,12 +2153,12 @@ export class GameScene extends Phaser.Scene {
     temple.setScale(0.85);
     temple.setDepth(templeY - 25);
 
-    // Zona de Interacción y Resaltado Dorado EXCLUSIVAMENTE para la Puerta de Entrada
-    const doorZoneX = templeX + 45;
-    const doorZoneY = templeY + 25;
-    this.templeDoorZone = { x: doorZoneX, y: doorZoneY };
+    // Zona de Interacción y Resaltado Dorado EXCLUSIVAMENTE para la Puerta de Entrada (Ubicada en las puertas dobles de madera principales)
+    const doorZoneX = templeX + 90;
+    const doorZoneY = templeY - 110;
+    this.templeDoorZone = { x: doorZoneX, y: doorZoneY + 70 };
 
-    // Arco Dorado Resaltado sobre la Puerta (NO resalta todo el templo, solo el arco de madera)
+    // Arco Dorado Resaltado sobre la Puerta (Coincide exactamente con el arco de madera)
     const doorHighlight = this.add.graphics();
     doorHighlight.setPosition(doorZoneX, doorZoneY);
     doorHighlight.setDepth(templeY + 1100);
@@ -2167,9 +2167,9 @@ export class GameScene extends Phaser.Scene {
     doorHighlight.lineStyle(3.5, 0xffea00, 1);
     doorHighlight.fillStyle(0xfde047, 0.40);
     doorHighlight.beginPath();
-    doorHighlight.arc(0, -25, 22, Math.PI, 0, false);
-    doorHighlight.lineTo(22, 10);
-    doorHighlight.lineTo(-22, 10);
+    doorHighlight.arc(0, -30, 24, Math.PI, 0, false);
+    doorHighlight.lineTo(24, 15);
+    doorHighlight.lineTo(-24, 15);
     doorHighlight.closePath();
     doorHighlight.fillPath();
     doorHighlight.strokePath();
@@ -2182,8 +2182,8 @@ export class GameScene extends Phaser.Scene {
       padding: { x: 10, y: 5 }
     }).setOrigin(0.5).setDepth(templeY + 1200).setVisible(false);
 
-    // Zona interactiva del ratón en la puerta
-    const doorHitZone = this.add.zone(doorZoneX, doorZoneY - 10, 65, 85);
+    // Zona interactiva del ratón en la puerta y escaleras
+    const doorHitZone = this.add.zone(doorZoneX, doorZoneY, 70, 90);
     doorHitZone.setInteractive({ useHandCursor: true });
 
     doorHitZone.on('pointerover', () => {

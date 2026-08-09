@@ -8,7 +8,7 @@
     "hairColor": "#f8fafc",
     "outfitColor": "#9333ea",
     "level": 3,
-    "xp": 2610,
+    "xp": 2733,
     "availablePoints": 0,
     "elements": {
       "vitalidad": {
@@ -52,7 +52,7 @@
         "id": "chicken_feather",
         "name": "Pluma de Pollo",
         "icon": "",
-        "count": 20,
+        "count": 21,
         "category": "recursos",
         "weight": 1
       },
@@ -60,7 +60,7 @@
         "id": "gold",
         "name": "Monedas de Oro",
         "icon": "",
-        "count": 1693,
+        "count": 1728,
         "category": "especiales",
         "weight": 0
       },
@@ -68,7 +68,7 @@
         "id": "chicken_egg",
         "name": "Huevo de Pollo",
         "icon": "",
-        "count": 7,
+        "count": 8,
         "category": "recursos",
         "weight": 1
       },
@@ -84,7 +84,7 @@
         "id": "chicken_eye",
         "name": "Ojo de Pollo",
         "icon": "",
-        "count": 8,
+        "count": 9,
         "category": "recursos",
         "weight": 1
       }
@@ -93,7 +93,7 @@
       "x": 0,
       "y": 1152
     },
-    "updatedAt": "2026-08-09T23:30:55.852Z"
+    "updatedAt": "2026-08-09T23:42:32.022Z"
   },
   "Arquero": {
     "characterName": "Arquero",

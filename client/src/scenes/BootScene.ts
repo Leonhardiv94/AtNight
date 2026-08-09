@@ -195,7 +195,7 @@ export class BootScene extends Phaser.Scene {
     graphics.quadraticCurveTo(28, 12, 22, 28);
     graphics.lineTo(16, 22);
     graphics.closePath();
-    graphics.fillPath();
+    graphics.fill();
     graphics.lineStyle(1.5, 0xf59e0b, 1);
     graphics.lineBetween(16, 4, 16, 28);
     graphics.generateTexture('chicken_feather', 32, 32);

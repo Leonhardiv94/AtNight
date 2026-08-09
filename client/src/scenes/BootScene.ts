@@ -123,6 +123,69 @@ export class BootScene extends Phaser.Scene {
 
     graphics.generateTexture('tile-water', 128, 64);
 
+    // 4. Isometric Polished Hardwood Floor Tile (Interior del Templo HD 128x64)
+    graphics.clear();
+    graphics.fillStyle(0x8d5b4c, 1);
+    graphics.fillTriangle(64, 0, 128, 32, 64, 64);
+    graphics.fillTriangle(64, 0, 0, 32, 64, 64);
+
+    // Vetas de Madera Pulida y Divisiones de Tablas
+    graphics.lineStyle(1.5, 0x6d4236, 0.7);
+    graphics.beginPath();
+    graphics.moveTo(32, 16); graphics.lineTo(96, 48);
+    graphics.moveTo(16, 24); graphics.lineTo(80, 56);
+    graphics.strokePath();
+
+    graphics.lineStyle(1, 0xa16859, 0.5);
+    graphics.beginPath();
+    graphics.moveTo(48, 8); graphics.lineTo(112, 40);
+    graphics.strokePath();
+
+    graphics.generateTexture('tile-wood', 128, 64);
+
+    // 5. Isometric Temple Interior Stone Wall Tile (Pared de Piedra del Templo 128x84)
+    graphics.clear();
+    graphics.fillStyle(0xc2a370, 1);
+    graphics.beginPath();
+    graphics.moveTo(0, 32); graphics.lineTo(64, 64); graphics.lineTo(64, 84); graphics.lineTo(0, 52); graphics.closePath();
+    graphics.fillPath();
+
+    graphics.fillStyle(0xb3925c, 1);
+    graphics.beginPath();
+    graphics.moveTo(64, 64); graphics.lineTo(128, 32); graphics.lineTo(128, 52); graphics.lineTo(64, 84); graphics.closePath();
+    graphics.fillPath();
+
+    graphics.fillStyle(0xd4b886, 1);
+    graphics.fillTriangle(64, 0, 128, 32, 64, 64);
+    graphics.fillTriangle(64, 0, 0, 32, 64, 64);
+
+    // Grabado de Ladrillos de Piedra Catedralicias
+    graphics.lineStyle(1, 0x9c7a46, 0.6);
+    graphics.strokeTriangle(64, 0, 128, 32, 64, 64);
+    graphics.strokeTriangle(64, 0, 0, 32, 64, 64);
+
+    graphics.generateTexture('tile-temple-wall', 128, 84);
+
+    // 6. Isometric Ceremonial Exit Red Carpet Tile (Alfombra de Salida con Filo Dorado 128x64)
+    graphics.clear();
+    // Base Carmesí Profundo
+    graphics.fillStyle(0x991b1b, 1);
+    graphics.fillTriangle(64, 0, 128, 32, 64, 64);
+    graphics.fillTriangle(64, 0, 0, 32, 64, 64);
+
+    // Centro Rojo Terciopelo
+    graphics.fillStyle(0xb91c1c, 0.95);
+    graphics.fillTriangle(64, 4, 120, 32, 64, 60);
+    graphics.fillTriangle(64, 4, 8, 32, 64, 60);
+
+    // Borde Ornamental Dorado de Salida
+    graphics.lineStyle(2, 0xf59e0b, 0.9);
+    graphics.beginPath();
+    graphics.moveTo(64, 6); graphics.lineTo(116, 32); graphics.lineTo(64, 58); graphics.lineTo(12, 32); graphics.closePath();
+    graphics.strokePath();
+
+    graphics.generateTexture('tile-carpet', 128, 64);
+
     // 4. Realistic Wild Island Fowl / Chick Creature (HD 64x64, 4 Directions x 3 Frames + 2 Pecking Frames)
     const birdDirs = ['down', 'up', 'right', 'left'];
 

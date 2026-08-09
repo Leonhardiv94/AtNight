@@ -56,8 +56,10 @@ export class GameScene extends Phaser.Scene {
   private islandCenterIsoX: number = 0;
   private islandCenterIsoY: number = 1152;
 
-  // Inventory Data
-  private inventory: Map<string, ItemDrop> = new Map();
+  // Temple Transition Data
+  private pendingTempleEnter: boolean = false;
+  private isSceneTransitioning: boolean = false;
+  private templeDoorZone: { x: number; y: number } = { x: 0, y: 0 };
 
   constructor() {
     super({ key: 'GameScene' });
@@ -67,7 +69,14 @@ export class GameScene extends Phaser.Scene {
     this.load.image('temple-building', '/assets/temple-building.png');
   }
 
-  create() {
+  create(data?: any) {
+    this.isSceneTransitioning = false;
+    this.pendingTempleEnter = false;
+
+    if (data?.fromTempleInterior) {
+      this.cameras.main.fadeIn(500, 0, 0, 0);
+    }
+
     // 0. Set Clear Tropical Daytime Sky Background
     this.cameras.main.setBackgroundColor(0x38bdf8);
 
@@ -1989,10 +1998,26 @@ export class GameScene extends Phaser.Scene {
   }
 
   update(time: number, _delta: number) {
+    if (this.isSceneTransitioning) return;
+
     this.handlePlayerMovement();
     this.updateCreaturesAI(time);
     this.updateDepthSorting();
     this.animateOceanWaves(time);
+
+    // Transición de Escena al llegar a la Puerta del Templo
+    if (this.pendingTempleEnter && this.templeDoorZone.x !== 0) {
+      const distToDoor = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.templeDoorZone.x, this.templeDoorZone.y);
+      if (distToDoor < 45) {
+        this.isSceneTransitioning = true;
+        this.pendingTempleEnter = false;
+        this.player.setVelocity(0, 0);
+        this.cameras.main.fadeOut(500, 0, 0, 0);
+        this.time.delayedCall(500, () => {
+          this.scene.start('TempleInteriorScene');
+        });
+      }
+    }
   }
 
   private createIslandMap() {
@@ -2109,6 +2134,37 @@ export class GameScene extends Phaser.Scene {
     temple.setOrigin(0.5, 0.85);
     temple.setScale(0.85);
     temple.setDepth(templeY - 25);
+
+    // Zona de Interacción Clic en la Puerta del Templo (Resaltado Dorado y Entrada al Mapa Interior)
+    const doorZoneX = templeX + 40;
+    const doorZoneY = templeY + 30;
+    this.templeDoorZone = { x: doorZoneX, y: doorZoneY };
+
+    const doorLabel = this.add.text(doorZoneX, doorZoneY - 70, '🚪 Entrar al Templo de la Natividad', {
+      fontFamily: 'sans-serif',
+      fontSize: '14px',
+      color: '#fef08a',
+      backgroundColor: 'rgba(15, 23, 42, 0.90)',
+      padding: { x: 10, y: 5 }
+    }).setOrigin(0.5).setDepth(templeY + 1200).setVisible(false);
+
+    temple.setInteractive({ useHandCursor: true });
+
+    temple.on('pointerover', () => {
+      temple.setTint(0xffea00); // Resaltado dorado al pasar el cursor sobre la puerta
+      doorLabel.setVisible(true);
+    });
+
+    temple.on('pointerout', () => {
+      temple.clearTint();
+      doorLabel.setVisible(false);
+    });
+
+    temple.on('pointerdown', (pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: any) => {
+      if (event && event.stopPropagation) event.stopPropagation();
+      this.clickTarget = new Phaser.Math.Vector2(doorZoneX, doorZoneY);
+      this.pendingTempleEnter = true;
+    });
 
     // Anillo Perimetral de Piedras Decorativas con Colisionadores Físicos
     const perimeterRockOffsets: Array<{ dx: number; dy: number }> = [

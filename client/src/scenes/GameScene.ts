@@ -2030,9 +2030,9 @@ export class GameScene extends Phaser.Scene {
         let isGrass = false;
         let isSand = false;
 
-        if (distFromMain <= 15.3 || distFromTempleCenter <= 7.0 || (isConnectorBridge && bridgeProgress <= 14.5)) {
+        if (distFromMain <= 15.3 || distFromTempleCenter <= 11.0 || (isConnectorBridge && bridgeProgress <= 14.5)) {
           isGrass = true;
-        } else if (distFromMain <= 21.5 || distFromTempleCenter <= 10.5 || isConnectorBridge) {
+        } else if (distFromMain <= 21.5 || distFromTempleCenter <= 15.0 || isConnectorBridge) {
           isSand = true;
         }
 
@@ -2059,7 +2059,7 @@ export class GameScene extends Phaser.Scene {
           const isoY = baseIsoY;
 
           // Fondo marino de arena bajo el agua cerca de la orilla
-          if (distFromMain <= 25.0 || distFromTempleCenter <= 13.0) {
+          if (distFromMain <= 25.0 || distFromTempleCenter <= 17.5) {
             const seaBed = this.add.image(baseIsoX, baseIsoY - 6.667, 'tile-sand');
             seaBed.setOrigin(0.5, 0);
             seaBed.setScale(tileScale);
@@ -2762,9 +2762,9 @@ export class GameScene extends Phaser.Scene {
 
     const tileScale = 2 / 3;
 
-    if (distFromMain <= 15.3 || distFromTempleCenter <= 7.0 || (isConnectorBridge && bridgeProgress <= 14.5)) {
+    if (distFromMain <= 15.3 || distFromTempleCenter <= 11.0 || (isConnectorBridge && bridgeProgress <= 14.5)) {
       return -20 * tileScale; // Prado verde elevado: -13.333px
-    } else if (distFromMain <= 21.5 || distFromTempleCenter <= 10.5 || isConnectorBridge) {
+    } else if (distFromMain <= 21.5 || distFromTempleCenter <= 15.0 || isConnectorBridge) {
       return -10 * tileScale; // Arena de playa elevada: -6.667px
     } else {
       return 0;               // Nivel del mar océano: 0px

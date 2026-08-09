@@ -2110,15 +2110,26 @@ export class GameScene extends Phaser.Scene {
     temple.setScale(0.85);
     temple.setDepth(templeY + 120);
 
-    // Colisionador Físico Estático para la Base de Piedra de la Catedral Románica
-    const templeCollider = this.rockGroup.create(templeX, templeY - 10, 'small-rock') as Phaser.Physics.Arcade.Sprite;
-    templeCollider.setVisible(false);
-    const cBody = templeCollider.body as Phaser.Physics.Arcade.StaticBody;
-    if (cBody) {
-      cBody.setSize(260, 160);
-      cBody.setOffset(-115, -70);
+    // Colisionadores Físicos Estáticos ajustados ÚNICA Y EXCLUSIVAMENTE a la huella base del suelo (Figura Roja)
+    // 1. Colisionador del Cuerpo Principal de la Base de Piedra
+    const templeMainCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    templeMainCollider.setVisible(false);
+    const cBodyMain = templeMainCollider.body as Phaser.Physics.Arcade.StaticBody;
+    if (cBodyMain) {
+      cBodyMain.setSize(240, 110);
+      cBodyMain.setOffset(-120, -55);
     }
-    templeCollider.refreshBody();
+    templeMainCollider.refreshBody();
+
+    // 2. Colisionador de la Extensión de las Escaleras y Portal de Entrada (Abajo a la Derecha)
+    const templeStairsCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    templeStairsCollider.setVisible(false);
+    const cBodyStairs = templeStairsCollider.body as Phaser.Physics.Arcade.StaticBody;
+    if (cBodyStairs) {
+      cBodyStairs.setSize(90, 55);
+      cBodyStairs.setOffset(25, -15);
+    }
+    templeStairsCollider.refreshBody();
 
     // Antorchas Místicas flanqueando la entrada orientada hacia abajo a la derecha
     const torchLeft = this.add.circle(templeX + 30, templeY + 20, 7, 0xf59e0b, 0.7);

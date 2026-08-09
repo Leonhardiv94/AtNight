@@ -3305,24 +3305,25 @@ export class GameScene extends Phaser.Scene {
     this.renderInventoryHtml();
   }
 
-  private getXpRequiredForLevel(lvl: number): number {
-    if (lvl >= 50) return 0; // Level 50 is MAX LEVEL CAP!
+  public getXpThresholdForLevel(lvl: number): number {
+    if (lvl <= 1) return 0;
+    let totalXp = 0;
     let req = 1000;
     for (let l = 1; l < lvl; l++) {
+      totalXp += req;
       req = Math.round(req * 1.10);
     }
-    return req;
+    return totalXp;
   }
 
   private gainXp(amount: number) {
-    this.playerXp += amount;
+    this.playerXp += amount; // Cumulative total XP!
 
     let leveledUp = false;
     while (this.playerLevel < 50) {
-      const req = this.getXpRequiredForLevel(this.playerLevel);
-      if (this.playerXp >= req) {
+      const nextThreshold = this.getXpThresholdForLevel(this.playerLevel + 1);
+      if (this.playerXp >= nextThreshold) {
         this.playerLevel++;
-        this.playerXp -= req;
         this.playerMaxHp += 25;
         this.playerHp = this.playerMaxHp;
         this.playerMaxMana = 10;
@@ -3342,19 +3343,17 @@ export class GameScene extends Phaser.Scene {
           }
 
           if ((window as any).playerSpellsState) {
-            const spellsState = (window as any).playerSpellsState;
-            spellsState.spellPoints = (spellsState.spellPoints || 0) + 1;
-            if (typeof (window as any).saveSpellsState === 'function') {
-              (window as any).saveSpellsState();
+            if (typeof (window as any).syncSpellPointsWithLevel === 'function') {
+              (window as any).syncSpellPointsWithLevel();
             }
             if (typeof (window as any).updatePoderesUI === 'function') {
               (window as any).updatePoderesUI();
             }
           }
-        }
 
-        if (typeof window !== 'undefined' && (window as any).showLevelUpModal) {
-          (window as any).showLevelUpModal(this.playerLevel);
+          if (typeof (window as any).showLevelUpModal === 'function') {
+            (window as any).showLevelUpModal(this.playerLevel);
+          }
         }
       } else {
         break;
@@ -3453,16 +3452,30 @@ export class GameScene extends Phaser.Scene {
       bottomManaText.innerText = `${Math.ceil(this.playerMana)} / ${this.playerMaxMana} MP`;
     }
 
-    // 3. Experience Bar Update (Level 1: 1000 XP, +10% per level up to Level 50 MAX Cap)
+    // 3. Cumulative Experience Bar & Tooltip Update (Muestra rango acumulado y XP faltante al pasar el mouse)
     if (bottomXpFill && bottomXpText) {
+      const hudXpRow = document.getElementById('hud-xp-row');
+
       if (this.playerLevel >= 50) {
         bottomXpFill.style.width = '100%';
-        bottomXpText.innerText = `Niv. 50 (MÁX) - ${this.playerXp} XP Total`;
+        bottomXpText.innerText = `Niv. 50 (MÁX) - ${Math.floor(this.playerXp)} XP Total`;
+        if (hudXpRow) hudXpRow.title = `¡Nivel Máximo Alcanzado (Niv. 50)! (${Math.floor(this.playerXp)} XP Total)`;
       } else {
-        const req = this.getXpRequiredForLevel(this.playerLevel);
-        const pct = Math.max(0, Math.min(100, (this.playerXp / req) * 100));
+        const prevThreshold = this.getXpThresholdForLevel(this.playerLevel);
+        const nextThreshold = this.getXpThresholdForLevel(this.playerLevel + 1);
+        const neededInLevel = nextThreshold - prevThreshold;
+        const currentInLevel = Math.max(0, this.playerXp - prevThreshold);
+        const xpRemaining = Math.max(0, nextThreshold - this.playerXp);
+
+        const pct = Math.max(0, Math.min(100, (currentInLevel / neededInLevel) * 100));
         bottomXpFill.style.width = `${pct}%`;
-        bottomXpText.innerText = `Niv. ${this.playerLevel} (${Math.floor(this.playerXp)} / ${req} XP)`;
+
+        const currentXpFormatted = Math.floor(this.playerXp);
+        bottomXpText.innerText = `${currentXpFormatted} / ${nextThreshold} XP`;
+        
+        const tooltipString = `Faltan ${Math.ceil(xpRemaining)} XP para el Nivel ${this.playerLevel + 1} (${currentXpFormatted} / ${nextThreshold} XP Acumulado)`;
+        if (hudXpRow) hudXpRow.title = tooltipString;
+        bottomXpText.title = tooltipString;
       }
     }
   }

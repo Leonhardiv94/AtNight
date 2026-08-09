@@ -125,9 +125,9 @@ export class GameScene extends Phaser.Scene {
       }
     });
 
-    // 2. Mana Regeneration: +1 Mana every 2 seconds (0.5 Mana/s)
+    // 2. Mana Regeneration: +1 Mana every 1 second (1 Mana/s)
     this.time.addEvent({
-      delay: 2000,
+      delay: 1000,
       loop: true,
       callback: () => {
         if (this.playerMana < this.playerMaxMana) {
@@ -2424,7 +2424,7 @@ export class GameScene extends Phaser.Scene {
     const state = (window as any).playerSpellsState;
     const spellData = (window as any).spellDatabase?.flecha_punzante;
     const spellLevel = state?.spells?.flecha_punzante?.level || 1;
-    const lvlInfo = spellData?.levels?.[spellLevel] || { minDamage: 15, maxDamage: 18, manaCost: 5, range: 5 };
+    const lvlInfo = spellData?.levels?.[spellLevel] || { minDamage: 15, maxDamage: 18, manaCost: 4, range: 5 };
 
     // Check Mana Cost
     if (this.playerMana < lvlInfo.manaCost) {

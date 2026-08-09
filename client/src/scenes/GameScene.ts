@@ -2153,9 +2153,22 @@ export class GameScene extends Phaser.Scene {
     temple.setScale(0.85);
     temple.setDepth(templeY - 25);
 
-    // Zona de Interacción y Resaltado Dorado EXCLUSIVAMENTE para la Puerta de Entrada (Ubicada en las puertas dobles de madera principales)
-    const doorZoneX = templeX + 90;
-    const doorZoneY = templeY - 110;
+    // Cargar offset guardado de la puerta si existe en localStorage
+    let doorDx = 90;
+    let doorDy = -110;
+    try {
+      const savedDoor = localStorage.getItem('atnight_temple_door_offset');
+      if (savedDoor) {
+        const parsed = JSON.parse(savedDoor);
+        if (parsed && typeof parsed.dx === 'number' && typeof parsed.dy === 'number') {
+          doorDx = parsed.dx;
+          doorDy = parsed.dy;
+        }
+      }
+    } catch (_e) {}
+
+    let doorZoneX = templeX + doorDx;
+    let doorZoneY = templeY + doorDy;
     this.templeDoorZone = { x: doorZoneX, y: doorZoneY + 70 };
 
     // Arco Dorado Resaltado sobre la Puerta (Coincide exactamente con el arco de madera)
@@ -2267,8 +2280,43 @@ export class GameScene extends Phaser.Scene {
       activeRockSprites.push(rock);
     });
 
+    // Indicador Flotante Arrastrable con el Ratón para la Puerta del Templo en Modo Debug
+    const doorDragHandle = this.add.text(doorZoneX, doorZoneY, '🚪 PUERTA (Arrastrar)', {
+      fontFamily: 'sans-serif',
+      fontSize: '12px',
+      color: '#0f172a',
+      backgroundColor: '#fde047',
+      padding: { x: 6, y: 3 }
+    }).setOrigin(0.5).setDepth(templeY + 2000).setInteractive({ useHandCursor: true });
+    this.input.setDraggable(doorDragHandle);
+
     // Escuchador de Eventos de Arrastre con el Ratón (Guarda la posición organizada en localStorage automáticamente)
     this.input.on('drag', (_pointer: Phaser.Input.Pointer, gameObject: any, dragX: number, dragY: number) => {
+      if (gameObject === doorDragHandle) {
+        doorZoneX = dragX;
+        doorZoneY = dragY;
+        doorDragHandle.setPosition(doorZoneX, doorZoneY);
+
+        const curDx = Math.round(doorZoneX - templeX);
+        const curDy = Math.round(doorZoneY - templeY);
+
+        doorHighlight.setPosition(doorZoneX, doorZoneY);
+        doorHighlight.setVisible(true);
+        doorLabel.setPosition(doorZoneX, doorZoneY - 75);
+        doorLabel.setVisible(true);
+        doorHitZone.setPosition(doorZoneX, doorZoneY);
+        this.templeDoorZone = { x: doorZoneX, y: doorZoneY + 70 };
+
+        dragLabel.setPosition(doorZoneX, doorZoneY - 110);
+        dragLabel.setText(`🚪 PUERTA DEL TEMPLO: { dx: ${curDx}, dy: ${curDy} }`);
+        dragLabel.setVisible(true);
+
+        const newDoorOffset = { dx: curDx, dy: curDy };
+        localStorage.setItem('atnight_temple_door_offset', JSON.stringify(newDoorOffset));
+        console.log(`[PUERTA DEL TEMPLO GUARDADA]`, JSON.stringify(newDoorOffset));
+        return;
+      }
+
       gameObject.setPosition(dragX, dragY);
       gameObject.setDepth(dragY + 10);
       if (gameObject.body) {

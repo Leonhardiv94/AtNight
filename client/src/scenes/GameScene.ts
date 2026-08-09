@@ -63,6 +63,10 @@ export class GameScene extends Phaser.Scene {
     super({ key: 'GameScene' });
   }
 
+  preload() {
+    this.load.image('temple-building', '/assets/temple-building.png');
+  }
+
   create() {
     // 0. Set Clear Tropical Daytime Sky Background
     this.cameras.main.setBackgroundColor(0x38bdf8);
@@ -91,6 +95,7 @@ export class GameScene extends Phaser.Scene {
     goldG.destroy();
 
     this.createIslandMap();
+    this.createTempleBuilding();
     this.createGatheringNodes();
     this.createPlayer();
     this.createCreatures();
@@ -1995,6 +2000,8 @@ export class GameScene extends Phaser.Scene {
     this.animatedWaterObjects = [];
 
     const islandCenterIndex = 27;
+    const templeCenterX = 16;
+    const templeCenterY = 38;
     const minMapIndex = -45;
     const maxMapIndex = 100;
     const tileScale = 2 / 3;
@@ -2008,20 +2015,39 @@ export class GameScene extends Phaser.Scene {
       for (let y = minMapIndex; y <= maxMapIndex; y++) {
         const dx = x - islandCenterIndex;
         const dy = y - islandCenterIndex;
-        const distFromCenter = Math.sqrt(dx * dx + dy * dy);
+        const distFromMain = Math.sqrt(dx * dx + dy * dy);
+
+        // Extensión Peninsular del Templo hacia la Izquierda
+        const tDx = x - templeCenterX;
+        const tDy = y - templeCenterY;
+        const distFromTempleCenter = Math.sqrt(tDx * tDx + tDy * tDy);
+
+        // Conector de tierra continuo entre la isla principal y el templo
+        const lineVal = Math.abs((x - 27) + (y - 27));
+        const bridgeProgress = Math.sqrt(dx * dx + dy * dy);
+        const isConnectorBridge = (x <= 27 && y >= 27 && lineVal <= 3.5 && bridgeProgress <= 17);
+
+        let isGrass = false;
+        let isSand = false;
+
+        if (distFromMain <= 15.3 || distFromTempleCenter <= 7.0 || (isConnectorBridge && bridgeProgress <= 14.5)) {
+          isGrass = true;
+        } else if (distFromMain <= 21.5 || distFromTempleCenter <= 10.5 || isConnectorBridge) {
+          isSand = true;
+        }
 
         // Precision subpixel floating point coordinates
         const baseIsoX = (x - y) * (tileW / 2);
         const baseIsoY = (x + y) * (tileH / 2);
 
-        if (distFromCenter <= 15.3) {
+        if (isGrass) {
           // Prado verde elevado en nivel alto (-13.33px)
           const isoY = baseIsoY - 13.333;
           const tile = this.add.image(baseIsoX, isoY, 'tile-grass');
           tile.setOrigin(0.5, 0);
           tile.setScale(tileScale);
           tile.setDepth(-5000 + baseIsoY);
-        } else if (distFromCenter <= 21.5) {
+        } else if (isSand) {
           // Arena de playa de la isla (100% tierra caminable sin colisionadores de agua)
           const isoY = baseIsoY - 6.667;
           const tile = this.add.image(baseIsoX, isoY, 'tile-sand');
@@ -2033,7 +2059,7 @@ export class GameScene extends Phaser.Scene {
           const isoY = baseIsoY;
 
           // Fondo marino de arena bajo el agua cerca de la orilla
-          if (distFromCenter <= 25.0) {
+          if (distFromMain <= 25.0 || distFromTempleCenter <= 13.0) {
             const seaBed = this.add.image(baseIsoX, baseIsoY - 6.667, 'tile-sand');
             seaBed.setOrigin(0.5, 0);
             seaBed.setScale(tileScale);
@@ -2055,7 +2081,7 @@ export class GameScene extends Phaser.Scene {
           waterTile.setScale(tileScale);
           waterTile.setDepth(-5000 + baseIsoY);
 
-          if (distFromCenter <= 45) {
+          if (distFromMain <= 45 || distFromTempleCenter <= 25) {
             this.animatedWaterObjects.push({
               sprite: waterTile,
               baseIsoY,
@@ -2065,6 +2091,59 @@ export class GameScene extends Phaser.Scene {
         }
       }
     }
+  }
+
+  private createTempleBuilding() {
+    const templeCenterX = 16;
+    const templeCenterY = 38;
+    const tileScale = 2 / 3;
+    const tileW = 128 * tileScale;
+    const tileH = 64 * tileScale;
+
+    // Coordenadas mundiales exactas en la Península Izquierda del Templo
+    const templeX = (templeCenterX - templeCenterY) * (tileW / 2);
+    const templeY = (templeCenterX + templeCenterY) * (tileH / 2) - 13.333;
+
+    // Sprite del Templo Antiguo orientado con la puerta hacia abajo a la derecha
+    const temple = this.add.sprite(templeX, templeY, 'temple-building');
+    temple.setOrigin(0.5, 0.82);
+    temple.setScale(0.85);
+    temple.setDepth(templeY + 120);
+
+    // Colisionador Físico Estático para la Base de Piedra del Templo
+    const templeCollider = this.rockGroup.create(templeX, templeY - 10, 'small-rock') as Phaser.Physics.Arcade.Sprite;
+    templeCollider.setVisible(false);
+    const cBody = templeCollider.body as Phaser.Physics.Arcade.StaticBody;
+    if (cBody) {
+      cBody.setSize(240, 160);
+      cBody.setOffset(-105, -70);
+    }
+    templeCollider.refreshBody();
+
+    // Antorchas Místicas flanqueando la entrada con luz cálida
+    const torchLeft = this.add.circle(templeX + 35, templeY + 25, 8, 0xf59e0b, 0.7);
+    torchLeft.setDepth(templeY + 130);
+    this.tweens.add({
+      targets: torchLeft,
+      alpha: 0.35,
+      scale: 1.3,
+      duration: 400,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
+
+    const torchRight = this.add.circle(templeX + 75, templeY + 45, 8, 0xf59e0b, 0.7);
+    torchRight.setDepth(templeY + 130);
+    this.tweens.add({
+      targets: torchRight,
+      alpha: 0.35,
+      scale: 1.3,
+      duration: 450,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
   }
 
   private animateOceanWaves(time: number) {
@@ -2666,14 +2745,26 @@ export class GameScene extends Phaser.Scene {
 
   private getTileElevation(gridX: number, gridY: number): number {
     const center = 27;
+    const templeCenterX = 16;
+    const templeCenterY = 38;
+
     const dx = gridX - center;
     const dy = gridY - center;
-    const distFromCenter = Math.sqrt(dx * dx + dy * dy);
+    const distFromMain = Math.sqrt(dx * dx + dy * dy);
+
+    const tDx = gridX - templeCenterX;
+    const tDy = gridY - templeCenterY;
+    const distFromTempleCenter = Math.sqrt(tDx * tDx + tDy * tDy);
+
+    const lineVal = Math.abs((gridX - 27) + (gridY - 27));
+    const bridgeProgress = Math.sqrt(dx * dx + dy * dy);
+    const isConnectorBridge = (gridX <= 27 && gridY >= 27 && lineVal <= 3.5 && bridgeProgress <= 17);
+
     const tileScale = 2 / 3;
 
-    if (distFromCenter <= 15.3) {
+    if (distFromMain <= 15.3 || distFromTempleCenter <= 7.0 || (isConnectorBridge && bridgeProgress <= 14.5)) {
       return -20 * tileScale; // Prado verde elevado: -13.333px
-    } else if (distFromCenter <= 21.5) {
+    } else if (distFromMain <= 21.5 || distFromTempleCenter <= 10.5 || isConnectorBridge) {
       return -10 * tileScale; // Arena de playa elevada: -6.667px
     } else {
       return 0;               // Nivel del mar océano: 0px

@@ -180,13 +180,13 @@ export class GameScene extends Phaser.Scene {
   private currentCharacterData: any = null;
 
   public async loadSavedCharacter(charName?: string) {
-    const targetName = charName || (typeof window !== 'undefined' ? (window as any).selectedCharacterName : undefined) || localStorage.getItem('atnight_active_char');
-    if (targetName) {
-      this.currentCharacterName = targetName;
-      localStorage.setItem('atnight_active_char', targetName);
-    }
-
-    if (!this.currentCharacterName) return;
+    const targetName = charName 
+      || (typeof window !== 'undefined' ? (window as any).selectedCharacterName : undefined) 
+      || localStorage.getItem('atnight_active_char')
+      || 'Arquera';
+    
+    this.currentCharacterName = targetName;
+    localStorage.setItem('atnight_active_char', targetName);
 
     try {
       const res = await fetch(`http://localhost:3002/api/player/${encodeURIComponent(this.currentCharacterName)}`);
@@ -208,15 +208,28 @@ export class GameScene extends Phaser.Scene {
         this.playerMana = p.mana || 10;
         this.playerMaxMana = 10;
 
-        // Cargar inventario guardado en la base de datos entre sesiones
+        // Cargar inventario guardado en la base de datos entre sesiones (con respaldo en localStorage)
         this.inventory.clear();
-        if (Array.isArray(p.inventory)) {
-          p.inventory.forEach((item: any) => {
+        let loadedInventory = p.inventory;
+        if (!Array.isArray(loadedInventory) || loadedInventory.length === 0) {
+          try {
+            const cachedInv = localStorage.getItem(`atnight_inv_${this.currentCharacterName}`);
+            if (cachedInv) loadedInventory = JSON.parse(cachedInv);
+          } catch (_e) {}
+        }
+
+        if (Array.isArray(loadedInventory)) {
+          loadedInventory.forEach((item: any) => {
             if (item && item.id) {
               this.inventory.set(item.id, item);
             }
           });
         }
+
+        try {
+          localStorage.setItem(`atnight_inv_${this.currentCharacterName}`, JSON.stringify(Array.from(this.inventory.values())));
+        } catch (_e) {}
+
         this.renderInventoryHtml();
 
         if (typeof window !== 'undefined' && (window as any).characterStats) {

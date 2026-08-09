@@ -3114,7 +3114,8 @@
         Object.keys(state.spells).forEach(sKey => {
           const sp = state.spells[sKey];
           if (sp && sp.level) {
-            spentPoints += Math.max(0, sp.level - 1);
+            if (sp.level === 2) spentPoints += 1;
+            else if (sp.level >= 3) spentPoints += 3; // 1 punto para Nivel 2 + 2 puntos para Nivel 3
           }
         });
       }
@@ -3151,8 +3152,10 @@
         Object.keys(window.spellDatabase).forEach(spellId => {
           const dbSpell = window.spellDatabase[spellId];
           if (dbSpell.className === charClass) {
-            const spellState = state.spells[spellId] || { level: 0 };
+            const spellState = state.spells[spellId] || { level: 1 };
             const isSelected = state.selectedSpellId === spellId;
+            const costToUpgrade = spellState.level === 1 ? 1 : 2;
+            const cannotUpgrade = spellState.level >= 3 || state.spellPoints < costToUpgrade;
 
             const row = document.createElement('div');
             row.className = `spell-row-item ${isSelected ? 'selected' : ''}`;
@@ -3172,12 +3175,12 @@
                 </div>
                 <div class="spell-info-box">
                   <span class="spell-name-text">${dbSpell.name}</span>
-                  <span class="spell-level-text">Nivel: ${spellState.level}/3</span>
+                  <span class="spell-level-text">Nivel: ${spellState.level}/3 ${spellState.level < 3 ? `<span style="font-size: 0.68rem; color: #fbbf24; margin-left: 4px;">(Coste: ${costToUpgrade} ${costToUpgrade === 1 ? 'pto' : 'ptos'})</span>` : ''}</span>
                 </div>
               </div>
               <div class="spell-controls-box" onclick="event.stopPropagation()">
                 <button type="button" class="spell-btn" ${spellState.level <= 1 ? 'disabled' : ''} onclick="upgradeSpell('${spellId}', -1)">-</button>
-                <button type="button" class="spell-btn" ${(spellState.level >= 3 || state.spellPoints <= 0) ? 'disabled' : ''} onclick="upgradeSpell('${spellId}', 1)">+</button>
+                <button type="button" class="spell-btn" ${cannotUpgrade ? 'disabled' : ''} onclick="upgradeSpell('${spellId}', 1)">+</button>
               </div>
             `;
             spellListContainer.appendChild(row);
@@ -3204,13 +3207,17 @@
       const state = window.playerSpellsState;
       const spellState = state.spells[spellId] || { level: 1 };
 
-      if (delta > 0 && state.spellPoints > 0 && spellState.level < 3) {
-        state.spellPoints--;
-        spellState.level++;
-        state.spells[spellId] = spellState;
-        saveSpellsState();
+      if (delta > 0 && spellState.level < 3) {
+        const cost = spellState.level === 1 ? 1 : 2;
+        if (state.spellPoints >= cost) {
+          state.spellPoints -= cost;
+          spellState.level++;
+          state.spells[spellId] = spellState;
+          saveSpellsState();
+        }
       } else if (delta < 0 && spellState.level > 1) { // El nivel mínimo es estrictamente 1
-        state.spellPoints++;
+        const refund = spellState.level === 3 ? 2 : 1;
+        state.spellPoints += refund;
         spellState.level--;
         state.spells[spellId] = spellState;
         saveSpellsState();

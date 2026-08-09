@@ -2110,44 +2110,44 @@ export class GameScene extends Phaser.Scene {
     temple.setScale(0.85);
     temple.setDepth(templeY - 25);
 
-    // Colisionadores Físicos Estáticos Compuestos ajustados al perímetro exacto de la base de piedra
-    // 1. Muro Trasero e Izquierdo del Templo
+    // Colisionadores Físicos Estáticos Compuestos ajustados ÚNICA Y EXCLUSIVAMENTE a la línea exterior (Figura Roja)
+    // 1. Muro Trasero e Izquierdo (Bloquea sobre el césped antes de la pared trasera)
     const templeBackCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeBackCollider.setVisible(false);
     const cBodyBack = templeBackCollider.body as Phaser.Physics.Arcade.StaticBody;
     if (cBodyBack) {
-      cBodyBack.setSize(220, 100);
-      cBodyBack.setOffset(-140, -100);
+      cBodyBack.setSize(260, 120);
+      cBodyBack.setOffset(-160, -110);
     }
     templeBackCollider.refreshBody();
 
-    // 2. Cuerpo Central Base de la Catedral
+    // 2. Cuerpo Central Base de la Catedral (Cobertura completa de la base)
     const templeCenterCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeCenterCollider.setVisible(false);
     const cBodyCenter = templeCenterCollider.body as Phaser.Physics.Arcade.StaticBody;
     if (cBodyCenter) {
-      cBodyCenter.setSize(260, 130);
-      cBodyCenter.setOffset(-130, -70);
+      cBodyCenter.setSize(290, 150);
+      cBodyCenter.setOffset(-145, -80);
     }
     templeCenterCollider.refreshBody();
 
-    // 3. Fachada Frontal y Muro Derecho
+    // 3. Fachada Frontal y Muro Derecho (Bloquea en el verde antes del zócalo de piedra)
     const templeFrontCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeFrontCollider.setVisible(false);
     const cBodyFront = templeFrontCollider.body as Phaser.Physics.Arcade.StaticBody;
     if (cBodyFront) {
-      cBodyFront.setSize(200, 90);
-      cBodyFront.setOffset(-70, -35);
+      cBodyFront.setSize(240, 110);
+      cBodyFront.setOffset(-100, -25);
     }
     templeFrontCollider.refreshBody();
 
-    // 4. Escaleras de Entrada y Portal (Abajo a la Derecha)
+    // 4. Escaleras de Entrada y Portal (Bloquea en el césped frente a los escalones)
     const templeStairsCollider = this.rockGroup.create(templeX, templeY, 'small-rock') as Phaser.Physics.Arcade.Sprite;
     templeStairsCollider.setVisible(false);
     const cBodyStairs = templeStairsCollider.body as Phaser.Physics.Arcade.StaticBody;
     if (cBodyStairs) {
-      cBodyStairs.setSize(120, 70);
-      cBodyStairs.setOffset(15, -15);
+      cBodyStairs.setSize(150, 90);
+      cBodyStairs.setOffset(0, 0);
     }
     templeStairsCollider.refreshBody();
 

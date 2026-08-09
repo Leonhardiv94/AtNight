@@ -2127,7 +2127,10 @@ export class GameScene extends Phaser.Scene {
 
       // Fachada Derecha y Campanario (Arriba-Derecha)
       { dx: 6, dy: -106 }, { dx: 28, dy: -92 }, { dx: 50, dy: -76 }, { dx: 70, dy: -58 },
-      { dx: 86, dy: -38 }, { dx: 98, dy: -16 }, { dx: 104, dy: 10 }
+      { dx: 86, dy: -38 }, { dx: 98, dy: -16 }, { dx: 104, dy: 10 },
+
+      // 2 Piedras Adicionales Solicitadas sobre Césped Verde
+      { dx: -120, dy: 60 }, { dx: 110, dy: 50 }
     ];
 
     // Etiqueta flotante para mostrar las coordenadas en tiempo real al arrastrar con el ratón

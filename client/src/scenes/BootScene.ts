@@ -22,7 +22,7 @@ export class BootScene extends Phaser.Scene {
 
     // 1. Isometric Grass Tile (Lush Meadow HD 128x84 - 100% Seamless Continuous Grass)
     graphics.clear();
-    // Paredes de Acantilado de Tierra Orgánica
+    // Borde de Acantilado de Tierra Uniforme (Mismo tono suave en ambas caras)
     graphics.fillStyle(0x4e342e, 1);
     graphics.beginPath();
     graphics.moveTo(0, 32);
@@ -32,7 +32,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0x3e2723, 1);
+    graphics.fillStyle(0x4e342e, 1);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);
@@ -62,10 +62,10 @@ export class BootScene extends Phaser.Scene {
 
     graphics.generateTexture('tile-grass', 128, 84);
 
-    // 2. Isometric Shoreline Sand Tile (Soft Creamy Beach Sand HD 128x84 - 100% Seamless Surface)
+    // 2. Isometric Shoreline Sand Tile (Soft Creamy Beach Sand HD 128x84 - Uniform Shoreline Edge)
     graphics.clear();
-    // Paredes de Arena Cálida
-    graphics.fillStyle(0xd97706, 0.7);
+    // Borde de Acantilado de Playa de COLOR UNIFORMEMENTE HOMOGÉNEO (Mismo color de arena cálida en ambas caras)
+    graphics.fillStyle(0xd97706, 0.85);
     graphics.beginPath();
     graphics.moveTo(0, 32);
     graphics.lineTo(64, 64);
@@ -74,7 +74,7 @@ export class BootScene extends Phaser.Scene {
     graphics.closePath();
     graphics.fillPath();
 
-    graphics.fillStyle(0xb45309, 0.7);
+    graphics.fillStyle(0xd97706, 0.85);
     graphics.beginPath();
     graphics.moveTo(64, 64);
     graphics.lineTo(128, 32);

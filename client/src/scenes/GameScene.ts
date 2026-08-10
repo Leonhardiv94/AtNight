@@ -118,13 +118,23 @@ export class GameScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#008899');
     this.setupInputs();
 
-    // Si el jugador viene saliendo del interior del Templo, posicionarlo enseguida frente a la puerta principal
+    // Si el jugador viene saliendo del interior del Templo, posicionarlo enseguida frente a la puerta principal COMPLETAMENTE EN REPOSO
     if (data?.fromTempleInterior) {
+      this.isSceneTransitioning = false;
+      this.pendingTempleEnter = false;
+      this.clickTarget = null;
+      this.pathWaypoints = [];
+
       this.cameras.main.fadeIn(500, 0, 0, 0);
       const spawnX = this.templeDoorZone.x + 30;
       const spawnY = this.templeDoorZone.y + 40;
       this.player.setPosition(spawnX, spawnY);
       this.player.setDepth(spawnY);
+
+      if (this.player.body) {
+        (this.player.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
+      }
+
       this.lastDirection = 'down-right';
       const idleKey = `char-${this.currentCharacterName}-idle-down-right`;
       if (this.anims.exists(idleKey)) {

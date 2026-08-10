@@ -25,6 +25,10 @@ export class TempleInteriorScene extends Phaser.Scene {
   }
 
   create(data?: any) {
+    this.isTransitioning = false;
+    this.pendingExit = false;
+    this.clickTarget = null;
+
     const activeData = (function() {
       try {
         const raw = localStorage.getItem('atnight_active_char_data');
@@ -80,21 +84,23 @@ export class TempleInteriorScene extends Phaser.Scene {
       initialTexture = 'espadachin_male_hd';
     }
 
+    // REGLA: El personaje aparece en la entrada de este mapa COMPLETAMENTE EN REPOSO (Sin velocidad ni movimientos residuales)
     this.player = this.physics.add.sprite(startX, startY, initialTexture);
     this.player.setOrigin(0.5, 0.8);
     this.player.setScale(1.0);
     this.player.setDepth(startY);
 
-    const idleKey = `char-${this.currentCharacterName}-idle-${initialDir}`;
-    if (this.anims.exists(idleKey)) {
-      this.player.play(idleKey, true);
-    }
-
     const pBody = this.player.body as Phaser.Physics.Arcade.Body;
     if (pBody) {
       pBody.setSize(26, 18);
       pBody.setOffset(19, 66);
+      pBody.setVelocity(0, 0);
       pBody.setCollideWorldBounds(false);
+    }
+
+    const idleKey = `char-${this.currentCharacterName}-idle-${initialDir}`;
+    if (this.anims.exists(idleKey)) {
+      this.player.play(idleKey, true);
     }
 
     // Efecto de Explosión de Luz Dorada y Cartel de Nacimiento/Resurrección si nace en la Tina
@@ -480,6 +486,7 @@ export class TempleInteriorScene extends Phaser.Scene {
     if ((this.pendingExit || distToExit < 24) && !this.isTransitioning) {
       if (distToExit < 32) {
         this.isTransitioning = true;
+        this.clickTarget = null;
         this.player.setVelocity(0, 0);
 
         this.cameras.main.fadeOut(500, 0, 0, 0);

@@ -436,6 +436,9 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     if (vx !== 0 || vy !== 0) {
       this.clickTarget = null;
+      if (this.targetTileGraphic) {
+        this.targetTileGraphic.clear();
+      }
       const len = Math.sqrt(vx * vx + vy * vy);
       vx /= len;
       vy /= len;
@@ -448,6 +451,9 @@ export class TempleInteriorScene extends Phaser.Scene {
       } else {
         this.player.setPosition(this.clickTarget.x, this.clickTarget.y);
         this.clickTarget = null;
+        if (this.targetTileGraphic) {
+          this.targetTileGraphic.clear();
+        }
       }
     }
 
@@ -487,6 +493,9 @@ export class TempleInteriorScene extends Phaser.Scene {
       if (distToExit < 32) {
         this.isTransitioning = true;
         this.clickTarget = null;
+        if (this.targetTileGraphic) {
+          this.targetTileGraphic.clear();
+        }
         this.player.setVelocity(0, 0);
 
         this.cameras.main.fadeOut(500, 0, 0, 0);
@@ -520,8 +529,8 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     // Resaltado cian de destino al hacer clic en una casilla dentro del templo
     this.targetTileGraphic.clear();
-    this.targetTileGraphic.lineStyle(2, 0x00f2fe, 0.95);
-    this.targetTileGraphic.fillStyle(0x00f2fe, 0.3);
+    this.targetTileGraphic.lineStyle(2.2, 0x00f2fe, 0.95);
+    this.targetTileGraphic.fillStyle(0x00f2fe, 0.35);
 
     this.targetTileGraphic.beginPath();
     this.targetTileGraphic.moveTo(cellX, cellY - 13.333);
@@ -532,7 +541,8 @@ export class TempleInteriorScene extends Phaser.Scene {
     this.targetTileGraphic.fillPath();
     this.targetTileGraphic.strokePath();
 
-    this.targetTileGraphic.setDepth(cellY - 48);
+    // Depth garantizado por encima de las baldosas de madera (cellY + 4)
+    this.targetTileGraphic.setDepth(cellY + 4);
 
     return { x: cellX, y: tileCenterY - 13.333 };
   }
@@ -555,8 +565,8 @@ export class TempleInteriorScene extends Phaser.Scene {
     }
 
     this.hoverTileGraphic.clear();
-    this.hoverTileGraphic.lineStyle(1.2, 0x38bdf8, 0.85);
-    this.hoverTileGraphic.fillStyle(0x38bdf8, 0.15);
+    this.hoverTileGraphic.lineStyle(1.4, 0x38bdf8, 0.90);
+    this.hoverTileGraphic.fillStyle(0x38bdf8, 0.20);
 
     this.hoverTileGraphic.beginPath();
     this.hoverTileGraphic.moveTo(cellX, cellY - 13.333);
@@ -567,6 +577,7 @@ export class TempleInteriorScene extends Phaser.Scene {
     this.hoverTileGraphic.fillPath();
     this.hoverTileGraphic.strokePath();
 
-    this.hoverTileGraphic.setDepth(cellY - 49);
+    // Depth garantizado por encima de las baldosas de madera (cellY + 2)
+    this.hoverTileGraphic.setDepth(cellY + 2);
   }
 }

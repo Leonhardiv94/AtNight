@@ -3082,7 +3082,7 @@ export class GameScene extends Phaser.Scene {
     this.hoverTileGraphic.fillPath();
     this.hoverTileGraphic.strokePath();
 
-    this.hoverTileGraphic.setDepth(cellY - 48);
+    this.hoverTileGraphic.setDepth(cellY + 2);
   }
 
   private updateTileGridMarker(worldX: number, worldY: number): { x: number; y: number } {
@@ -3106,8 +3106,8 @@ export class GameScene extends Phaser.Scene {
 
     // Resaltado cian de destino adaptado dinámicamente a la elevación del suelo
     this.targetTileGraphic.clear();
-    this.targetTileGraphic.lineStyle(2, 0x00f2fe, 0.95);
-    this.targetTileGraphic.fillStyle(0x00f2fe, 0.3);
+    this.targetTileGraphic.lineStyle(2.2, 0x00f2fe, 0.95);
+    this.targetTileGraphic.fillStyle(0x00f2fe, 0.35);
 
     this.targetTileGraphic.beginPath();
     this.targetTileGraphic.moveTo(cellX, cellY);
@@ -3118,7 +3118,7 @@ export class GameScene extends Phaser.Scene {
     this.targetTileGraphic.fillPath();
     this.targetTileGraphic.strokePath();
 
-    this.targetTileGraphic.setDepth(cellY - 50);
+    this.targetTileGraphic.setDepth(cellY + 4);
 
     return { x: cellX, y: tileCenterY };
   }

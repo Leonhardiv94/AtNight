@@ -2147,11 +2147,11 @@ export class GameScene extends Phaser.Scene {
     const templeX = (templeCenterX - templeCenterY) * (tileW / 2);
     const templeY = (templeCenterX + templeCenterY) * (tileH / 2) - 13.333;
 
-    // Sprite del Templo de la Natividad (Asset vectorial de alta resolución de la Catedral Románica sin líneas negras)
+    // Sprite del Templo de la Natividad (Depth fijado en templeY - 140 para ordenamiento isométrico perfecto)
     const temple = this.add.sprite(templeX, templeY, 'temple-building');
     temple.setOrigin(0.5, 0.85);
     temple.setScale(0.85);
-    temple.setDepth(templeY - 25);
+    temple.setDepth(templeY - 140);
 
     // Cargar offset guardado de la puerta si existe en localStorage
     let doorDx = 90;

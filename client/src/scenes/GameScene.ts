@@ -3706,16 +3706,17 @@ export class GameScene extends Phaser.Scene {
 
     if (this.playerHp <= 0) {
       // Death sequence with Red Camera Flash
-      this.cameras.main.flash(500, 255, 0, 0);
-      this.showFloatingText(this.player.x, this.player.y - 40, '¡HAS MUERTO! Reanimando en la Isla...', '#ef4444');
+      this.cameras.main.flash(600, 255, 0, 0);
+      this.showFloatingText(this.player.x, this.player.y - 40, '¡HAS MUERTO! Resucitando en la Tina Sagrada...', '#ef4444');
 
-      this.time.delayedCall(700, () => {
-        // Reset player HP & Mana back to max, position back to island center, keeping inventory completely intact!
+      this.time.delayedCall(800, () => {
+        // Reset player HP & Mana back to max, keeping inventory completely intact!
         this.playerHp = this.playerMaxHp;
         this.playerMana = this.playerMaxMana;
-        this.player.setPosition(this.islandCenterIsoX, this.islandCenterIsoY);
         this.updateHud();
-        this.cameras.main.fadeIn(500);
+
+        // Transition directly to TempleInteriorScene at the Sacred Birth Fountain / Tub!
+        this.scene.start('TempleInteriorScene', { isRespawn: true });
       });
     }
   }

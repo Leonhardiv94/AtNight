@@ -34,10 +34,31 @@ export class TempleInteriorScene extends Phaser.Scene {
     // 1. Crear Mapa Isométrico de la Nave del Templo (3x Profundo = 10 casillas de ancho x 36 casillas de profundidad)
     this.createSanctuaryMap();
 
-    // 2. Spawn del Personaje junto al Portón de Salida (Ubicado en el muro abajo-derecha)
-    const startX = this.exitCarpetPos.x - 30;
-    const startY = this.exitCarpetPos.y - 30;
-    this.player = this.physics.add.sprite(startX, startY, `char-${this.currentCharacterName}-idle-up-left`);
+    // 2. Spawn del Personaje: Si es personaje nuevo o resucitado tras morir, nace en la Tina Sagrada; si entra por la puerta, nace junto al umbral de salida
+    const isBirthOrRespawn = data?.isRespawn || data?.isNewCharacter || !data?.fromTempleDoor;
+    
+    // Coordenadas exactas de la Tina Sagrada de Nacimiento
+    const fountainScale = 2 / 3;
+    const tileW = 128 * fountainScale;
+    const halfW = tileW / 2;
+    const halfH = (64 * fountainScale) / 2;
+    const fountainGx = 2.5;
+    const fountainGy = 4.5;
+    const fountainX = (fountainGx - fountainGy) * halfW;
+    const fountainY = (fountainGx + fountainGy) * halfH - 13.333;
+
+    let startX = this.exitCarpetPos.x - 30;
+    let startY = this.exitCarpetPos.y - 30;
+    let initialAnim = `char-${this.currentCharacterName}-idle-up-left`;
+
+    if (isBirthOrRespawn) {
+      startX = fountainX;
+      startY = fountainY + 20;
+      initialAnim = `char-${this.currentCharacterName}-idle-down-right`;
+      this.lastDirection = 'down-right';
+    }
+
+    this.player = this.physics.add.sprite(startX, startY, initialAnim);
     this.player.setOrigin(0.5, 0.8);
     this.player.setScale(0.75);
     this.player.setDepth(startY);
@@ -47,6 +68,44 @@ export class TempleInteriorScene extends Phaser.Scene {
       pBody.setSize(26, 18);
       pBody.setOffset(19, 66);
       pBody.setCollideWorldBounds(false);
+    }
+
+    // Efecto de Explosión de Luz Dorada y Cartel de Nacimiento/Resurrección si nace en la Tina
+    if (isBirthOrRespawn) {
+      const bannerText = data?.isRespawn 
+        ? '✨ ¡Has Resucitado en la Tina Sagrada de la Natividad!'
+        : '✨ ¡Bienvenido! Has Nacido en la Tina Sagrada de la Natividad';
+
+      const banner = this.add.text(fountainX, fountainY - 80, bannerText, {
+        fontFamily: 'sans-serif',
+        fontSize: '15px',
+        color: '#fef08a',
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        padding: { x: 12, y: 6 }
+      }).setOrigin(0.5).setDepth(fountainY + 300);
+
+      this.tweens.add({
+        targets: banner,
+        y: fountainY - 110,
+        alpha: 0,
+        duration: 3500,
+        delay: 1000,
+        onComplete: () => banner.destroy()
+      });
+
+      // Partículas de nacimiento girando alrededor del cuerpo del personaje
+      for (let i = 0; i < 40; i++) {
+        const p = this.add.circle(fountainX + Phaser.Math.Between(-30, 30), fountainY + Phaser.Math.Between(-15, 15), Phaser.Math.Between(2, 5), 0xfbbf24, 0.9);
+        p.setDepth(fountainY + 100);
+        this.tweens.add({
+          targets: p,
+          y: fountainY - Phaser.Math.Between(40, 100),
+          alpha: 0,
+          scale: 0.2,
+          duration: Phaser.Math.Between(800, 2000),
+          onComplete: () => p.destroy()
+        });
+      }
     }
 
     // 3. Cámara y Controles

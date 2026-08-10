@@ -200,80 +200,77 @@ export class TempleInteriorScene extends Phaser.Scene {
     }
 
     // -------------------------------------------------------------------------
-    // ⛲ FUENTE SAGRADA DE LA NATIVIDAD Y HAZ DE LUZ DIVINO EN EL EXTREMO ARRIBA-IZQUIERDA
+    // ⛲ TINA SAGRADA GRANDE DE BAUTISMO (BAUTISTERIO) Y HAZ DE LUZ DIVINO
     // -------------------------------------------------------------------------
-    const fountainGx = 2;
-    const fountainGy = 4;
-    const fountainX = (fountainGx - fountainGy) * halfW;
+    const fountainGx = 2.5;
+    const fountainGy = 4.5; // Exactamente equidistante entre el muro izquierdo (y=0) y el derecho (y=9)
+    const fountainX = (fountainGx - fountainGy) * halfW; // -85.333px (Centro exacto del pasillo)
     const fountainY = (fountainGx + fountainGy) * halfH - 13.333;
 
-    // 1. Estanque Base de Mármol de la Fuente
-    const fountainBase = this.add.graphics();
-    fountainBase.setPosition(fountainX, fountainY);
-    fountainBase.setDepth(fountainY - 10);
+    // 1. Tina Sagrada Grande de Mármol Blanco Esculpido
+    const tubBase = this.add.graphics();
+    tubBase.setPosition(fountainX, fountainY);
+    tubBase.setDepth(fountainY - 10);
 
-    // Mármol Exterior
-    fountainBase.fillStyle(0xf8fafc, 1);
-    fountainBase.lineStyle(3, 0xcbd5e1, 1);
-    fountainBase.fillEllipse(0, 0, 110, 55);
-    fountainBase.strokeEllipse(0, 0, 110, 55);
+    // Borde Exterior de la Tina (Mármol Blanco con Bisel Dorado)
+    tubBase.fillStyle(0xf8fafc, 1);
+    tubBase.lineStyle(4, 0xfbbf24, 0.95);
+    tubBase.fillEllipse(0, 0, 150, 75);
+    tubBase.strokeEllipse(0, 0, 150, 75);
 
-    // Estanque de Agua Cristalina Sagrada
-    fountainBase.fillStyle(0x0284c7, 0.95);
-    fountainBase.fillEllipse(0, 0, 92, 44);
-    fountainBase.fillStyle(0x38bdf8, 0.85);
-    fountainBase.fillEllipse(0, 0, 76, 36);
+    // Pared Interior de la Tina
+    tubBase.fillStyle(0xe2e8f0, 1);
+    tubBase.lineStyle(2, 0xcbd5e1, 1);
+    tubBase.fillEllipse(0, 2, 134, 65);
+    tubBase.strokeEllipse(0, 2, 134, 65);
 
-    // 2. Pedestal Esculpido y Copa Superior
-    const pedestal = this.add.graphics();
-    pedestal.setPosition(fountainX, fountainY);
-    pedestal.setDepth(fountainY + 15);
+    // Estanque de Agua Cristalina Sagrada (Profundo)
+    tubBase.fillStyle(0x0284c7, 0.95);
+    tubBase.fillEllipse(0, 4, 120, 56);
+    tubBase.fillStyle(0x38bdf8, 0.85);
+    tubBase.fillEllipse(0, 6, 100, 46);
+    tubBase.fillStyle(0x7dd3fc, 0.70);
+    tubBase.fillEllipse(0, 8, 80, 36);
 
-    // Pilar de Mármol
-    pedestal.fillStyle(0xe2e8f0, 1);
-    pedestal.fillRect(-12, -45, 24, 45);
-    pedestal.fillStyle(0xffffff, 1);
-    pedestal.fillRect(-8, -45, 6, 45);
+    // Olas y Ondulaciones del Agua Cristalina dentro de la Tina
+    const ripples = this.add.graphics();
+    ripples.setPosition(fountainX, fountainY);
+    ripples.setDepth(fountainY + 5);
 
-    // Copa Superior rebosando agua
-    pedestal.fillStyle(0xf8fafc, 1);
-    pedestal.lineStyle(2, 0x94a3b8, 1);
-    pedestal.fillEllipse(0, -45, 54, 26);
-    pedestal.strokeEllipse(0, -45, 54, 26);
-
-    pedestal.fillStyle(0x38bdf8, 0.9);
-    pedestal.fillEllipse(0, -45, 42, 18);
-
-    // Cascadas de Agua Cayendo
-    const cascadeLeft = this.add.rectangle(fountainX - 16, fountainY - 25, 5, 25, 0x7dd3fc, 0.85);
-    const cascadeRight = this.add.rectangle(fountainX + 16, fountainY - 25, 5, 25, 0x7dd3fc, 0.85);
-    cascadeLeft.setDepth(fountainY + 20);
-    cascadeRight.setDepth(fountainY + 20);
+    ripples.lineStyle(1.8, 0xffffff, 0.75);
+    ripples.strokeEllipse(0, 6, 90, 40);
+    ripples.strokeEllipse(0, 6, 50, 22);
 
     this.tweens.add({
-      targets: [cascadeLeft, cascadeRight],
-      alpha: 0.4,
-      duration: 350,
-      yoyo: true,
-      repeat: -1
-    });
-
-    // Orbe/Cristal de Vida Dorado Flotante (Donde nacen los nuevos personajes)
-    const lifeOrb = this.add.circle(fountainX, fountainY - 68, 11, 0xfbbf24, 0.95);
-    lifeOrb.setDepth(fountainY + 30);
-
-    this.tweens.add({
-      targets: lifeOrb,
-      y: fountainY - 76,
-      scale: 1.2,
-      duration: 1200,
+      targets: ripples,
+      scaleX: 1.12,
+      scaleY: 1.12,
+      alpha: 0.25,
+      duration: 1600,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut'
     });
 
-    // Etiqueta Flotante sobre la Fuente de la Vida
-    this.add.text(fountainX, fountainY - 105, '✨ Fuente de la Natividad (Nacimiento)', {
+    // Orbe/Cristal de Vida Dorado Flotante dentro de la Tina (Lugar de Nacimiento)
+    const lifeOrb = this.add.circle(fountainX, fountainY - 18, 14, 0xfbbf24, 0.95);
+    lifeOrb.setDepth(fountainY + 30);
+
+    const lifeOrbInner = this.add.circle(fountainX, fountainY - 18, 8, 0xffffff, 1);
+    lifeOrbInner.setDepth(fountainY + 31);
+
+    this.tweens.add({
+      targets: [lifeOrb, lifeOrbInner],
+      y: fountainY - 28,
+      scale: 1.25,
+      duration: 1400,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
+
+    // Etiqueta Flotante sobre la Tina de Nacimiento
+    this.add.text(fountainX, fountainY - 65, '✨ Tina Sagrada de la Natividad (Nacimiento)', {
       fontFamily: 'sans-serif',
       fontSize: '14px',
       color: '#fef08a',
@@ -282,21 +279,21 @@ export class TempleInteriorScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(fountainY + 100);
 
     // -------------------------------------------------------------------------
-    // ☀️ HAZ DE LUZ DIVINO DE DIRECCIÓN (DIRECTIONAL LIGHT BEAM)
+    // ☀️ HAZ DE LUZ DIVINO DE DIRECCIÓN APUNTANDO A LA TINA (DIRECTIONAL LIGHT)
     // -------------------------------------------------------------------------
     const lightBeam = this.add.graphics();
     lightBeam.setDepth(fountainY + 200);
 
-    // Polígono Trapezoidal del Haz de Luz Proyectado desde el Rosedal Superior hasta la Fuente
-    const sourceLeftX = fountainX - 140;
-    const sourceRightX = fountainX - 40;
-    const sourceY = fountainY - 450;
+    // Polígono Trapezoidal del Haz de Luz Celestial Proyectado desde el Rosedal
+    const sourceLeftX = fountainX - 120;
+    const sourceRightX = fountainX - 20;
+    const sourceY = fountainY - 480;
 
-    const targetLeftX = fountainX - 55;
-    const targetRightX = fountainX + 55;
-    const targetY = fountainY + 20;
+    const targetLeftX = fountainX - 75;
+    const targetRightX = fountainX + 75;
+    const targetY = fountainY + 30;
 
-    lightBeam.fillStyle(0xfef08a, 0.18);
+    lightBeam.fillStyle(0xfef08a, 0.20);
     lightBeam.beginPath();
     lightBeam.moveTo(sourceLeftX, sourceY);
     lightBeam.lineTo(sourceRightX, sourceY);
@@ -305,30 +302,30 @@ export class TempleInteriorScene extends Phaser.Scene {
     lightBeam.closePath();
     lightBeam.fillPath();
 
-    // Núcleo Intenso del Haz de Luz Divina (Directional Light Core)
-    lightBeam.fillStyle(0xffffff, 0.22);
+    // Núcleo Blanco Puro Intenso del Haz (Directional Light Core)
+    lightBeam.fillStyle(0xffffff, 0.28);
     lightBeam.beginPath();
     lightBeam.moveTo(sourceLeftX + 25, sourceY);
     lightBeam.lineTo(sourceRightX - 25, sourceY);
-    lightBeam.lineTo(targetRightX - 20, targetY);
-    lightBeam.lineTo(targetLeftX + 20, targetY);
+    lightBeam.lineTo(targetRightX - 25, targetY);
+    lightBeam.lineTo(targetLeftX + 25, targetY);
     lightBeam.closePath();
     lightBeam.fillPath();
 
-    // Animación Mística del Haz de Luz Celestial (Directional Light Pulse)
+    // Animación Mística del Haz de Luz Celestial
     this.tweens.add({
       targets: lightBeam,
-      alpha: 0.65,
+      alpha: 0.70,
       duration: 2500,
       yoyo: true,
       repeat: -1,
       ease: 'Sine.easeInOut'
     });
 
-    // Partículas de Motes de Luz Flotando en el Haz Divino
-    for (let i = 0; i < 30; i++) {
-      const px = fountainX + Phaser.Math.Between(-60, 60);
-      const py = fountainY + Phaser.Math.Between(-300, 20);
+    // Partículas de Motes de Luz Flotando en el Haz Divino sobre la Tina
+    for (let i = 0; i < 35; i++) {
+      const px = fountainX + Phaser.Math.Between(-70, 70);
+      const py = fountainY + Phaser.Math.Between(-320, 30);
       const mote = this.add.circle(px, py, Phaser.Math.Between(2, 4.5), 0xfffbeb, 0.85);
       mote.setDepth(fountainY + 250);
 

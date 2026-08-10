@@ -149,11 +149,19 @@ export class TempleInteriorScene extends Phaser.Scene {
       };
     }
 
-    // Movimiento por clic en la nave del santuario
+    // Movimiento por clic en la nave del santuario y cuadro cian de selección
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (this.isTransitioning) return;
       const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
-      this.clickTarget = new Phaser.Math.Vector2(worldPoint.x, worldPoint.y);
+      const snappedTarget = this.updateTileGridMarker(worldPoint.x, worldPoint.y);
+      this.clickTarget = new Phaser.Math.Vector2(snappedTarget.x, snappedTarget.y);
+    });
+
+    // Pasar el ratón: resaltado fino de la casilla en foco
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (this.isTransitioning) return;
+      const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
+      this.updateHoverTileMarker(worldPoint.x, worldPoint.y);
     });
 
     // Título UI del Santuario
@@ -480,5 +488,78 @@ export class TempleInteriorScene extends Phaser.Scene {
         });
       }
     }
+  }
+
+  private targetTileGraphic: Phaser.GameObjects.Graphics | null = null;
+  private hoverTileGraphic: Phaser.GameObjects.Graphics | null = null;
+
+  private updateTileGridMarker(worldX: number, worldY: number): { x: number; y: number } {
+    const tileScale = 2 / 3;
+    const tileW = 128 * tileScale;
+    const tileH = 64 * tileScale;
+    const halfW = tileW / 2;
+    const halfH = tileH / 2;
+
+    const gridX = Math.round((worldX / halfW + worldY / halfH) / 2);
+    const gridY = Math.round((worldY / halfH - worldX / halfW) / 2);
+
+    const cellX = (gridX - gridY) * halfW;
+    const cellY = (gridX + gridY) * halfH;
+    const tileCenterY = cellY + halfH;
+
+    if (!this.targetTileGraphic) {
+      this.targetTileGraphic = this.add.graphics();
+    }
+
+    // Resaltado cian de destino al hacer clic en una casilla dentro del templo
+    this.targetTileGraphic.clear();
+    this.targetTileGraphic.lineStyle(2, 0x00f2fe, 0.95);
+    this.targetTileGraphic.fillStyle(0x00f2fe, 0.3);
+
+    this.targetTileGraphic.beginPath();
+    this.targetTileGraphic.moveTo(cellX, cellY - 13.333);
+    this.targetTileGraphic.lineTo(cellX + halfW, cellY + halfH - 13.333);
+    this.targetTileGraphic.lineTo(cellX, cellY + tileH - 13.333);
+    this.targetTileGraphic.lineTo(cellX - halfW, cellY + halfH - 13.333);
+    this.targetTileGraphic.closePath();
+    this.targetTileGraphic.fillPath();
+    this.targetTileGraphic.strokePath();
+
+    this.targetTileGraphic.setDepth(cellY - 48);
+
+    return { x: cellX, y: tileCenterY - 13.333 };
+  }
+
+  private updateHoverTileMarker(worldX: number, worldY: number) {
+    const tileScale = 2 / 3;
+    const tileW = 128 * tileScale;
+    const tileH = 64 * tileScale;
+    const halfW = tileW / 2;
+    const halfH = tileH / 2;
+
+    const gridX = Math.round((worldX / halfW + worldY / halfH) / 2);
+    const gridY = Math.round((worldY / halfH - worldX / halfW) / 2);
+
+    const cellX = (gridX - gridY) * halfW;
+    const cellY = (gridX + gridY) * halfH;
+
+    if (!this.hoverTileGraphic) {
+      this.hoverTileGraphic = this.add.graphics();
+    }
+
+    this.hoverTileGraphic.clear();
+    this.hoverTileGraphic.lineStyle(1.2, 0x38bdf8, 0.85);
+    this.hoverTileGraphic.fillStyle(0x38bdf8, 0.15);
+
+    this.hoverTileGraphic.beginPath();
+    this.hoverTileGraphic.moveTo(cellX, cellY - 13.333);
+    this.hoverTileGraphic.lineTo(cellX + halfW, cellY + halfH - 13.333);
+    this.hoverTileGraphic.lineTo(cellX, cellY + tileH - 13.333);
+    this.hoverTileGraphic.lineTo(cellX - halfW, cellY + halfH - 13.333);
+    this.hoverTileGraphic.closePath();
+    this.hoverTileGraphic.fillPath();
+    this.hoverTileGraphic.strokePath();
+
+    this.hoverTileGraphic.setDepth(cellY - 49);
   }
 }

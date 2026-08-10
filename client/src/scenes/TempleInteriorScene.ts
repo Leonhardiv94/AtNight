@@ -45,8 +45,6 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     this.currentCharacterName = activeData.characterName || (window as any).selectedCharacterClass || 'Arquera';
 
-    this.cameras.main.fadeIn(500, 0, 0, 0);
-
     // 1. Crear Mapa Isométrico de la Nave del Templo (3x Profundo = 10 casillas de ancho x 36 casillas de profundidad)
     this.createSanctuaryMap();
 
@@ -103,6 +101,13 @@ export class TempleInteriorScene extends Phaser.Scene {
       this.player.play(idleKey, true);
     }
 
+    // 3. Configuración Inmediata de la Cámara centrada en el personaje
+    this.cameras.main.setBackgroundColor('#020617');
+    this.cameras.main.centerOn(startX, startY);
+    this.cameras.main.startFollow(this.player, true, 0.15, 0.15);
+    this.cameras.main.setZoom(1.15);
+    this.cameras.main.fadeIn(500, 0, 0, 0);
+
     // Efecto de Explosión de Luz Dorada y Cartel de Nacimiento/Resurrección si nace en la Tina
     if (isBirthOrRespawn) {
       const bannerText = data?.isRespawn 
@@ -140,10 +145,6 @@ export class TempleInteriorScene extends Phaser.Scene {
         });
       }
     }
-
-    // 3. Cámara y Controles
-    this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-    this.cameras.main.setZoom(1.15);
 
     if (this.input.keyboard) {
       this.cursors = this.input.keyboard.createCursorKeys();
@@ -216,7 +217,7 @@ export class TempleInteriorScene extends Phaser.Scene {
           const carpet = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-carpet');
           carpet.setOrigin(0.5, 0);
           carpet.setScale(tileScale);
-          carpet.setDepth(-5000 + baseIsoY);
+          carpet.setDepth(baseIsoY);
           carpet.setInteractive({ useHandCursor: true });
 
           this.exitCarpetSprite = carpet;
@@ -250,7 +251,7 @@ export class TempleInteriorScene extends Phaser.Scene {
           const floor = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-wood');
           floor.setOrigin(0.5, 0);
           floor.setScale(tileScale);
-          floor.setDepth(-5000 + baseIsoY);
+          floor.setDepth(baseIsoY);
         }
       }
     }

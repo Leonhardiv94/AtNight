@@ -116,17 +116,8 @@ export class TempleInteriorScene extends Phaser.Scene {
             this.exitCarpetSprite = carpet;
             this.exitCarpetPos = { x: baseIsoX, y: baseIsoY + 20 };
 
-            // Marco del Portón de Salida Abajo-Derecha
-            const exitArch = this.add.graphics();
-            exitArch.setPosition(baseIsoX, baseIsoY);
-            exitArch.setDepth(baseIsoY + 50);
-            exitArch.lineStyle(3, 0xb91c1c, 0.9);
-            exitArch.fillStyle(0xef4444, 0.35);
-            exitArch.strokeRect(-25, -35, 50, 45);
-            exitArch.fillRect(-25, -35, 50, 45);
-
-            // Etiqueta Emergente
-            this.exitLabel = this.add.text(baseIsoX, baseIsoY - 45, '🚪 Salir a la Isla', {
+            // Etiqueta Emergente al pasar el ratón por el umbral de salida
+            this.exitLabel = this.add.text(baseIsoX, baseIsoY - 35, '🚪 Salir a la Isla', {
               fontFamily: 'sans-serif',
               fontSize: '13px',
               color: '#ffffff',

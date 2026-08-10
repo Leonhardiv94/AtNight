@@ -2171,21 +2171,96 @@ export class GameScene extends Phaser.Scene {
     let doorZoneY = templeY + doorDy;
     this.templeDoorZone = { x: doorZoneX, y: doorZoneY + 70 };
 
-    // Arco Dorado Resaltado sobre la Puerta (Coincide exactamente con el arco de madera)
+    // Arco Dorado Resaltado Isométrico 2.5D sobre la Puerta (Alineado con la fachada isométrica de la Catedral)
     const doorHighlight = this.add.graphics();
     doorHighlight.setPosition(doorZoneX, doorZoneY);
     doorHighlight.setDepth(templeY + 1100);
     doorHighlight.setVisible(false);
 
-    doorHighlight.lineStyle(3.5, 0xffea00, 1);
-    doorHighlight.fillStyle(0xfde047, 0.40);
-    doorHighlight.beginPath();
-    doorHighlight.arc(0, -30, 24, Math.PI, 0, false);
-    doorHighlight.lineTo(24, 15);
-    doorHighlight.lineTo(-24, 15);
-    doorHighlight.closePath();
-    doorHighlight.fillPath();
-    doorHighlight.strokePath();
+    // Función de Dibujo de Portal Isométrico 2.5D adaptada a la inclinación de 26.56° de la pared del Templo
+    const drawIsometricDoorPortal = (graphics: Phaser.GameObjects.Graphics) => {
+      graphics.clear();
+
+      const isoAngle = Math.atan(0.5); // ~26.565° Ángulo Isométrico Estándar
+      const cosA = Math.cos(isoAngle); // ~0.8944
+      const sinA = Math.sin(isoAngle); // ~0.4472
+
+      const halfW = 24;
+      const baseH = 34;
+      const archRadiusY = 18;
+
+      // 1. Resplandor Base Isométrico en el Suelo (Umbral de las Escaleras)
+      graphics.fillStyle(0xfde047, 0.25);
+      graphics.lineStyle(2, 0xffea00, 0.6);
+      graphics.beginPath();
+      graphics.moveTo(-halfW * cosA, 15 - halfW * sinA);
+      graphics.lineTo(halfW * cosA, 15 + halfW * sinA);
+      graphics.lineTo(halfW * cosA, 25 + halfW * sinA);
+      graphics.lineTo(-halfW * cosA, 25 - halfW * sinA);
+      graphics.closePath();
+      graphics.fillPath();
+      graphics.strokePath();
+
+      // 2. Arco Isométrico Frontal de Madera (Portal de Entrada Isométrico)
+      graphics.lineStyle(4, 0xffea00, 0.95);
+      graphics.fillStyle(0xfde047, 0.45);
+
+      graphics.beginPath();
+
+      // Muro Izquierdo Vertical
+      const startX = -halfW * cosA;
+      const startY = 15 - halfW * sinA;
+      graphics.moveTo(startX, startY);
+
+      // Subir por el pilar izquierdo
+      const leftPillarTopX = startX;
+      const leftPillarTopY = startY - baseH;
+      graphics.lineTo(leftPillarTopX, leftPillarTopY);
+
+      // Arco Superior Isométrico (Curva Paramétrica Isométrica)
+      const numSegments = 16;
+      for (let i = 0; i <= numSegments; i++) {
+        const theta = Math.PI - (i / numSegments) * Math.PI; // De PI a 0
+        const radiusX = halfW * Math.cos(theta);
+        const radiusY = -baseH - Math.sin(theta) * archRadiusY;
+
+        const pIsoX = radiusX * cosA;
+        const pIsoY = radiusY + radiusX * sinA;
+
+        graphics.lineTo(pIsoX, 15 + pIsoY);
+      }
+
+      // Bajada por el pilar derecho
+      const rightPillarTopX = halfW * cosA;
+      const rightPillarTopY = 15 + halfW * sinA - baseH;
+      const endX = halfW * cosA;
+      const endY = 15 + halfW * sinA;
+
+      graphics.lineTo(rightPillarTopX, rightPillarTopY);
+      graphics.lineTo(endX, endY);
+      graphics.closePath();
+
+      graphics.fillPath();
+      graphics.strokePath();
+
+      // 3. Brillo de Bisel Interno del Arco Isométrico
+      graphics.lineStyle(1.8, 0xffffff, 0.9);
+      graphics.beginPath();
+      graphics.moveTo(startX + 2, startY - 2);
+      graphics.lineTo(leftPillarTopX + 2, leftPillarTopY);
+      for (let i = 0; i <= numSegments; i++) {
+        const theta = Math.PI - (i / numSegments) * Math.PI;
+        const radiusX = (halfW - 2) * Math.cos(theta);
+        const radiusY = -baseH + 2 - Math.sin(theta) * (archRadiusY - 2);
+        const pIsoX = radiusX * cosA;
+        const pIsoY = radiusY + radiusX * sinA;
+        graphics.lineTo(pIsoX, 15 + pIsoY);
+      }
+      graphics.lineTo(endX - 2, endY - 2);
+      graphics.strokePath();
+    };
+
+    drawIsometricDoorPortal(doorHighlight);
 
     const doorLabel = this.add.text(doorZoneX, doorZoneY - 75, '🚪 Entrar al Templo de la Natividad', {
       fontFamily: 'sans-serif',

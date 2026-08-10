@@ -2611,9 +2611,10 @@ export class GameScene extends Phaser.Scene {
       if (clickedCreature) {
         this.selectedCreature = clickedCreature;
       } else {
-        // Set Click Target Destination snapped dead-center to tile
+        // Set Click Target Destination snapped dead-center to tile & Calculate A* Path around obstacles!
         const snappedTarget = this.updateTileGridMarker(worldPoint.x, worldPoint.y);
         this.clickTarget = snappedTarget;
+        this.pathWaypoints = this.findPath(this.player.x, this.player.y, snappedTarget.x, snappedTarget.y);
       }
     });
 
@@ -3025,6 +3026,241 @@ export class GameScene extends Phaser.Scene {
     return { x: cellX, y: tileCenterY };
   }
 
+  // =========================================================================
+  // 🗺️ SISTEMA DE BÚSQUEDA DE CAMINOS A* (PATHFINDING ISOMÉTRICO ANTI-OBSTÁCULOS)
+  // =========================================================================
+  public pathWaypoints: Array<{ x: number; y: number }> = [];
+
+  public isTileBlocked(gridX: number, gridY: number): boolean {
+    const elev = this.getTileElevation(gridX, gridY);
+    // 1. Océano / Agua al nivel del mar (elevación 0px) está bloqueado para el personaje a pie
+    if (elev >= 0) return true;
+
+    // 2. Coordenadas del centro de la casilla en el mundo
+    const tileScale = 2 / 3;
+    const tileW = 128 * tileScale;
+    const tileH = 64 * tileScale;
+    const halfW = tileW / 2;
+    const halfH = tileH / 2;
+    const cellX = (gridX - gridY) * halfW;
+    const cellY = (gridX + gridY) * halfH + halfH + elev;
+
+    // 3. Comprobar colisión con el grupo de rocas y muros estáticos
+    let blocked = false;
+    if (this.rockGroup) {
+      const rocks = this.rockGroup.getChildren();
+      for (let i = 0; i < rocks.length; i++) {
+        const r = rocks[i] as Phaser.Physics.Arcade.Sprite;
+        if (!r || !r.body) continue;
+        const b = r.body as Phaser.Physics.Arcade.StaticBody;
+        // Margen de colisión perimetral alrededor del collider rígido
+        const margin = 14;
+        if (
+          cellX >= b.x - margin &&
+          cellX <= b.x + b.width + margin &&
+          cellY >= b.y - margin &&
+          cellY <= b.y + b.height + margin
+        ) {
+          blocked = true;
+          break;
+        }
+      }
+    }
+    return blocked;
+  }
+
+  private hasLineOfSight(x0: number, y0: number, x1: number, y1: number): boolean {
+    const dist = Phaser.Math.Distance.Between(x0, y0, x1, y1);
+    const steps = Math.ceil(dist / 16);
+    const halfW = 42.667;
+    const halfH = 21.333;
+
+    for (let i = 1; i < steps; i++) {
+      const t = i / steps;
+      const wx = x0 + (x1 - x0) * t;
+      const wy = y0 + (y1 - y0) * t;
+
+      const gx = Math.round((wx / halfW + wy / halfH) / 2);
+      const gy = Math.round((wy / halfH - wx / halfW) / 2);
+
+      if (this.isTileBlocked(gx, gy)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public findPath(startWorldX: number, startWorldY: number, targetWorldX: number, targetWorldY: number): Array<{ x: number; y: number }> {
+    const halfW = 42.667;
+    const halfH = 21.333;
+
+    const startGx = Math.round((startWorldX / halfW + startWorldY / halfH) / 2);
+    const startGy = Math.round((startWorldY / halfH - startWorldX / halfW) / 2);
+
+    let targetGx = Math.round((targetWorldX / halfW + targetWorldY / halfH) / 2);
+    let targetGy = Math.round((targetWorldY / halfH - targetWorldX / halfW) / 2);
+
+    if (startGx === targetGx && startGy === targetGy) {
+      return [{ x: targetWorldX, y: targetWorldY }];
+    }
+
+    // Si la casilla destino está bloqueada por una piedra, buscar la casilla libre más cercana
+    if (this.isTileBlocked(targetGx, targetGy)) {
+      let foundAlternative = false;
+      let minAlternativeDist = Infinity;
+      let altGx = targetGx;
+      let altGy = targetGy;
+
+      for (let dx = -2; dx <= 2; dx++) {
+        for (let dy = -2; dy <= 2; dy++) {
+          if (dx === 0 && dy === 0) continue;
+          const candidateGx = targetGx + dx;
+          const candidateGy = targetGy + dy;
+          if (!this.isTileBlocked(candidateGx, candidateGy)) {
+            const d = Math.abs(candidateGx - startGx) + Math.abs(candidateGy - startGy);
+            if (d < minAlternativeDist) {
+              minAlternativeDist = d;
+              altGx = candidateGx;
+              altGy = candidateGy;
+              foundAlternative = true;
+            }
+          }
+        }
+      }
+      if (foundAlternative) {
+        targetGx = altGx;
+        targetGy = altGy;
+      }
+    }
+
+    // Algoritmo A* en rejilla isométrica
+    interface ANode {
+      gx: number;
+      gy: number;
+      g: number;
+      h: number;
+      f: number;
+      parent: ANode | null;
+    }
+
+    const keyOf = (gx: number, gy: number) => `${gx},${gy}`;
+    const openSet = new Map<string, ANode>();
+    const closedSet = new Set<string>();
+
+    const startH = Math.hypot(targetGx - startGx, targetGy - startGy);
+    const startNode: ANode = { gx: startGx, gy: startGy, g: 0, h: startH, f: startH, parent: null };
+    openSet.set(keyOf(startGx, startGy), startNode);
+
+    const neighbors = [
+      { dx: 1, dy: 0, cost: 1.0 },
+      { dx: -1, dy: 0, cost: 1.0 },
+      { dx: 0, dy: 1, cost: 1.0 },
+      { dx: 0, dy: -1, cost: 1.0 },
+      { dx: 1, dy: 1, cost: 1.414 },
+      { dx: 1, dy: -1, cost: 1.414 },
+      { dx: -1, dy: 1, cost: 1.414 },
+      { dx: -1, dy: -1, cost: 1.414 }
+    ];
+
+    let maxIterations = 400;
+    let targetNode: ANode | null = null;
+
+    while (openSet.size > 0 && maxIterations > 0) {
+      maxIterations--;
+
+      let current: ANode | null = null;
+      for (const node of openSet.values()) {
+        if (!current || node.f < current.f) {
+          current = node;
+        }
+      }
+
+      if (!current) break;
+
+      if (current.gx === targetGx && current.gy === targetGy) {
+        targetNode = current;
+        break;
+      }
+
+      const currentKey = keyOf(current.gx, current.gy);
+      openSet.delete(currentKey);
+      closedSet.add(currentKey);
+
+      for (const n of neighbors) {
+        const nGx = current.gx + n.dx;
+        const nGy = current.gy + n.dy;
+        const nKey = keyOf(nGx, nGy);
+
+        if (closedSet.has(nKey)) continue;
+
+        if (this.isTileBlocked(nGx, nGy)) continue;
+
+        // Para movimientos diagonales, verificar que ambas casillas adyacentes ortogonales estén libres
+        if (n.dx !== 0 && n.dy !== 0) {
+          if (this.isTileBlocked(current.gx + n.dx, current.gy) || this.isTileBlocked(current.gx, current.gy + n.dy)) {
+            continue;
+          }
+        }
+
+        const tentativeG = current.g + n.cost;
+        let neighborNode = openSet.get(nKey);
+
+        if (!neighborNode) {
+          const h = Math.hypot(targetGx - nGx, targetGy - nGy);
+          neighborNode = { gx: nGx, gy: nGy, g: tentativeG, h, f: tentativeG + h, parent: current };
+          openSet.set(nKey, neighborNode);
+        } else if (tentativeG < neighborNode.g) {
+          neighborNode.g = tentativeG;
+          neighborNode.f = tentativeG + neighborNode.h;
+          neighborNode.parent = current;
+        }
+      }
+    }
+
+    // Reconstruir camino de nodos
+    if (!targetNode) {
+      return [{ x: targetWorldX, y: targetWorldY }];
+    }
+
+    const rawPath: Array<{ x: number; y: number }> = [];
+    let curr: ANode | null = targetNode;
+    while (curr) {
+      const elev = this.getTileElevation(curr.gx, curr.gy);
+      const wx = (curr.gx - curr.gy) * halfW;
+      const wy = (curr.gx + curr.gy) * halfH + halfH + elev;
+      rawPath.unshift({ x: wx, y: wy });
+      curr = curr.parent;
+    }
+
+    if (rawPath.length > 0) rawPath.shift();
+
+    if (rawPath.length > 0) {
+      rawPath[rawPath.length - 1] = { x: targetWorldX, y: targetWorldY };
+    } else {
+      rawPath.push({ x: targetWorldX, y: targetWorldY });
+    }
+
+    // Suavizado de Ruta (String Pulling / Line-of-sight path smoothing)
+    if (rawPath.length <= 2) return rawPath;
+
+    const smoothedPath: Array<{ x: number; y: number }> = [rawPath[0]];
+    let currIdx = 0;
+
+    while (currIdx < rawPath.length - 1) {
+      let furthestIdx = currIdx + 1;
+      for (let nextIdx = rawPath.length - 1; nextIdx > currIdx + 1; nextIdx--) {
+        if (this.hasLineOfSight(rawPath[currIdx].x, rawPath[currIdx].y, rawPath[nextIdx].x, rawPath[nextIdx].y)) {
+          furthestIdx = nextIdx;
+          break;
+        }
+      }
+      smoothedPath.push(rawPath[furthestIdx]);
+      currIdx = furthestIdx;
+    }
+
+    return smoothedPath;
+  }
+
   private handlePlayerMovement() {
     if (!this.player || !this.player.body) return;
 
@@ -3047,6 +3283,7 @@ export class GameScene extends Phaser.Scene {
     if (vx !== 0 || vy !== 0) {
       // Manual Keyboard Override: Cancel click movement target & clear marker
       this.clickTarget = null;
+      this.pathWaypoints = [];
       if (this.targetTileGraphic) {
         this.targetTileGraphic.clear();
       }
@@ -3055,23 +3292,45 @@ export class GameScene extends Phaser.Scene {
         vy *= 0.7071;
       }
     } else if (this.clickTarget) {
-      // Point-and-Click Movement towards clickTarget
-      const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.clickTarget.x, this.clickTarget.y);
-      const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
-      const isBlocked = playerBody && (!playerBody.blocked.none || !playerBody.touching.none);
+      // Búsqueda de Camino (Pathfinding) hacia los waypoints de la ruta
+      if (this.pathWaypoints.length > 0) {
+        const nextWaypoint = this.pathWaypoints[0];
+        const distToWaypoint = Phaser.Math.Distance.Between(this.player.x, this.player.y, nextWaypoint.x, nextWaypoint.y);
+        const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
+        const isBlocked = playerBody && (!playerBody.blocked.none || !playerBody.touching.none);
 
-      if (dist > 6 && !isBlocked) {
-        const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.clickTarget.x, this.clickTarget.y);
-        vx = Math.cos(angle);
-        vy = Math.sin(angle);
-      } else {
-        // Arrived at destination tile OR blocked! Align player dead-center on tile
-        if (!isBlocked) {
-          this.player.setPosition(this.clickTarget.x, this.clickTarget.y);
+        if (distToWaypoint > 12) {
+          const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, nextWaypoint.x, nextWaypoint.y);
+          vx = Math.cos(angle);
+          vy = Math.sin(angle);
+
+          // Si choca contra un colisionador, intentar avanzar al siguiente waypoint
+          if (isBlocked && this.pathWaypoints.length > 1) {
+            this.pathWaypoints.shift();
+          }
+        } else {
+          // Llegó al waypoint actual, avanzar al siguiente punto de la ruta
+          this.pathWaypoints.shift();
+          if (this.pathWaypoints.length === 0) {
+            this.player.setPosition(this.clickTarget.x, this.clickTarget.y);
+            this.clickTarget = null;
+            if (this.targetTileGraphic) {
+              this.targetTileGraphic.clear();
+            }
+          }
         }
-        this.clickTarget = null;
-        if (this.targetTileGraphic) {
-          this.targetTileGraphic.clear();
+      } else {
+        const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.clickTarget.x, this.clickTarget.y);
+        if (dist > 8) {
+          const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.clickTarget.x, this.clickTarget.y);
+          vx = Math.cos(angle);
+          vy = Math.sin(angle);
+        } else {
+          this.player.setPosition(this.clickTarget.x, this.clickTarget.y);
+          this.clickTarget = null;
+          if (this.targetTileGraphic) {
+            this.targetTileGraphic.clear();
+          }
         }
       }
     }

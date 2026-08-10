@@ -25,9 +25,21 @@ export class TempleInteriorScene extends Phaser.Scene {
   }
 
   create(data?: any) {
-    this.isTransitioning = false;
-    this.pendingExit = false;
-    this.currentCharacterName = (window as any).selectedCharacterClass || 'espadachin';
+    const activeData = (function() {
+      try {
+        const raw = localStorage.getItem('atnight_active_char_data');
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    })() || {
+      characterName: (window as any).selectedCharacterName || localStorage.getItem('atnight_active_char') || 'Arquera',
+      characterClass: (window as any).selectedCharacterClass || 'arquero',
+      gender: 'femenino',
+      skinColor: '#f5c6a5',
+      hairColor: '#451a03',
+      outfitColor: '#16a34a'
+    };
+
+    this.currentCharacterName = activeData.characterName || (window as any).selectedCharacterClass || 'Arquera';
 
     this.cameras.main.fadeIn(500, 0, 0, 0);
 
@@ -49,19 +61,34 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     let startX = this.exitCarpetPos.x - 30;
     let startY = this.exitCarpetPos.y - 30;
-    let initialAnim = `char-${this.currentCharacterName}-idle-up-left`;
+    let initialDir = 'up-left';
 
     if (isBirthOrRespawn) {
       startX = fountainX;
       startY = fountainY + 20;
-      initialAnim = `char-${this.currentCharacterName}-idle-down-right`;
-      this.lastDirection = 'down-right';
+      initialDir = 'down-right';
     }
 
-    this.player = this.physics.add.sprite(startX, startY, initialAnim);
+    this.lastDirection = initialDir;
+
+    // Cargar clave de textura válida (evitando claves de animación que provocan cuadros negros)
+    let initialTexture = `char-${this.currentCharacterName}-${initialDir}-0`;
+    if (!this.textures.exists(initialTexture)) {
+      initialTexture = `char-${this.currentCharacterName}-down-0`;
+    }
+    if (!this.textures.exists(initialTexture)) {
+      initialTexture = 'espadachin_male_hd';
+    }
+
+    this.player = this.physics.add.sprite(startX, startY, initialTexture);
     this.player.setOrigin(0.5, 0.8);
     this.player.setScale(0.75);
     this.player.setDepth(startY);
+
+    const idleKey = `char-${this.currentCharacterName}-idle-${initialDir}`;
+    if (this.anims.exists(idleKey)) {
+      this.player.play(idleKey, true);
+    }
 
     const pBody = this.player.body as Phaser.Physics.Arcade.Body;
     if (pBody) {
@@ -309,15 +336,6 @@ export class TempleInteriorScene extends Phaser.Scene {
       repeat: -1,
       ease: 'Sine.easeInOut'
     });
-
-    // Etiqueta Flotante sobre la Tina de Nacimiento
-    this.add.text(fountainX, fountainY - 65, '✨ Tina Sagrada de la Natividad (Nacimiento)', {
-      fontFamily: 'sans-serif',
-      fontSize: '14px',
-      color: '#fef08a',
-      backgroundColor: 'rgba(15, 23, 42, 0.90)',
-      padding: { x: 10, y: 5 }
-    }).setOrigin(0.5).setDepth(fountainY + 100);
 
     // -------------------------------------------------------------------------
     // ☀️ HAZ DE LUZ DIVINO DE DIRECCIÓN APUNTANDO A LA TINA (DIRECTIONAL LIGHT)

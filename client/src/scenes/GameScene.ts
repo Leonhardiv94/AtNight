@@ -2177,7 +2177,7 @@ export class GameScene extends Phaser.Scene {
     doorHighlight.setDepth(templeY + 1100);
     doorHighlight.setVisible(false);
 
-    // Función de Dibujo de Portal Isométrico 2.5D adaptada a la inclinación de 26.56° de la pared del Templo
+    // Función de Dibujo de Portal Isométrico 2.5D adaptada a la fachada inclinada en sentido ABAJO-DERECHA
     const drawIsometricDoorPortal = (graphics: Phaser.GameObjects.Graphics) => {
       graphics.clear();
 
@@ -2189,27 +2189,27 @@ export class GameScene extends Phaser.Scene {
       const baseH = 34;
       const archRadiusY = 18;
 
-      // 1. Resplandor Base Isométrico en el Suelo (Umbral de las Escaleras)
+      // 1. Resplandor Base Isométrico en el Suelo (Sentido Abajo-Derecha)
       graphics.fillStyle(0xfde047, 0.25);
       graphics.lineStyle(2, 0xffea00, 0.6);
       graphics.beginPath();
-      graphics.moveTo(-halfW * cosA, 15 - halfW * sinA);
-      graphics.lineTo(halfW * cosA, 15 + halfW * sinA);
-      graphics.lineTo(halfW * cosA, 25 + halfW * sinA);
-      graphics.lineTo(-halfW * cosA, 25 - halfW * sinA);
+      graphics.moveTo(-halfW * cosA, -halfW * sinA + 15);
+      graphics.lineTo(halfW * cosA, halfW * sinA + 15);
+      graphics.lineTo(halfW * cosA, halfW * sinA + 25);
+      graphics.lineTo(-halfW * cosA, -halfW * sinA + 25);
       graphics.closePath();
       graphics.fillPath();
       graphics.strokePath();
 
-      // 2. Arco Isométrico Frontal de Madera (Portal de Entrada Isométrico)
+      // 2. Arco Isométrico Frontal de Madera (Sentido Abajo-Derecha)
       graphics.lineStyle(4, 0xffea00, 0.95);
       graphics.fillStyle(0xfde047, 0.45);
 
       graphics.beginPath();
 
-      // Muro Izquierdo Vertical
+      // Muro Izquierdo Vertical (Punto superior izquierdo de la pared)
       const startX = -halfW * cosA;
-      const startY = 15 - halfW * sinA;
+      const startY = -halfW * sinA + 15;
       graphics.moveTo(startX, startY);
 
       // Subir por el pilar izquierdo
@@ -2217,7 +2217,7 @@ export class GameScene extends Phaser.Scene {
       const leftPillarTopY = startY - baseH;
       graphics.lineTo(leftPillarTopX, leftPillarTopY);
 
-      // Arco Superior Isométrico (Curva Paramétrica Isométrica)
+      // Arco Superior Isométrico (Curva Paramétrica inclinada hacia Abajo-Derecha)
       const numSegments = 16;
       for (let i = 0; i <= numSegments; i++) {
         const theta = Math.PI - (i / numSegments) * Math.PI; // De PI a 0
@@ -2227,14 +2227,14 @@ export class GameScene extends Phaser.Scene {
         const pIsoX = radiusX * cosA;
         const pIsoY = radiusY + radiusX * sinA;
 
-        graphics.lineTo(pIsoX, 15 + pIsoY);
+        graphics.lineTo(pIsoX, pIsoY + 15);
       }
 
-      // Bajada por el pilar derecho
-      const rightPillarTopX = halfW * cosA;
-      const rightPillarTopY = 15 + halfW * sinA - baseH;
+      // Bajada por el pilar derecho (Punto inferior derecho de la pared)
       const endX = halfW * cosA;
-      const endY = 15 + halfW * sinA;
+      const endY = halfW * sinA + 15;
+      const rightPillarTopX = endX;
+      const rightPillarTopY = endY - baseH;
 
       graphics.lineTo(rightPillarTopX, rightPillarTopY);
       graphics.lineTo(endX, endY);
@@ -2243,20 +2243,22 @@ export class GameScene extends Phaser.Scene {
       graphics.fillPath();
       graphics.strokePath();
 
-      // 3. Brillo de Bisel Interno del Arco Isométrico
+      // 3. Brillo de Bisel Interno del Arco Isométrico (Abajo-Derecha)
       graphics.lineStyle(1.8, 0xffffff, 0.9);
       graphics.beginPath();
-      graphics.moveTo(startX + 2, startY - 2);
-      graphics.lineTo(leftPillarTopX + 2, leftPillarTopY);
+      graphics.moveTo(startX + 1.8 * cosA, startY + 1.8 * sinA - 2);
+      graphics.lineTo(leftPillarTopX + 1.8 * cosA, leftPillarTopY + 1.8 * sinA);
       for (let i = 0; i <= numSegments; i++) {
         const theta = Math.PI - (i / numSegments) * Math.PI;
         const radiusX = (halfW - 2) * Math.cos(theta);
         const radiusY = -baseH + 2 - Math.sin(theta) * (archRadiusY - 2);
+
         const pIsoX = radiusX * cosA;
         const pIsoY = radiusY + radiusX * sinA;
-        graphics.lineTo(pIsoX, 15 + pIsoY);
+
+        graphics.lineTo(pIsoX, pIsoY + 15);
       }
-      graphics.lineTo(endX - 2, endY - 2);
+      graphics.lineTo(endX - 1.8 * cosA, endY - 1.8 * sinA - 2);
       graphics.strokePath();
     };
 

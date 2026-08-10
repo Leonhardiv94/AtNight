@@ -82,7 +82,7 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     this.player = this.physics.add.sprite(startX, startY, initialTexture);
     this.player.setOrigin(0.5, 0.8);
-    this.player.setScale(0.75);
+    this.player.setScale(1.0);
     this.player.setDepth(startY);
 
     const idleKey = `char-${this.currentCharacterName}-idle-${initialDir}`;
@@ -137,6 +137,7 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     // 3. Cámara y Controles
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+    this.cameras.main.setZoom(1.15);
 
     if (this.input.keyboard) {
       this.cursors = this.input.keyboard.createCursorKeys();

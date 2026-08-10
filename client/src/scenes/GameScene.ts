@@ -118,6 +118,20 @@ export class GameScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#008899');
     this.setupInputs();
 
+    // Si el jugador viene saliendo del interior del Templo, posicionarlo enseguida frente a la puerta principal
+    if (data?.fromTempleInterior) {
+      this.cameras.main.fadeIn(500, 0, 0, 0);
+      const spawnX = this.templeDoorZone.x + 30;
+      const spawnY = this.templeDoorZone.y + 40;
+      this.player.setPosition(spawnX, spawnY);
+      this.player.setDepth(spawnY);
+      this.lastDirection = 'down-right';
+      const idleKey = `char-${this.currentCharacterName}-idle-down-right`;
+      if (this.anims.exists(idleKey)) {
+        this.player.play(idleKey, true);
+      }
+    }
+
     // Physics Colliders: Player and Animals Collide with Ocean Water & Small Rocks 🌊🪨
     this.physics.add.collider(this.player, this.waterTiles);
     this.physics.add.collider(this.creaturesGroup, this.waterTiles);

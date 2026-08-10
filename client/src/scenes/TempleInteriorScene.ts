@@ -100,47 +100,44 @@ export class TempleInteriorScene extends Phaser.Scene {
         const baseIsoX = (x - y) * halfW;
         const baseIsoY = (x + y) * halfH;
 
-        const isExitDoor = (x === exitGx && (y === 4 || y === 5));
+        const isExitDoor = (x === exitGx && y === 5);
         const isWall = (x === 0 || y === 0 || y === mapHeight - 1 || (x === mapWidth - 1 && !isExitDoor));
-        const isCentralAisle = (y >= 4 && y <= 5 && x > 1 && x < mapWidth - 1);
 
         if (isExitDoor) {
-          // Umbral de Alfombra Roja en el Portón Abajo-Derecha (Mantenido en su posición exacta)
+          // ÚNICA Alfombra Pequeña de Salida en el Portón Abajo-Derecha
           const carpet = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-carpet');
           carpet.setOrigin(0.5, 0);
           carpet.setScale(tileScale);
           carpet.setDepth(-5000 + baseIsoY);
           carpet.setInteractive({ useHandCursor: true });
 
-          if (x === exitGx && y === 5) {
-            this.exitCarpetSprite = carpet;
-            this.exitCarpetPos = { x: baseIsoX, y: baseIsoY + 20 };
+          this.exitCarpetSprite = carpet;
+          this.exitCarpetPos = { x: baseIsoX, y: baseIsoY + 20 };
 
-            // Etiqueta Emergente al pasar el ratón por el umbral de salida
-            this.exitLabel = this.add.text(baseIsoX, baseIsoY - 35, '🚪 Salir a la Isla', {
-              fontFamily: 'sans-serif',
-              fontSize: '13px',
-              color: '#ffffff',
-              backgroundColor: 'rgba(185, 28, 28, 0.90)',
-              padding: { x: 8, y: 4 }
-            }).setOrigin(0.5).setDepth(baseIsoY + 100).setVisible(false);
+          // Etiqueta Emergente al pasar el ratón por el umbral de salida
+          this.exitLabel = this.add.text(baseIsoX, baseIsoY - 35, '🚪 Salir a la Isla', {
+            fontFamily: 'sans-serif',
+            fontSize: '13px',
+            color: '#ffffff',
+            backgroundColor: 'rgba(185, 28, 28, 0.90)',
+            padding: { x: 8, y: 4 }
+          }).setOrigin(0.5).setDepth(baseIsoY + 100).setVisible(false);
 
-            carpet.on('pointerover', () => {
-              carpet.setTint(0xffea00);
-              this.exitLabel.setVisible(true);
-            });
+          carpet.on('pointerover', () => {
+            carpet.setTint(0xffea00);
+            this.exitLabel.setVisible(true);
+          });
 
-            carpet.on('pointerout', () => {
-              carpet.clearTint();
-              this.exitLabel.setVisible(false);
-            });
+          carpet.on('pointerout', () => {
+            carpet.clearTint();
+            this.exitLabel.setVisible(false);
+          });
 
-            carpet.on('pointerdown', (_pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: any) => {
-              if (event && event.stopPropagation) event.stopPropagation();
-              this.clickTarget = new Phaser.Math.Vector2(baseIsoX, baseIsoY + 20);
-              this.pendingExit = true;
-            });
-          }
+          carpet.on('pointerdown', (_pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: any) => {
+            if (event && event.stopPropagation) event.stopPropagation();
+            this.clickTarget = new Phaser.Math.Vector2(baseIsoX, baseIsoY + 20);
+            this.pendingExit = true;
+          });
 
         } else if (isWall) {
           // Muro de Piedra del Santuario
@@ -159,14 +156,8 @@ export class TempleInteriorScene extends Phaser.Scene {
           }
           wallCol.refreshBody();
 
-        } else if (isCentralAisle) {
-          // Pasillo Central de Alfombra Imperial Roja
-          const carpet = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-carpet');
-          carpet.setOrigin(0.5, 0);
-          carpet.setScale(tileScale);
-          carpet.setDepth(-5000 + baseIsoY);
         } else {
-          // Suelo de Madera Pulida del Santuario
+          // Suelo de Madera Pulida Descubierto del Santuario (100% Madera sin pasillos de alfombra)
           const floor = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-wood');
           floor.setOrigin(0.5, 0);
           floor.setScale(tileScale);

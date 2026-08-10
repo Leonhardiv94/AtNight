@@ -159,6 +159,19 @@ export class TempleInteriorScene extends Phaser.Scene {
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (this.isTransitioning) return;
       const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
+      const halfW = 42.667;
+      const halfH = 21.333;
+      const gx = Math.round((worldPoint.x / halfW + worldPoint.y / halfH) / 2);
+      const gy = Math.round((worldPoint.y / halfH - worldPoint.x / halfW) / 2);
+
+      // Solo permitir clic dentro de la delimitación del suelo de madera o el umbral de salida
+      const isValidWalk = (gx >= 1 && gx <= 22 && gy >= 1 && gy <= 8) || (gx === 23 && gy === 5);
+      if (!isValidWalk) {
+        if (this.targetTileGraphic) this.targetTileGraphic.clear();
+        this.clickTarget = null;
+        return;
+      }
+
       const snappedTarget = this.updateTileGridMarker(worldPoint.x, worldPoint.y);
       this.clickTarget = new Phaser.Math.Vector2(snappedTarget.x, snappedTarget.y);
     });
@@ -181,7 +194,6 @@ export class TempleInteriorScene extends Phaser.Scene {
   }
 
   private createSanctuaryMap() {
-    // Trasposición del Mapa: Profundidad de 24 casillas orientada hacia ARRIBA-IZQUIERDA (En la caja dibujada por el usuario)
     const mapWidth = 24;
     const mapHeight = 10;
     const tileScale = 2 / 3;
@@ -190,22 +202,17 @@ export class TempleInteriorScene extends Phaser.Scene {
     const halfW = tileW / 2;
     const halfH = tileH / 2;
 
-    const wallGroup = this.physics.add.staticGroup();
-
-    // Posición del portón de salida (Mantenido en el umbral sin mover la alfombra)
     const exitGx = mapWidth - 1;
     const exitGy = 5;
 
+    // 1. Suelo Completo de Madera Pulida de la Nave del Santuario
     for (let x = 0; x < mapWidth; x++) {
       for (let y = 0; y < mapHeight; y++) {
         const baseIsoX = (x - y) * halfW;
         const baseIsoY = (x + y) * halfH;
 
-        const isExitDoor = (x === exitGx && y === 5);
-        const isWall = (x === 0 || y === 0 || y === mapHeight - 1 || (x === mapWidth - 1 && !isExitDoor));
-
-        if (isExitDoor) {
-          // ÚNICA Alfombra Pequeña de Salida en el Portón Abajo-Derecha
+        if (x === exitGx && y === exitGy) {
+          // Alfombra Pequeña de Salida
           const carpet = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-carpet');
           carpet.setOrigin(0.5, 0);
           carpet.setScale(tileScale);
@@ -215,7 +222,6 @@ export class TempleInteriorScene extends Phaser.Scene {
           this.exitCarpetSprite = carpet;
           this.exitCarpetPos = { x: baseIsoX, y: baseIsoY + 20 };
 
-          // Etiqueta Emergente al pasar el ratón por el umbral de salida
           this.exitLabel = this.add.text(baseIsoX, baseIsoY - 35, '🚪 Salir a la Isla', {
             fontFamily: 'sans-serif',
             fontSize: '13px',
@@ -239,48 +245,18 @@ export class TempleInteriorScene extends Phaser.Scene {
             this.clickTarget = new Phaser.Math.Vector2(baseIsoX, baseIsoY + 20);
             this.pendingExit = true;
           });
-
-        } else if (isWall) {
-          // Muro de Piedra del Santuario
-          const wall = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-temple-wall');
-          wall.setOrigin(0.5, 0);
-          wall.setScale(tileScale);
-          wall.setDepth(-5000 + baseIsoY);
-
-          // Colisionador Estático
-          const wallCol = wallGroup.create(baseIsoX, baseIsoY + 16, 'small-rock') as Phaser.Physics.Arcade.Sprite;
-          wallCol.setVisible(false);
-          const wBody = wallCol.body as Phaser.Physics.Arcade.StaticBody;
-          if (wBody) {
-            wBody.setSize(70, 35);
-            wBody.setOffset(29, 24);
-          }
-          wallCol.refreshBody();
-
         } else {
-          // Suelo de Madera Pulida Descubierto del Santuario (100% Madera sin pasillos de alfombra)
+          // Suelo de Madera Pulida Clara
           const floor = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-wood');
           floor.setOrigin(0.5, 0);
           floor.setScale(tileScale);
           floor.setDepth(-5000 + baseIsoY);
         }
-
-        // Columnas y Antorchas Místicas a los Lados del Pasillo Central
-        if (!isWall && (y === 2 || y === 7) && x % 4 === 0 && x > 2 && x < mapWidth - 2) {
-          const torch = this.add.circle(baseIsoX, baseIsoY, 6, 0xf59e0b, 0.8);
-          torch.setDepth(baseIsoY + 10);
-          this.tweens.add({
-            targets: torch,
-            alpha: 0.35,
-            scale: 1.4,
-            duration: 400 + (y * 50),
-            yoyo: true,
-            repeat: -1,
-            ease: 'Sine.easeInOut'
-          });
-        }
       }
     }
+
+    // 2. Muros Isométricos 2.5D Verticais de Piedra en los Ambos Fondos (Paredes del Templo)
+    this.drawIsometricStoneWalls(mapWidth, mapHeight, halfW, halfH);
 
     // -------------------------------------------------------------------------
     // ⛲ TINA SAGRADA GRANDE DE BAUTISMO (BAUTISTERIO) Y HAZ DE LUZ DIVINO
@@ -461,6 +437,30 @@ export class TempleInteriorScene extends Phaser.Scene {
     this.player.setVelocity(vx * speed, vy * speed);
     this.player.setDepth(this.player.y);
 
+    // Delimitación Física Estricta del Mapa: Impedir que el personaje salga del suelo hacia el vacío negro
+    const halfW = 42.667;
+    const halfH = 21.333;
+    let px = this.player.x;
+    let py = this.player.y;
+    let pGx = (px / halfW + py / halfH) / 2;
+    let pGy = (py / halfH - px / halfW) / 2;
+
+    const isExitArea = (pGx >= 22.0 && pGy >= 4.2 && pGy <= 5.8);
+
+    let clamped = false;
+    if (pGx < 0.6) { pGx = 0.6; clamped = true; }
+    if (!isExitArea && pGx > 22.4) { pGx = 22.4; clamped = true; }
+    if (pGy < 0.6) { pGy = 0.6; clamped = true; }
+    if (pGy > 8.4) { pGy = 8.4; clamped = true; }
+
+    if (clamped) {
+      const clampedX = (pGx - pGy) * halfW;
+      const clampedY = (pGx + pGy) * halfH;
+      this.player.setPosition(clampedX, clampedY);
+      const pBody = this.player.body as Phaser.Physics.Arcade.Body;
+      if (pBody) pBody.setVelocity(0, 0);
+    }
+
     if (vx !== 0 || vy !== 0) {
       let currentDir = 'down';
       const angleDeg = Phaser.Math.RadToDeg(Math.atan2(vy, vx));
@@ -527,6 +527,12 @@ export class TempleInteriorScene extends Phaser.Scene {
       this.targetTileGraphic = this.add.graphics();
     }
 
+    const isValidTile = (gridX >= 1 && gridX <= 22 && gridY >= 1 && gridY <= 8) || (gridX === 23 && gridY === 5);
+    if (!isValidTile) {
+      this.targetTileGraphic.clear();
+      return { x: cellX, y: tileCenterY - 13.333 };
+    }
+
     // Resaltado cian de destino al hacer clic en una casilla dentro del templo
     this.targetTileGraphic.clear();
     this.targetTileGraphic.lineStyle(2.2, 0x00f2fe, 0.95);
@@ -562,6 +568,12 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     if (!this.hoverTileGraphic) {
       this.hoverTileGraphic = this.add.graphics();
+    }
+
+    const isValidTile = (gridX >= 1 && gridX <= 22 && gridY >= 1 && gridY <= 8) || (gridX === 23 && gridY === 5);
+    if (!isValidTile) {
+      this.hoverTileGraphic.clear();
+      return;
     }
 
     this.hoverTileGraphic.clear();

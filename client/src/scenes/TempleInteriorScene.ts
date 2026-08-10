@@ -56,7 +56,7 @@ export class TempleInteriorScene extends Phaser.Scene {
     const tileW = 128 * fountainScale;
     const halfW = tileW / 2;
     const halfH = (64 * fountainScale) / 2;
-    const fountainGx = 2.5;
+    const fountainGx = 3.5;
     const fountainGy = 4.5;
     const fountainX = (fountainGx - fountainGy) * halfW;
     const fountainY = (fountainGx + fountainGy) * halfH - 13.333;
@@ -266,9 +266,9 @@ export class TempleInteriorScene extends Phaser.Scene {
     // -------------------------------------------------------------------------
     // ⛲ TINA SAGRADA GRANDE DE BAUTISMO (BAUTISTERIO) Y HAZ DE LUZ DIVINO
     // -------------------------------------------------------------------------
-    const fountainGx = 2.5;
-    const fountainGy = 4.5; // Exactamente equidistante entre el muro izquierdo (y=0) y el derecho (y=9)
-    const fountainX = (fountainGx - fountainGy) * halfW; // -85.333px (Centro exacto del pasillo)
+    const fountainGx = 3.5;
+    const fountainGy = 4.5; // Exactamente centrado en la nave
+    const fountainX = (fountainGx - fountainGy) * halfW; // -42.667px (Centro del pasillo)
     const fountainY = (fountainGx + fountainGy) * halfH - 13.333;
 
     // 1. Tina Sagrada Grande de Mármol Blanco Esculpido
@@ -398,52 +398,31 @@ export class TempleInteriorScene extends Phaser.Scene {
   }
 
   private drawIsometricStoneWalls(mapWidth: number, mapHeight: number, halfW: number, halfH: number) {
-    const wallH = 140; // Altura de pared vertical 140px
+    const tileScale = 2 / 3;
 
-    // --- MURO IZQUIERDO TRASERO (y = 0, para x de 0 a mapWidth - 1) ---
-    const leftWall = this.add.graphics();
-    leftWall.setDepth(10);
-
+    // --- MURO TRASERO IZQUIERDO (y = 0, para x de 0 a mapWidth - 1) ---
     for (let x = 0; x < mapWidth; x++) {
-      const bx = (x - 0) * halfW;
-      const by = (x + 0) * halfH - 13.333;
+      const baseIsoX = (x - 0) * halfW;
+      const baseIsoY = (x + 0) * halfH;
 
-      leftWall.fillStyle(0x1e293b, 1);
-      leftWall.lineStyle(1.5, 0x0f172a, 0.9);
+      const wallTile = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-temple-wall');
+      wallTile.setOrigin(0.5, 0);
+      wallTile.setScale(tileScale);
+      wallTile.setDepth(-1000 + baseIsoY);
 
-      leftWall.beginPath();
-      leftWall.moveTo(bx - halfW, by + halfH);
-      leftWall.lineTo(bx, by + halfH * 2);
-      leftWall.lineTo(bx, by + halfH * 2 - wallH);
-      leftWall.lineTo(bx - halfW, by + halfH - wallH);
-      leftWall.closePath();
-      leftWall.fillPath();
-      leftWall.strokePath();
-
-      leftWall.fillStyle(0x475569, 1);
-      leftWall.beginPath();
-      leftWall.moveTo(bx - halfW, by + halfH - wallH);
-      leftWall.lineTo(bx, by + halfH * 2 - wallH);
-      leftWall.lineTo(bx, by + halfH * 2 - wallH - 14);
-      leftWall.lineTo(bx - halfW, by + halfH - wallH - 14);
-      leftWall.closePath();
-      leftWall.fillPath();
-
+      // Antorchas de pared encendidas cada 4 casillas
       if (x % 4 === 2 && x > 1 && x < mapWidth - 1) {
-        const winX = bx - halfW / 2;
-        const winY = by + halfH * 1.5 - wallH / 2;
-        leftWall.fillStyle(0x0284c7, 0.9);
-        leftWall.fillRoundedRect(winX - 8, winY - 24, 16, 36, 8);
-        leftWall.lineStyle(2, 0x38bdf8, 0.95);
-        leftWall.strokeRoundedRect(winX - 8, winY - 24, 16, 36, 8);
+        const torch = this.add.circle(baseIsoX, baseIsoY - 20, 5, 0xf59e0b, 0.95);
+        torch.setDepth(baseIsoY + 20);
 
-        const torch = this.add.circle(winX, winY + 28, 5, 0xf59e0b, 0.9);
-        torch.setDepth(by + 100);
+        const torchGlow = this.add.circle(baseIsoX, baseIsoY - 20, 14, 0xfbbf24, 0.35);
+        torchGlow.setDepth(baseIsoY + 19);
+
         this.tweens.add({
-          targets: torch,
-          alpha: 0.35,
-          scale: 1.4,
-          duration: 350 + (x * 40),
+          targets: [torch, torchGlow],
+          alpha: 0.30,
+          scale: 1.35,
+          duration: 380 + (x * 30),
           yoyo: true,
           repeat: -1,
           ease: 'Sine.easeInOut'
@@ -451,65 +430,15 @@ export class TempleInteriorScene extends Phaser.Scene {
       }
     }
 
-    // --- MURO TRASERO SUPERIOR (x = 0, para y de 0 a mapHeight - 1) ---
-    const backWall = this.add.graphics();
-    backWall.setDepth(10);
+    // --- MURO TRASERO SUPERIOR (x = 0, para y de 1 a mapHeight - 1) ---
+    for (let y = 1; y < mapHeight; y++) {
+      const baseIsoX = (0 - y) * halfW;
+      const baseIsoY = (0 + y) * halfH;
 
-    for (let y = 0; y < mapHeight; y++) {
-      const bx = (0 - y) * halfW;
-      const by = (0 + y) * halfH - 13.333;
-
-      backWall.fillStyle(0x334155, 1);
-      backWall.lineStyle(1.5, 0x0f172a, 0.9);
-
-      backWall.beginPath();
-      backWall.moveTo(bx, by + halfH * 2);
-      backWall.lineTo(bx + halfW, by + halfH);
-      backWall.lineTo(bx + halfW, by + halfH - wallH);
-      backWall.lineTo(bx, by + halfH * 2 - wallH);
-      backWall.closePath();
-      backWall.fillPath();
-      backWall.strokePath();
-
-      backWall.fillStyle(0x64748b, 1);
-      backWall.beginPath();
-      backWall.moveTo(bx, by + halfH * 2 - wallH);
-      backWall.lineTo(bx + halfW, by + halfH - wallH);
-      backWall.lineTo(bx + halfW, by + halfH - wallH - 14);
-      backWall.lineTo(bx, by + halfH * 2 - wallH - 14);
-      backWall.closePath();
-      backWall.fillPath();
-    }
-
-    // --- MURO DERECHO INFERIOR (y = mapHeight - 1, para x de 0 a mapWidth - 1 excepto portón) ---
-    const rightWall = this.add.graphics();
-    rightWall.setDepth(2000);
-
-    for (let x = 0; x < mapWidth; x++) {
-      if (x === mapWidth - 1) continue;
-      const bx = (x - (mapHeight - 1)) * halfW;
-      const by = (x + (mapHeight - 1)) * halfH - 13.333;
-
-      rightWall.fillStyle(0x1e293b, 1);
-      rightWall.lineStyle(1.5, 0x0f172a, 0.9);
-
-      rightWall.beginPath();
-      rightWall.moveTo(bx - halfW, by + halfH);
-      rightWall.lineTo(bx, by + halfH * 2);
-      rightWall.lineTo(bx, by + halfH * 2 - wallH);
-      rightWall.lineTo(bx - halfW, by + halfH - wallH);
-      rightWall.closePath();
-      rightWall.fillPath();
-      rightWall.strokePath();
-
-      rightWall.fillStyle(0x475569, 1);
-      rightWall.beginPath();
-      rightWall.moveTo(bx - halfW, by + halfH - wallH);
-      rightWall.lineTo(bx, by + halfH * 2 - wallH);
-      rightWall.lineTo(bx, by + halfH * 2 - wallH - 14);
-      rightWall.lineTo(bx - halfW, by + halfH - wallH - 14);
-      rightWall.closePath();
-      rightWall.fillPath();
+      const wallTile = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-temple-wall');
+      wallTile.setOrigin(0.5, 0);
+      wallTile.setScale(tileScale);
+      wallTile.setDepth(-1000 + baseIsoY);
     }
   }
 

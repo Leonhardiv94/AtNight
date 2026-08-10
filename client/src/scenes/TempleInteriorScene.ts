@@ -80,9 +80,9 @@ export class TempleInteriorScene extends Phaser.Scene {
   }
 
   private createSanctuaryMap() {
-    // Reorientado: Profundidad reducida a 2/3 (24 casillas de largo) orientada hacia arriba-izquierda
-    const mapWidth = 10;
-    const mapHeight = 24;
+    // Trasposición del Mapa: Profundidad de 24 casillas orientada hacia ARRIBA-IZQUIERDA (En la caja dibujada por el usuario)
+    const mapWidth = 24;
+    const mapHeight = 10;
     const tileScale = 2 / 3;
     const tileW = 128 * tileScale;
     const tileH = 64 * tileScale;
@@ -91,63 +91,65 @@ export class TempleInteriorScene extends Phaser.Scene {
 
     const wallGroup = this.physics.add.staticGroup();
 
-    // Posición del portón de salida (Muro Abajo-Derecha: x = 9, y = 33)
+    // Posición del portón de salida (Mantenido en el umbral sin mover la alfombra)
     const exitGx = mapWidth - 1;
-    const exitGy = mapHeight - 3;
+    const exitGy = 5;
 
     for (let x = 0; x < mapWidth; x++) {
       for (let y = 0; y < mapHeight; y++) {
         const baseIsoX = (x - y) * halfW;
         const baseIsoY = (x + y) * halfH;
 
-        const isExitDoor = (x === exitGx && y === exitGy);
+        const isExitDoor = (x === exitGx && (y === 4 || y === 5));
         const isWall = (x === 0 || y === 0 || y === mapHeight - 1 || (x === mapWidth - 1 && !isExitDoor));
-        const isCentralAisle = (x >= 4 && x <= 5 && y > 2 && y < mapHeight - 1);
+        const isCentralAisle = (y >= 4 && y <= 5 && x > 1 && x < mapWidth - 1);
 
         if (isExitDoor) {
-          // Umbral de Alfombra Roja en el Portón Abajo-Derecha
+          // Umbral de Alfombra Roja en el Portón Abajo-Derecha (Mantenido en su posición exacta)
           const carpet = this.add.image(baseIsoX, baseIsoY - 13.333, 'tile-carpet');
           carpet.setOrigin(0.5, 0);
           carpet.setScale(tileScale);
           carpet.setDepth(-5000 + baseIsoY);
           carpet.setInteractive({ useHandCursor: true });
 
-          this.exitCarpetSprite = carpet;
-          this.exitCarpetPos = { x: baseIsoX, y: baseIsoY + 20 };
+          if (x === exitGx && y === 5) {
+            this.exitCarpetSprite = carpet;
+            this.exitCarpetPos = { x: baseIsoX, y: baseIsoY + 20 };
 
-          // Marco del Portón de Salida Abajo-Derecha
-          const exitArch = this.add.graphics();
-          exitArch.setPosition(baseIsoX, baseIsoY);
-          exitArch.setDepth(baseIsoY + 50);
-          exitArch.lineStyle(3, 0xb91c1c, 0.9);
-          exitArch.fillStyle(0xef4444, 0.35);
-          exitArch.strokeRect(-25, -35, 50, 45);
-          exitArch.fillRect(-25, -35, 50, 45);
+            // Marco del Portón de Salida Abajo-Derecha
+            const exitArch = this.add.graphics();
+            exitArch.setPosition(baseIsoX, baseIsoY);
+            exitArch.setDepth(baseIsoY + 50);
+            exitArch.lineStyle(3, 0xb91c1c, 0.9);
+            exitArch.fillStyle(0xef4444, 0.35);
+            exitArch.strokeRect(-25, -35, 50, 45);
+            exitArch.fillRect(-25, -35, 50, 45);
 
-          // Etiqueta Emergente
-          this.exitLabel = this.add.text(baseIsoX, baseIsoY - 45, '🚪 Salir a la Isla', {
-            fontFamily: 'sans-serif',
-            fontSize: '13px',
-            color: '#ffffff',
-            backgroundColor: 'rgba(185, 28, 28, 0.90)',
-            padding: { x: 8, y: 4 }
-          }).setOrigin(0.5).setDepth(baseIsoY + 100).setVisible(false);
+            // Etiqueta Emergente
+            this.exitLabel = this.add.text(baseIsoX, baseIsoY - 45, '🚪 Salir a la Isla', {
+              fontFamily: 'sans-serif',
+              fontSize: '13px',
+              color: '#ffffff',
+              backgroundColor: 'rgba(185, 28, 28, 0.90)',
+              padding: { x: 8, y: 4 }
+            }).setOrigin(0.5).setDepth(baseIsoY + 100).setVisible(false);
 
-          carpet.on('pointerover', () => {
-            carpet.setTint(0xffea00);
-            this.exitLabel.setVisible(true);
-          });
+            carpet.on('pointerover', () => {
+              carpet.setTint(0xffea00);
+              this.exitLabel.setVisible(true);
+            });
 
-          carpet.on('pointerout', () => {
-            carpet.clearTint();
-            this.exitLabel.setVisible(false);
-          });
+            carpet.on('pointerout', () => {
+              carpet.clearTint();
+              this.exitLabel.setVisible(false);
+            });
 
-          carpet.on('pointerdown', (_pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: any) => {
-            if (event && event.stopPropagation) event.stopPropagation();
-            this.clickTarget = new Phaser.Math.Vector2(baseIsoX, baseIsoY + 20);
-            this.pendingExit = true;
-          });
+            carpet.on('pointerdown', (_pointer: Phaser.Input.Pointer, _localX: number, _localY: number, event: any) => {
+              if (event && event.stopPropagation) event.stopPropagation();
+              this.clickTarget = new Phaser.Math.Vector2(baseIsoX, baseIsoY + 20);
+              this.pendingExit = true;
+            });
+          }
 
         } else if (isWall) {
           // Muro de Piedra del Santuario
@@ -181,14 +183,14 @@ export class TempleInteriorScene extends Phaser.Scene {
         }
 
         // Columnas y Antorchas Místicas a los Lados del Pasillo Central
-        if (!isWall && (x === 2 || x === 7) && y % 5 === 0 && y > 3 && y < mapHeight - 3) {
+        if (!isWall && (y === 2 || y === 7) && x % 4 === 0 && x > 2 && x < mapWidth - 2) {
           const torch = this.add.circle(baseIsoX, baseIsoY, 6, 0xf59e0b, 0.8);
           torch.setDepth(baseIsoY + 10);
           this.tweens.add({
             targets: torch,
             alpha: 0.35,
             scale: 1.4,
-            duration: 400 + (x * 50),
+            duration: 400 + (y * 50),
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut'
@@ -198,10 +200,10 @@ export class TempleInteriorScene extends Phaser.Scene {
     }
 
     // -------------------------------------------------------------------------
-    // ⛲ FUENTE SAGRADA DE LA NATIVIDAD Y HAZ DE LUZ DIVINO (DIRECTIONAL LIGHT)
+    // ⛲ FUENTE SAGRADA DE LA NATIVIDAD Y HAZ DE LUZ DIVINO EN EL EXTREMO ARRIBA-IZQUIERDA
     // -------------------------------------------------------------------------
-    const fountainGx = 4;
-    const fountainGy = 2;
+    const fountainGx = 2;
+    const fountainGy = 4;
     const fountainX = (fountainGx - fountainGy) * halfW;
     const fountainY = (fountainGx + fountainGy) * halfH - 13.333;
 

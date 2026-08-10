@@ -51,7 +51,7 @@ export class TempleInteriorScene extends Phaser.Scene {
     this.createSanctuaryMap();
 
     // 2. Spawn del Personaje: Si es personaje nuevo o resucitado tras morir, nace en la Tina Sagrada; si entra por la puerta, nace junto al umbral de salida
-    const isBirthOrRespawn = data?.isRespawn || data?.isNewCharacter || !data?.fromTempleDoor;
+    const isBirthOrRespawn = Boolean(data?.isRespawn || data?.isNewCharacter);
     
     // Coordenadas exactas de la Tina Sagrada de Nacimiento
     const fountainScale = 2 / 3;

@@ -3461,6 +3461,25 @@ export class GameScene extends Phaser.Scene {
         this.player.play(idleKey, true);
       }
     }
+
+    // Comprobar activación de entrada al templo
+    if (this.templeDoorZone) {
+      const distToDoor = Phaser.Math.Distance.Between(this.player.x, this.player.y, this.templeDoorZone.x, this.templeDoorZone.y);
+      if ((this.pendingTempleEnter || distToDoor < 24) && !this.isSceneTransitioning) {
+        if (distToDoor < 35) {
+          this.isSceneTransitioning = true;
+          this.pendingTempleEnter = false;
+          this.clickTarget = null;
+          this.pathWaypoints = [];
+          if (this.player.body) (this.player.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
+
+          this.cameras.main.fadeOut(500, 0, 0, 0);
+          this.time.delayedCall(500, () => {
+            this.scene.start('TempleInteriorScene', { fromTempleDoor: true });
+          });
+        }
+      }
+    }
   }
 
   private updateDepthSorting() {

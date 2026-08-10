@@ -80,9 +80,9 @@ export class TempleInteriorScene extends Phaser.Scene {
   }
 
   private createSanctuaryMap() {
-    // Reorientado: Puerta en el muro abajo-derecha, Profundidad x3 (10 ancho x 36 profundidad)
+    // Reorientado: Profundidad reducida a 2/3 (24 casillas de largo) orientada hacia arriba-izquierda
     const mapWidth = 10;
-    const mapHeight = 36;
+    const mapHeight = 24;
     const tileScale = 2 / 3;
     const tileW = 128 * tileScale;
     const tileH = 64 * tileScale;
